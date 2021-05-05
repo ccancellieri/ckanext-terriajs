@@ -25,7 +25,7 @@
     :alt: Development Status
 
 .. image:: https://pypip.in/license/ckanext-terriajs/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-terriajs/
+    :target: https://pypi.python.org/pypi/ckanext-terriajs/LICENSE
     :alt: License
 
 =============
@@ -41,9 +41,7 @@ ckanext-terriajs
 Requirements
 ------------
 
-For example, you might want to mention here which versions of CKAN this
-extension works with.
-
+Ckan 2.8
 
 ------------
 Installation
