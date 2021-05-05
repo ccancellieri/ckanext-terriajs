@@ -86,7 +86,7 @@ Config Settings
    ckanext.terriajs.url=${URL_TO_TERRIA}
    # due to the big amount of code necessary to jsonschema we perfer
    # to outsource the delivery of the schema to a bucket,if must be a
-   # valid and trusted (cors enabled) json http(s) endpoint
+   # valid and trusted (cors capable) json http(s) endpoint
    ckanext.terriajs.schema.url=${URL_TO_MAIN_JSONSCHEMA}
 
    other_view= terriajs ...
