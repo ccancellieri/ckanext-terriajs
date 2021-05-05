@@ -25,7 +25,7 @@
     :alt: Development Status
 
 .. image:: https://pypip.in/license/ckanext-terriajs/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-terriajs/LICENSE
+    :target: https://bitbucket.org/cioapps/ckanext-terriajs/src/master/LICENSE
     :alt: License
 
 =============
