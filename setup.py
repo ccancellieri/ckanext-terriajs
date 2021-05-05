@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/ccancellieri/ckanext-terriajs',
+    url='https://bitbucket.org/cioapps/ckanext-terriajs',
 
     # Author details
     author='''Carlo Cancellieri''',
