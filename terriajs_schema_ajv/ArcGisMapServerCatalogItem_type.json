@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "esri-mapServer"
+      ]
+    }
+  },
+  "description": "A ImageryLayerCatalogItem representing a layer from an Esri ArcGIS MapServer.",
+  "title": "Esri ArcGIS MapServer",
+  "allOf": [
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogItem.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/ImageryLayerCatalogItem.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/ArcGisMapServerCatalogItem.json?&alt=media"
+    }
+  ]
+}

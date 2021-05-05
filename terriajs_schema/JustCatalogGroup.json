@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogGroup.json?&alt=media"
+    }
+  ],
+  "title": "Catalog group",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "group"
+      ],
+      "options": { "hidden": true }
+    },
+    "items": {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/items.json?&alt=media"
+    }    
+  }
+}

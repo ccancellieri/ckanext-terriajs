@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "abs-itt"
+      ]
+    }
+  },
+  "description": "A CatalogItem representing region-mapped data obtained from the Australia Bureau of Statistics\n(ABS) ITT query interface.  Documentation for the query interface is found here: http://stat.abs.gov.au/itt/r.jsp?api",
+  "title": "ABS.Stat",
+  "allOf": [
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogItem.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CsvCatalogItem.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/AbsIttCatalogItem.json?&alt=media"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+LICENSE
+MANIFEST.in
+README.rst
+requirements.txt
+setup.cfg
+setup.py
+ckanext/__init__.py
+ckanext/terriajs/__init__.py
+ckanext/terriajs/plugin.py
+ckanext/terriajs/tests/__init__.py
+ckanext/terriajs/tests/test_plugin.py
+ckanext_terriajs.egg-info/PKG-INFO
+ckanext_terriajs.egg-info/SOURCES.txt
+ckanext_terriajs.egg-info/dependency_links.txt
+ckanext_terriajs.egg-info/entry_points.txt
+ckanext_terriajs.egg-info/namespace_packages.txt
+ckanext_terriajs.egg-info/top_level.txt

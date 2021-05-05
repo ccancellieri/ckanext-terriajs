@@ -1,0 +1,7 @@
+
+        [ckan.plugins]
+        terriajs=ckanext.terriajs.plugin:TerriajsPlugin
+
+        [babel.extractors]
+        ckan = ckan.lib.extract:extract_ckan
+    

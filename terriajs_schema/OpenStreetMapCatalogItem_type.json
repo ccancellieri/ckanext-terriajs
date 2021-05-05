@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "open-street-map"
+      ]
+    }
+  },
+  "description": "A ImageryLayerCatalogItem representing a layer from the Open Street Map server.",
+  "title": "Open Street Map",
+  "allOf": [
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogItem.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/ImageryLayerCatalogItem.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/OpenStreetMapCatalogItem.json?&alt=media"
+    }
+  ]
+}

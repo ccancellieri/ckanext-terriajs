@@ -1,0 +1,159 @@
+{% extends "package/view_edit_base.html" %}
+
+
+{% block scripts %}
+  {{ super() }}
+  <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/ace.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/mode-javascript.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/mode-json.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/mode-css.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/ext-beautify.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ajv/6.12.3/ajv.min.js"></script>
+
+ <script type="text/javascript">
+
+    function copy(self, event, text) {
+        event.preventDefault();
+        var tmp = document.createElement("textarea");
+        tmp.value = text;
+        tmp.style.height = "0";
+        tmp.style.overflow = "hidden";
+        tmp.style.position = "fixed";
+        document.body.appendChild(tmp);
+        tmp.focus();
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+    }
+ </script>
+{% endblock %}
+
+
+{% block page %}
+
+    {% block form %}
+        <div id="terria-config-form" data-module="terriajs" data-module-package="{{ h.dump_json(package) }}"
+                data-module-resource-view="{{ h.dump_json(resource_view) }}" data-module-config-view="{{ h.dump_json(config_view) }}"
+                data-module-resource="{{ h.dump_json(resource) }}" data-module-ckan-url="{{ h.url_for('/',_external=True) }}"/>
+        <input id="terriajs_config" type="hidden" name="terriajs_config" value="" />
+    {% endblock %}
+
+    <div>
+        <table class="table" style="width:100%">
+            <tr>
+                <h3 style="border-bottom: 1px solid gray;">Dataset:</h3>
+            </tr>
+            <tr scope="row">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">description</th>
+                <th scope="col">URL</th>
+            </tr>
+            <tr scope="row">
+                <td class="col">
+                    <button class="btn btn-secondary" onclick="copy(this, event, '{{package.id}}')" data-toggle="tooltip" data-placement="bottom" title="{{package.id}}">
+                        <i class="fa fa-clipboard" aria-hidden="true"></i>
+                        <b id="package-id">Dataset ID</b></button>
+                    </button>
+                </td>
+                <td class="col">
+                    {% if package.name %}
+                        <button class="btn btn-secondary" onclick="copy(this, event, '{{package.name}}')" data-toggle="tooltip" data-placement="bottom" title="{{package.name}}">
+                            <span style="display:block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100px;"><i class="fa fa-clipboard" aria-hidden="true"></i> {{package.name}}</span>
+                        </button>
+                    {% endif %}
+                </td>
+                <td class="col">
+                    {% if package.description %}
+                        <button class="btn btn-secondary" onclick="copy(this, event, '{{package.description}}')" data-toggle="tooltip" data-placement="bottom" title="{{package.description}}">
+                            <span style="display:block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100px;"><i class="fa fa-clipboard" aria-hidden="true"></i> {{package.description}}</span>
+                        </button>
+                    {% endif %}
+                </td>
+                <td class="col">
+                    <button class="btn btn-secondary"
+                            onclick="copy(this, event, '{{ h.url_for(controller='package', action='read', id=package.id, _external=True ) }}')"
+                            data-toggle="tooltip" data-placement="bottom" title="{{package.url}}">
+                        <i class="fa fa-clipboard" aria-hidden="true"></i> URL
+                    </button>
+                </td>
+            </tr>
+        </table>
+        <table class="table" style="width:100%">
+            <tr>
+                <h3 style="border-bottom: 1px solid gray;">Resources:</h3>
+            </tr>
+            <tr scope="row">
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">description</th>
+                <th scope="col">URL</th>
+            </tr>
+            {% for r in package.resources %}
+                <tr scope="row">
+                    <td class="col">
+                        <button class="btn btn-secondary" onclick="copy(this, event, '{{r.id}}')" data-toggle="tooltip" data-placement="bottom" title="{{r.id}}">
+                                <i class="fa fa-clipboard" aria-hidden="true"></i>
+                            {% if resource.id == r.id %}
+                                <b id="resource-id">This resource ID</b>
+                            {% else %}
+                                <span>Resource ID</span>
+                            {% endif %}
+                        </button>
+                    </td>
+                    <td class="col">
+                        {% if r.name %}
+                            <button class="btn btn-secondary" onclick="copy(this, event, '{{r.name}}')" data-toggle="tooltip" data-placement="bottom" title="{{r.name}}">
+                                <span style="display:block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100px;"><i class="fa fa-clipboard" aria-hidden="true"></i> {{r.name}}</span>
+                            </button>
+                        {% endif %}
+                    </td>
+                    <td class="col">
+                        {% if r.description %}
+                            <button class="btn btn-secondary" onclick="copy(this, event, '{{r.description}}')" data-toggle="tooltip" data-placement="bottom" title="{{r.description}}">
+                                <span style="display:block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100px;"><i class="fa fa-clipboard" aria-hidden="true"></i> {{r.description}}</span>
+                            </button>
+                        {% endif %}
+                    </td>
+                    <td class="col">
+                        {% if r.url %}
+                            <button class="btn btn-secondary" onclick="copy(this, event, '{{r.url}}')" data-toggle="tooltip" data-placement="bottom" title="{{r.url}}">
+                                <i class="fa fa-clipboard" aria-hidden="true"></i> URL
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div id="editor">
+            <p>
+                <div style="display: inline-block;">
+                    <button class="btn btn-primary" id="editor-editor" onclick="javascript:terriajs.wrap(terriajs.getEditorAce);">Editor</button>
+                    <button class="btn btn-primary" id="editor-howto" onclick="javascript:terriajs.wrap(terriajs.getEditor);">HowTo</button>
+                    <button class="btn btn-primary" id="editor-toggle" onclick="javascript:terriajs.wrap(terriajs.editorToggle);"></button>
+                    {#<button class="btn btn-primary" id="editor-preview" onclick="javascript:terriajs.wrap(terriajs.preview);">Preview</button>#}
+                    {% if resource_view.id %}
+                    <button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Click to obtain the link to this configuration"
+                            onclick="copy(this, event, '{{h.url_for('terriajs.terriajs_config', resource_view_id=resource_view.id, _external=True)}}')">
+                        <i class="fa fa-clipboard" aria-hidden="true"></i> Resulting endpoint
+                    </button>
+                    {% endif %}
+                </div>
+            </p>
+            <p style="border: 2px solid gray;" id="editor-terriajs-config">
+                {% resource 'ckanext-terriajs/main' %}
+            </p>
+            <p>
+                <div style="border-bottom: 1px solid gray;">
+                    <h2 style="display: inline;">Editor:
+                    </h2>    Status: <h3 style="display: inline;" id="editor-status-holder"></h3>    Validation: <div style="display: inline;" id="editor-error-holder"></div>
+                </div>
+            </p>
+    </div>
+{% endblock %}
+
+
+
