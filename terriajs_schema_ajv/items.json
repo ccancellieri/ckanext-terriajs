@@ -63,6 +63,9 @@
         "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/OpenStreetMapCatalogItem_type.json?&alt=media"
       },
       {
+        "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/SmartCsvCatalogItem.json?&alt=media"
+      },
+      {
         "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/SocrataCatalogGroup_type.json?&alt=media"
       },
       {
