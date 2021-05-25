@@ -50,7 +50,8 @@ image: atlassian/default-image:2
 #image: atlassian/bitbucket-server
 pipelines:
   pull-requests:
-    - step: *ckan-2.9-test
+    '**':
+      - step: *ckan-2.9-test
   branches:
     master:
       - step: *ckan-2.9-test

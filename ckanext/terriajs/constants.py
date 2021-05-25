@@ -9,3 +9,22 @@ TERRIAJS_URL=('ckanext.terriajs.url', 'https://localhost/terriajs')
 TERRIAJS_SCHEMA_URL=('ckanext.terriajs.schema.url', 'https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json')
 
 FORMATS = ['wms','wfs','kml', 'kmz','gjson', 'geojson', 'czml']
+
+TERRIAJS_CONFIG='''{
+               "catalog":[
+                  {
+                     "name":"",
+                     "type":"group",
+                     "order":1,
+                     "description":"",
+                     "preserveOrder":true,
+                     "items":[]
+                  }
+               ],
+               "homeCamera":{
+                  "west":-180,
+                  "east":180,
+                  "north":90,
+                  "south":-90
+               }
+            }'''

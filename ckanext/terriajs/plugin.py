@@ -7,7 +7,7 @@ import json as json
 import ckan.plugins as p
 
 
-import constants
+import ckanext.terriajs.constants as constants
 import ckan.logic.validators as v
 
 import requests
@@ -117,24 +117,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         if 'terriajs_config' in resource_view:
             terriajs_config=json.loads(resource_view.get('terriajs_config',{}))
         else:
-            terriajs_config = json.loads('''{
-               "catalog":[
-                  {
-                     "name":"",
-                     "type":"group",
-                     "order":1,
-                     "description":"",
-                     "preserveOrder":true,
-                     "items":[]
-                  }
-               ],
-               "homeCamera":{
-                  "west":-180,
-                  "east":180,
-                  "north":90,
-                  "south":-90
-               }
-            }''')
+            terriajs_config = json.loads(constants.TERRIAJS_CONFIG)
 
         config_view['config_view'] = {
             'terriajs_url': config.get(*constants.TERRIAJS_URL),
