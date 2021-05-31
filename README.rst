@@ -1,55 +1,52 @@
-.. You should enable this project on travis-ci.org and coveralls.io to make
-   these badges work. The necessary Travis and Coverage config files have been
-   generated for you.
-
-.. image:: https://travis-ci.org/ccancellieri/ckanext-terriajs.svg?branch=master
-    :target: https://travis-ci.org/ccancellieri/ckanext-terriajs
-
-.. image:: https://coveralls.io/repos/ccancellieri/ckanext-terriajs/badge.svg
-  :target: https://coveralls.io/r/ccancellieri/ckanext-terriajs
-
-.. image:: https://pypip.in/download/ckanext-terriajs/badge.svg
-    :target: https://pypi.python.org/pypi//ckanext-terriajs/
-    :alt: Downloads
-
-.. image:: https://pypip.in/version/ckanext-terriajs/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-terriajs/
-    :alt: Latest Version
-
-.. image:: https://pypip.in/py_versions/ckanext-terriajs/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-terriajs/
-    :alt: Supported Python versions
-
-.. image:: https://pypip.in/status/ckanext-terriajs/badge.svg
-    :target: https://pypi.python.org/pypi/ckanext-terriajs/
-    :alt: Development Status
-
-.. image:: https://pypip.in/license/ckanext-terriajs/badge.svg
-    :target: https://bitbucket.org/cioapps/ckanext-terriajs/src/master/LICENSE
-    :alt: License
-
-=============
 ckanext-terriajs
-=============
+=====================================
 
-.. Put a description of your extension here:
-   What does it do? What features does it have?
-   Consider including some screenshots or embedding a video!
+|
+|
+
+**ckanext-terriajs** provides the TerriaJS configuration that implements JSON schema validations and facilitates information from the metadata and resources.
+It also presents an embedded overview of the result showing the layer into an Iframe.
+
+|
+|
 
 
-------------
+**Image below**: Creating a **ckanext-terriajs** view.
+
+|
+
+.. image:: docs/img/creating_terriajs_view.png
+    :alt: Creating a ckanext-terriajs view
+
+|
+
+**Image below**: Configuring the plugin.
+
+|
+
+.. image:: docs/img/config.png
+    :alt: terriajs config
+
+|
+
+**Image below**: **ckanext-terriajs** view on CKAN.
+|
+
+.. image:: docs/img/terriajs_load.png
+    :alt: Loaded view
+
+|
+
 Requirements
 ------------
 
-Ckan 2.8
+Before installing ckanext-terriajs, make sure that you have installed the following:
 
-------------
+* CKAN 2.8 and above
+
+
 Installation
 ------------
-
-.. Add any additional install steps to the list below.
-   For example installing any non-Python dependencies or adding any required
-   config settings.
 
 To install ckanext-terriajs:
 
@@ -61,7 +58,13 @@ To install ckanext-terriajs:
 
      pip install ckanext-terriajs
 
+
+
 3. Add ``terriajs`` to the ``ckan.plugins`` setting in your CKAN
+   config file (by default the config file is located at
+   ``/etc/ckan/default/production.ini``).
+
+4. Add ``terriajs`` to the ``ckan.views.default_views`` setting in your CKAN
    config file (by default the config file is located at
    ``/etc/ckan/default/production.ini``).
 
@@ -70,109 +73,38 @@ To install ckanext-terriajs:
      sudo service apache2 reload
 
 
----------------
-Config Settings
----------------
 
-   # TERRIA
-   # Default Instance Title
-   ckanext.terriajs.default.name=TerriaJS
-   ckanext.terriajs.always_available=True
-   ckanext.terriajs.default.title=TerriaJS view
-   ckanext.terriajs.icon=globe
-   # Having terriajs under the same ckan domain is preferred but not mandatory
-   ckanext.terriajs.url=${URL_TO_TERRIA}
-   # due to the big amount of code necessary to jsonschema we perfer
-   # to outsource the delivery of the schema to a bucket,if must be a
-   # valid and trusted (cors capable) json http(s) endpoint
-   ckanext.terriajs.schema.url=${URL_TO_MAIN_JSONSCHEMA}
+Configuration
+-------------
 
-   other_view= terriajs ...
+You must make sure that the following is set in your CKAN config::
 
-   ckan.plugins = %(other_view)s ...
+    ckanext.terriajs.default.name=TerriaJS
+    ckanext.terriajs.always_available=True
+    ckanext.terriajs.default.title=TerriaJS view
+    ckanext.terriajs.icon=globe
+    ckanext.terriajs.url=http://localhost:8080
 
-   # Define which views should be created by default
-   # (plugins must be loaded in ckan.plugins)
-   ckan.views.default_views = %(other_view)s
 
-------------------------
-Development Installation
-------------------------
+Development
+-----------
+To install ckanext-terriajs for development, activate your CKAN virtualenv and do::
 
-To install ckanext-terriajs for development, activate your CKAN virtualenv and
-do::
-
-    git clone https://github.com/ccancellieri/ckanext-terriajs.git
+    git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
     cd ckanext-terriajs
     python setup.py develop
-    pip install -r dev-requirements.txt
+    
+
+Tests
+-----
+To run the tests:
+
+1. Activate your CKAN virtual environment, for example::
+
+     . /usr/lib/ckan/default/bin/activate
 
 
------------------
-Running the Tests
------------------
+2. From the CKAN root directory (not the extension root) do::
 
-To run the tests, do::
+    pytest --ckan-ini=test.ini ckanext/terriajs/tests
 
-    nosetests --nologcapture --with-pylons=test.ini
-
-To run the tests and produce a coverage report, first make sure you have
-coverage installed in your virtualenv (``pip install coverage``) then run::
-
-    nosetests --nologcapture --with-pylons=test.ini --with-coverage --cover-package=ckanext.terriajs --cover-inclusive --cover-erase --cover-tests
-
-
----------------------------------
-Registering ckanext-terriajs on PyPI
----------------------------------
-
-ckanext-terriajs should be availabe on PyPI as
-https://pypi.python.org/pypi/ckanext-terriajs. If that link doesn't work, then
-you can register the project on PyPI for the first time by following these
-steps:
-
-1. Create a source distribution of the project::
-
-     python setup.py sdist
-
-2. Register the project::
-
-     python setup.py register
-
-3. Upload the source distribution to PyPI::
-
-     python setup.py sdist upload
-
-4. Tag the first release of the project on GitHub with the version number from
-   the ``setup.py`` file. For example if the version number in ``setup.py`` is
-   0.0.1 then do::
-
-       git tag 0.0.1
-       git push --tags
-
-
-----------------------------------------
-Releasing a New Version of ckanext-terriajs
-----------------------------------------
-
-ckanext-terriajs is availabe on PyPI as https://pypi.python.org/pypi/ckanext-terriajs.
-To publish a new version to PyPI follow these steps:
-
-1. Update the version number in the ``setup.py`` file.
-   See `PEP 440 <http://legacy.python.org/dev/peps/pep-0440/#public-version-identifiers>`_
-   for how to choose version numbers.
-
-2. Create a source distribution of the new version::
-
-     python setup.py sdist
-
-3. Upload the source distribution to PyPI::
-
-     python setup.py sdist upload
-
-4. Tag the new release of the project on GitHub with the version number from
-   the ``setup.py`` file. For example if the version number in ``setup.py`` is
-   0.0.2 then do::
-
-       git tag 0.0.2
-       git push --tags
