@@ -5,7 +5,8 @@ ckanext-terriajs
 |
 
 **ckanext-terriajs** provides the TerriaJS configuration that implements JSON schema validations and facilitates information from the metadata and resources.
-It also presents an embedded overview of the result showing the layer into an Iframe.
+
+The plugin also presents an embedded overview of the result showing the layer into an Iframe.
 
 |
 |
