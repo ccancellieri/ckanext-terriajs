@@ -11,7 +11,7 @@ The plugin also presents an embedded overview of the result showing the layer in
 |
 |
 
-
+**ckanext-terriajs** Adds a view to the resource and that will enable the creation of **ckanext-terriajs** views on the resource.
 **Image below**: Creating a **ckanext-terriajs** view.
 
 |
@@ -25,7 +25,7 @@ The plugin also presents an embedded overview of the result showing the layer in
 
 |
 
-.. image:: docs/img/config.png
+.. image:: docs/img/config.jpg
     :alt: terriajs config
 
 |
