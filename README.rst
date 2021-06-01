@@ -21,7 +21,8 @@ The plugin also presents an embedded overview of the result showing the layer in
 
 |
 
-**Image below**: Configuring the plugin.
+**Image below**: You can set the **name**, **description** and the **terriajs JSON configuration**.
+**ckanext-terriajs**
 
 |
 
@@ -30,7 +31,7 @@ The plugin also presents an embedded overview of the result showing the layer in
 
 |
 
-**Image below**: **ckanext-terriajs** view on CKAN.
+**Image below**: **ckanext-terriajs** loaded iframe on CKAN.
 |
 
 .. image:: docs/img/terriajs_load.png
