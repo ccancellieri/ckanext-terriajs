@@ -2,16 +2,15 @@ ckanext-terriajs
 =====================================
 
 |
-|
 
-**ckanext-terriajs** provides the TerriaJS configuration that implements JSON schema validations and facilitates information from the metadata and resources.
+It provides the TerriaJS configuration editor that leverages over JSON schema validation and facilities to grab informations from the metadata and resources.
 
-The plugin also presents an embedded overview of the result showing the layer into an Iframe.
+The plugin also presents an embedded overview of the result showing the layer into an Iframe and a set of API to fetch the created configuration.
 
-|
 |
 
 **ckanext-terriajs** Adds a view to the resource and that will enable the creation of **ckanext-terriajs** views on the resource.
+
 **Image below**: Creating a **ckanext-terriajs** view.
 
 |
@@ -38,6 +37,7 @@ The plugin also presents an embedded overview of the result showing the layer in
     :alt: Loaded view
 
 |
+|
 
 Requirements
 ------------
@@ -46,35 +46,20 @@ Before installing ckanext-terriajs, make sure that you have installed the follow
 
 * CKAN 2.8 and above
 
+|
+|
 
 Installation
 ------------
 
-To install ckanext-terriajs:
+We are not providing pip package to install please use:
 
-1. Activate your CKAN virtual environment, for example::
+    git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
+    cd ckanext-terriajs
+    python setup.py install
 
-     . /usr/lib/ckan/default/bin/activate
-
-2. Install the ckanext-terriajs Python package into your virtual environment::
-
-     pip install ckanext-terriajs
-
-
-
-3. Add ``terriajs`` to the ``ckan.plugins`` setting in your CKAN
-   config file (by default the config file is located at
-   ``/etc/ckan/default/production.ini``).
-
-4. Add ``terriajs`` to the ``ckan.views.default_views`` setting in your CKAN
-   config file (by default the config file is located at
-   ``/etc/ckan/default/production.ini``).
-
-4. Restart CKAN. For example if you've deployed CKAN with Apache on Ubuntu::
-
-     sudo service apache2 reload
-
-
+|
+|
 
 Configuration
 -------------
@@ -87,6 +72,8 @@ You must make sure that the following is set in your CKAN config::
     ckanext.terriajs.icon=globe
     ckanext.terriajs.url=http://localhost:8080
 
+|
+|
 
 Development
 -----------
@@ -96,6 +83,8 @@ To install ckanext-terriajs for development, activate your CKAN virtualenv and d
     cd ckanext-terriajs
     python setup.py develop
     
+|
+|
 
 Tests
 -----
