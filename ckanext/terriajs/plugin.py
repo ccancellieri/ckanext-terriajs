@@ -144,7 +144,7 @@ class TerriajsPlugin(p.SingletonPlugin):
                 })
 
         config_view['config_view'] = {
-            'terriajs_url': json.dumps(config.get(*constants.TERRIAJS_URL)),
+            'terriajs_url': config.get(*constants.TERRIAJS_URL),
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
             'terriajs_type': resource_type

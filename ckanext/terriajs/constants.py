@@ -8,8 +8,6 @@ ICON=('ckanext.terriajs.icon', 'globe')
 TERRIAJS_URL=('ckanext.terriajs.url', 'https://localhost/terriajs')
 TERRIAJS_SCHEMA_URL=('ckanext.terriajs.schema.url', 'https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json')
 
-
-
 DEFAULT_TYPE = 'terriajs'
 TYPE_MAPPING = {
    'smart-csv':'https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/SmartCsvCatalogItem.json?&alt=media',
@@ -27,18 +25,6 @@ TYPE_MAPPING = {
 }
 
 FORMATS = TYPE_MAPPING.keys()
-
-# TERRIAJS_CONFIG='''{
-#                "catalog":[
-
-#                ],
-#                "homeCamera":{
-#                   "west":-180,
-#                   "east":180,
-#                   "north":90,
-#                   "south":-90
-#                }
-#             }'''
 
 TERRIAJS_CONFIG = {
                'catalog':[],
