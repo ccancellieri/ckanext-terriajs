@@ -115,7 +115,7 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         full_catalog = False
         if resource and 'format' in resource:
-            resource_type = resource[u'format']
+            resource_type = resource[u'format'].lower()
 
             # type has been configured, is it matching into the config?
             if resource_type not in constants.TYPE_MAPPING.keys():
