@@ -45,6 +45,7 @@
                 data-module-resource-view="{{ h.dump_json(resource_view) }}" data-module-config-view="{{ h.dump_json(config_view) }}"
                 data-module-resource="{{ h.dump_json(resource) }}" data-module-ckan-url="{{ h.url_for('/',_external=True) }}"/>
         <input id="terriajs_config" type="hidden" name="terriajs_config" value="" />
+        <input id="terriajs_type" type="hidden" name="terriajs_type" value="{{resource['format'].lower()}}" />
     {% endblock %}
 
     <div>

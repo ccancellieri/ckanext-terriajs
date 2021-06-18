@@ -90,9 +90,8 @@ class TerriajsPlugin(p.SingletonPlugin):
             u'schema': {
                 #'__extras': [ignore_empty]
                 #'terriajs_config': [not_empty, json_object]
-                'terriajs_config': [not_empty]
-                # ,
-                # 'terriajs_type': [not_empty]
+                'terriajs_config': [not_empty],
+                'terriajs_type': [not_empty]
             }
         }
 
