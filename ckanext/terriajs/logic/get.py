@@ -127,7 +127,7 @@ def _base(resource_view_id, force_enabled=False):
         terria_config = json.loads(resource_view.get('terriajs_config',{}))
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
-        terria_config = constants.TERRIAJS_CONFIG.copy()
+        terria_config = dict(constants.TERRIAJS_CONFIG)
         terria_config['catalog'].append(json.loads(resource_view.get('terriajs_config',{})))
 
     return terria_config
