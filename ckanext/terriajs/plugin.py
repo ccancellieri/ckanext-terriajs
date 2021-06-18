@@ -112,16 +112,21 @@ class TerriajsPlugin(p.SingletonPlugin):
         config_view = {}
         
         resource = data_dict.get('resource',None)
+
         full_catalog = False
-        resource_type = constants.DEFAULT_TYPE
-        if resource:
-            resource_type = resource and resource.get('format',constants.DEFAULT_TYPE)
-            schema_url=constants.TYPE_MAPPING.get(resource_type and str(resource_type).lower(), constants.DEFAULT_TYPE)
-            if resource_type == constants.DEFAULT_TYPE:
-                full_catalog = True
-        else:
-            schema_url=constants.TYPE_MAPPING.get(constants.DEFAULT_TYPE, None)
+        if resource and 'format' in resource:
+            resource_type = resource[u'format']
+
+            # type has been configured, is it matching into the config?
+            if resource_type not in constants.TYPE_MAPPING.keys():
+                resource_type = constants.DEFAULT_TYPE
+        
+        if resource_type == constants.DEFAULT_TYPE:
             full_catalog = True
+        
+        if resource:    
+            schema_url= constants.TYPE_MAPPING.get(resource_type and str(resource_type).lower(), constants.DEFAULT_TYPE)\
+             or constants.TYPE_MAPPING.get(constants.DEFAULT_TYPE,None)
 
         if not schema_url:
             raise InvalidURL(_('Invalid schema url'))
