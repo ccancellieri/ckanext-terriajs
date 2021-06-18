@@ -5,6 +5,8 @@ import datetime
 import time
 import json
 
+import ckanext.terriajs.constants as constants
+
 from ckan.common import config
 import ckan.common as converters
 import six
@@ -54,7 +56,7 @@ from ckan.plugins.toolkit import get_action, request, h
 import re
 from paste.deploy.converters import asbool
 
-terriajs = Blueprint(u'terriajs', __name__)
+terriajs = Blueprint(constants.NAME, __name__)
 
 def _override_is_enabled(d, set_to):
     def _override_items(group, set_to):
@@ -124,6 +126,37 @@ def config_groups(resource_view_id):
 
 terriajs.add_url_rule(u'/terriajs/terriajs_config/groups/force_enabled/<resource_view_id>', view_func=config_groups_forced, methods=[u'GET'])
 terriajs.add_url_rule(u'/terriajs/terriajs_config/groups/<resource_view_id>', view_func=config_groups, methods=[u'GET'])
+
+
+### 
+
+def _base_2(resource_view_id, force_enabled=False):
+
+    resource_view = get_action(u'resource_view_show')\
+        (None, {u'id': resource_view_id})
+    if resource_view is None:
+        raise NotFound(_('View was not found.'))
+    # return h.dump_json(view.config)
+
+    if u'terriajs_config' not in resource_view:
+        return {}
+
+    terria_type = resource_view.get('terriajs_type',None)
+
+    # _override_is_enabled(terria_config,force_enabled, terria_type)
+    if terria_type == constants.DEFAULT_TYPE:
+        terria_config = json.loads(resource_view.get('terriajs_config',None))
+    else:
+        # terria_config is an item we've to wrap to obtain a valid catalog
+        terria_config = constants.TERRIAJS_CONFIG.copy()
+        terria_config['catalog'].append(json.loads(resource_view.get('terriajs_config',None)))
+
+    return terria_config
+
+def terriajs_config_2(resource_view_id):
+    return json.dumps(_base_2(resource_view_id))
+
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=terriajs_config_2, methods=[u'GET'])
 
 
 

@@ -5,7 +5,9 @@
 <div style="display: flex;justify-content: space-around;">
     <h2>Dataset: {{ package.name }}</h2>
 </div>
-<iframe src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.terriajs_config_forced', resource_view_id=resource_view.id, _external=True)}}" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
+<iframe src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.terriajs_config_2', resource_view_id=resource_view.id, _external=True)}}" style="height: 100%; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
+
+{# <iframe src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.terriajs_config_forced', resource_view_id=resource_view.id, _external=True)}}" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/> #}
 
 {# <iframe id="terriajs-iframe" src="{{config_view.terriajs_url}}?clean" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>#}
 

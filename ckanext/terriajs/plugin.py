@@ -1,3 +1,4 @@
+from requests.models import InvalidURL
 import ckan.plugins.toolkit as toolkit
 
 import logging
@@ -90,6 +91,8 @@ class TerriajsPlugin(p.SingletonPlugin):
                 #'__extras': [ignore_empty]
                 #'terriajs_config': [not_empty, json_object]
                 'terriajs_config': [not_empty]
+                # ,
+                # 'terriajs_type': [not_empty]
             }
         }
 
@@ -108,21 +111,43 @@ class TerriajsPlugin(p.SingletonPlugin):
         _dict = data_dict.copy()
         resource_view = _dict['resource_view']
         config_view = {}
-
-        terriajs_schema=requests.get(config.get(*constants.TERRIAJS_SCHEMA_URL)).content
-        if terriajs_schema:
-            terriajs_schema=json.loads(terriajs_schema)
-
-        terriajs_config=None
-        if 'terriajs_config' in resource_view:
-            terriajs_config=json.loads(resource_view.get('terriajs_config',{}))
+        
+        resource = data_dict.get('resource',None)
+        full_catalog = False
+        resource_type = constants.DEFAULT_TYPE
+        if resource:
+            resource_type = resource and resource.get('format',constants.DEFAULT_TYPE)
+            schema_url=constants.TYPE_MAPPING.get(resource_type and str(resource_type).lower(), constants.DEFAULT_TYPE)
+            if resource_type == constants.DEFAULT_TYPE:
+                full_catalog = True
         else:
-            terriajs_config = json.loads(constants.TERRIAJS_CONFIG)
+            schema_url=constants.TYPE_MAPPING.get(constants.DEFAULT_TYPE, None)
+            full_catalog = True
+
+        if not schema_url:
+            raise InvalidURL(_('Invalid schema url'))
+
+        terriajs_schema=requests.get(schema_url).content
+        if not terriajs_schema:
+            raise InvalidURL(*constants.TYPE_MAPPING+' not defined, check your config')
+
+        terriajs_config=resource_view.get('terriajs_config',None)
+        if not terriajs_config:
+            # generate base configuration
+            if full_catalog:
+                terriajs_config=json.dumps(constants.TERRIAJS_CONFIG)
+            else:
+                terriajs_config=json.dumps({
+                    'name': resource.get('name',''),
+                    'url': resource.get('url',''),
+                    'id': resource.get('id',''),
+                })
 
         config_view['config_view'] = {
-            'terriajs_url': config.get(*constants.TERRIAJS_URL),
-            'terriajs_schema': terriajs_schema,
-            'terriajs_config': terriajs_config
+            'terriajs_url': json.dumps(config.get(*constants.TERRIAJS_URL)),
+            'terriajs_schema': json.loads(terriajs_schema),
+            'terriajs_config': terriajs_config,
+            'terriajs_type': resource_type
         }
         _dict.update(config_view)
         return _dict

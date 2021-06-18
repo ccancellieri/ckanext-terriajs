@@ -58,16 +58,6 @@
       "title": "Is legend visible",
       "description": "A value indicating whether the legend for this data item is currently visible."
     },
-    "isLoading": {
-      "type": "boolean",
-      "title": "Is loading",
-      "description": "A value indicating whether this data source is currently loading."
-    },
-    "isEnableable": {
-      "type": "boolean",
-      "title": "Is enableable",
-      "description": "A value indicating whether this data source can be enabled via a checkbox in the Data Catalog Tab."
-    },
     "isMappable": {
       "type": "boolean",
       "title": "Is mappable",

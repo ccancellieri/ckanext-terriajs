@@ -3,7 +3,15 @@
 
 {% block scripts %}
   {{ super() }}
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.5.0/jsoneditor.min.js" 
+    integrity="sha512-/yeOsMWLc/SZcBuEbAGCk0OVK/NFWRiYALj7mVZtgCOV+6l8TzNjbH6iW3hSIAjvCg7NdZUNQEXT7JdL/eojpg==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/@json-editor/json-editor@latest/dist/jsoneditor.min.js"></script>
+  <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
+/>
   <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/ace.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/mode-javascript.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.2/src-min/mode-json.js"></script>
@@ -73,7 +81,7 @@
                 </td>
                 <td class="col">
                     <button class="btn btn-secondary"
-                            onclick="copy(this, event, '{{ h.url_for(controller='package', action='read', id=package.id, _external=True ) }}')"
+                            onclick="copy(this, event, '{{ h.url_for(controller='dataset', action='read', id=package.id, _external=True ) }}')"
                             data-toggle="tooltip" data-placement="bottom" title="{{package.url}}">
                         <i class="fa fa-clipboard" aria-hidden="true"></i> URL
                     </button>

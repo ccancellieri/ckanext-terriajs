@@ -6,7 +6,15 @@ setup.cfg
 setup.py
 ckanext/__init__.py
 ckanext/terriajs/__init__.py
+ckanext/terriajs/constants.py
 ckanext/terriajs/plugin.py
+ckanext/terriajs/fanstatic/geojson-extent.js
+ckanext/terriajs/fanstatic/terriajs_ckan.js
+ckanext/terriajs/fanstatic/css/text.css
+ckanext/terriajs/logic/__init__.py
+ckanext/terriajs/logic/get.py
+ckanext/terriajs/templates/terriajs.html
+ckanext/terriajs/templates/terriajs_form.html
 ckanext/terriajs/tests/__init__.py
 ckanext/terriajs/tests/test_plugin.py
 ckanext_terriajs.egg-info/PKG-INFO

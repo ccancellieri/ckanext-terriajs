@@ -87,7 +87,8 @@ ckan.module('terriajs', function (jQuery, _) {
             $('.dataset-form').find('button[type=submit]').each(
                 function (){$(this).on('click', terriajs.onSubmit.bind(terriajs));});
 
-            terriajs.getEditorAce();
+            // terriajs.getEditorAce();
+            terriajs.getEditor();
         },
         getEditorAce: function (){
 
@@ -248,13 +249,46 @@ coerceTypes: true,
                 // https://github.com/json-editor/json-editor#css-integration
                 // barebones, html (the default), bootstrap4, spectre, tailwind
                 theme: 'bootstrap4',
-                iconlib: "fontawesome4"
+                iconlib: "fontawesome4",
                 //,
                 // Disable additional properties
                 //no_additional_properties: true,
 
                 // Require all properties by default
-                //required_by_default: true
+                required_by_default: true,
+                theme: "bootstrap3",
+                iconlib: "fontawesome4",
+                // object_layout: "grid",
+                // template: "mustache",
+                show_errors: "always",
+                required_by_default: 1,
+                keep_oneof_values: 1,
+                show_opt_in: 0,
+                disable_edit_json: 0,
+                disable_collapse: 0,
+                disable_properties: 0,
+                disable_array_add: 0,
+                disable_array_reorder: 0,
+                disable_array_delete: 0,
+                enable_array_copy: 0,
+                array_controls_top: 0,
+                disable_array_delete_all_rows: 0,
+                disable_array_delete_last_row: 0,
+                prompt_before_delete: 1,
+                lib_aceeditor: 1,
+                lib_autocomplete: 1,
+                lib_sceditor: 0,
+                lib_simplemde: 0,
+                lib_select2: 1,
+                lib_selectize: 0,
+                lib_choices: 0,
+                lib_flatpickr: 0,
+                lib_signaturepad: 0,
+                lib_mathjs: 0,
+                lib_cleavejs: 0,
+                lib_jodit: 0,
+                lib_jquery: 1,
+                lib_dompurify: 1
             });
             this.editor.on('ready',this.editorReady);
             this.editor.on('change',()=>{
