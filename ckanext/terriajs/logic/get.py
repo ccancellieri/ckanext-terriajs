@@ -5,6 +5,8 @@ import datetime
 import time
 import json
 
+from requests.models import InvalidURL
+
 import ckanext.terriajs.constants as constants
 
 from ckan.common import config
@@ -137,6 +139,25 @@ def terriajs_config(resource_view_id):
 
 terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=terriajs_config, methods=[u'GET'])
 
+
+# TODO better manage error conditions with appropriate http code and message
+import requests
+import os
+schema_path=os.path.abspath(os.path.join(os.path.dirname(__file__),'../../../schema/'))
+def terriajs_mapping(type):
+    '''
+    provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
+    '''
+    if type in constants.TYPE_MAPPING:
+        if not h.is_url(constants.TYPE_MAPPING[type]):
+            with open(schema_path+'/'+constants.TYPE_MAPPING[type]) as s:
+                return json.dumps(json.load(s))
+        else:
+            return requests.get(constants.TYPE_MAPPING[type]).content
+    else:
+        raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
+
+terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=terriajs_mapping, methods=[u'GET'])
 
 
 

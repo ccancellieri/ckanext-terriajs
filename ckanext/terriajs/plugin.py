@@ -38,6 +38,22 @@ not_empty = p.toolkit.get_validator('not_empty')
 
 import ckanext.terriajs.logic.get as get
 
+
+def resolve_mapping(type):
+    '''
+    try to resolve the url from the schema-mapping configuration.
+    return an url
+    '''
+    if type in constants.TYPE_MAPPING:
+        if not h.is_url(constants.TYPE_MAPPING[type]):
+            return h.url_for('/terriajs/mapping/'+str(type), _external=True)
+        else:
+            return constants.TYPE_MAPPING[type]
+    else:
+        raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
+
+
+
 class TerriajsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer)
     p.implements(p.IConfigurable)
@@ -59,16 +75,23 @@ class TerriajsPlugin(p.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'ckanext-terriajs')
-
-    # def update_config(self, config):
-    #     p.toolkit.add_public_directory(config, 'theme/public')
-    #     p.toolkit.add_template_directory(config, 'theme/templates')
-    #     p.toolkit.add_resource('theme/public', 'ckanext-cesiumpreview')
+        # 
+#        
 
     def configure(self, config):
         self.proxy_is_enabled = config.get('ckan.resource_proxy_enabled', False)
         # TERRIAJS_SCHEMA_URL
         # self.terriajs_url = config.get(*constants.TERRIAJS_URL)
+        schema_mapping_file=config.get('ckanext.terriajs.schema.type_mapping','./type-mapping.json')
+        try:
+            with open(schema_mapping_file) as f:
+                constants.TYPE_MAPPING = json.load(f)
+            constants.FORMATS = constants.TYPE_MAPPING.keys()
+            # for k in constants.FORMATS:
+            #     if not h.is_url(constants.TYPE_MAPPING[k]):
+            #         constants.TYPE_MAPPING[k]=h.url_for(constants.TYPE_MAPPING[k], _external=True)
+        except:
+            pass
         
     def notify(self, resource):
         # Receives notification of changed URL on a resource.
@@ -124,16 +147,15 @@ class TerriajsPlugin(p.SingletonPlugin):
         if resource_type == constants.DEFAULT_TYPE:
             full_catalog = True
         
-        if resource:    
-            schema_url= constants.TYPE_MAPPING.get(resource_type and str(resource_type).lower(), constants.DEFAULT_TYPE)\
-             or constants.TYPE_MAPPING.get(constants.DEFAULT_TYPE,None)
+        # if resource:    
+        #     schema_url= resolve_mapping(resource_type.lower() or constants.DEFAULT_TYPE)
 
-        if not schema_url:
-            raise InvalidURL(_('Invalid schema url'))
+        # if not schema_url:
+        #     raise InvalidURL(_('Invalid schema url'))
 
-        terriajs_schema=requests.get(schema_url).content
+        terriajs_schema=get.terriajs_mapping(resource_type)
         if not terriajs_schema:
-            raise InvalidURL(*constants.TYPE_MAPPING+' not defined, check your config')
+            raise InvalidURL(resource_type+' not defined, check your config')
 
         terriajs_config=resource_view.get('terriajs_config',None)
         if not terriajs_config:
@@ -144,6 +166,7 @@ class TerriajsPlugin(p.SingletonPlugin):
                 terriajs_config=json.dumps({
                     'name': resource.get('name',''),
                     'url': resource.get('url',''),
+                    'description': resource.get('description',''),
                     'id': resource.get('id',''),
                 })
 
@@ -155,7 +178,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         }
         _dict.update(config_view)
         return _dict
-
+    
     def view_template(self, context, data_dict):
         return 'terriajs.html'
 

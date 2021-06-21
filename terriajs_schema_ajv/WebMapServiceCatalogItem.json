@@ -5,6 +5,7 @@
     "type",
     "url"
   ],
+  "required": ["Layers"],
   "properties": {
     "layers": {
       "type": "string",
