@@ -50,13 +50,21 @@
                 data-module-resource-view="{{ h.dump_json(resource_view) }}" data-module-config-view="{{ h.dump_json(config_view) }}"
                 data-module-resource="{{ h.dump_json(resource) }}" data-module-ckan-url="{{ h.url_for('/',_external=True) }}"/>
         <input id="terriajs_config" type="hidden" name="terriajs_config" value="" />
-        <input id="terriajs_type" type="hidden" name="terriajs_type" value="{{resource['format'].lower()}}" />
+        <p>
+            <b>{{_('View Type:')}}</b>
+            <input id="terriajs_type" readonly="true" style="border-width:0px" name="terriajs_type" value="{{resource['format'].lower()}}" />
+        </p>
     {% endblock %}
 
-    <div>
-        <table class="table" style="width:100%">
+    <p>
+        <button class="btn btn-primary" type="button"  data-toggle="collapse" 
+            title="{{_('Shows a table with copy to clipboard buttons for a fast usage of available informations from the dataset and resources')}}"
+            data-target="#helperTable" >{{_('Tools')}}</button>
+    </p>
+    <div id="helperTable" class="collapse">
+        <table class="table card card-body" style="width:100%">
             <tr>
-                <h3 style="border-bottom: 1px solid gray;">Dataset:</h3>
+                <b style="border-bottom: 1px solid gray;">Dataset:</b>
             </tr>
             <tr scope="row">
                 <th scope="col">ID</th>
@@ -96,7 +104,7 @@
         </table>
         <table class="table" style="width:100%">
             <tr>
-                <h3 style="border-bottom: 1px solid gray;">Resources:</h3>
+                <b style="border-bottom: 1px solid gray;">Resources:</b>
             </tr>
             <tr scope="row">
                 <th scope="col">ID</th>
@@ -163,7 +171,7 @@
             </p>
             <p>
                 <div style="border-bottom: 1px solid gray;">
-                    Status: <h3 style="display: inline;" id="editor-status-holder"></h3>    Validation: <div style="display: inline;" id="editor-error-holder"></div>
+                    Status: <b style="display: inline;" id="editor-status-holder"></b>    Validation: <div style="display: inline;" id="editor-error-holder"></div>
                 </div>
             </p>
     </div>

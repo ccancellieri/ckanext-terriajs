@@ -153,7 +153,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         # if not schema_url:
         #     raise InvalidURL(_('Invalid schema url'))
 
-        terriajs_schema=get.terriajs_mapping(resource_type)
+        terriajs_schema=get.mapping(resource_type)
         if not terriajs_schema:
             raise InvalidURL(resource_type+' not defined, check your config')
 

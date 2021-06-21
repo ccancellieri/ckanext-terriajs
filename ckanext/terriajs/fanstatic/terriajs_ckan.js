@@ -15,7 +15,6 @@ ckan.module('terriajs', function (jQuery, _) {
                 //iframe.contentWindow.postMessage('drop', cat)
                 //iframe.contentWindow.postMessage(JSON.parse('{"initSources":["https://data.apps.fao.org"],"catalog":[{"description":"","items":[{"getRecordsTemplate":" full dc:subject AQUAMAPS_basins ","name":"Hydrological Basins","includeEsriMapServer":true,"url":"https://data.review.fao.org/map/catalog/srv/eng/csw","minimumMaxScaleDenominator":10000000000,"baseLink":"https://data.review.fao.org/map/catalog/srv/eng/catalog.search#/metadata/","filterByWmsGetCapabilities":false,"includeEsriFeatureServer":true,"includeWfs":true,"includeWms":true,"includeKml":true,"includeGeoJson":true,"type":"csw","groupBy":"organization","includeCsv":true},{"layers":"groundwateratlas:atlas_depth_groundwater","opacity":1,"name":"Estimated depth to groundwater (mbgl)","ignoreUnknownTileErrors":true,"url":"https://ggis.un-igrac.org/geoserver/wms","keepOnTop":true,"isLegendVisible":false,"type":"wms"},{"layers":"groundwateratlas:atlas_aquifer_productivity1","opacity":1,"name":"Aquifer productivity (l/s)","ignoreUnknownTileErrors":true,"url":"https://ggis.un-igrac.org/geoserver/wms","keepOnTop":true,"isLegendVisible":false,"type":"wms"},{"layer":"AAFC/ACI/2009","name":"AAFC/ACI/2009","url":"https://api.data.review.fao.org/api/v1/proxy/https://gee-wmts-review-p3zkzgnl5q-uc.a.run.app/GetTile?layer=AAFC/ACI/2009&TileMatrix={z}&TileRow={y}&TileCol={x}","type":"url-template","keepOnTop":true,"treat404AsError":false,"maximumZoom":10,"__fillColor":"no-specified","lineColor":"rgb(255, 0, 0)","treat403AsError":false,"rectangle":[-180,-85.051129,180,83.658333],"forceProxy":false}],"preserveOrder":true,"type":"group","order":1,"name":""}],"homeCamera":{"west":-180,"east":180,"north":90,"south":-90}}'))
             }
-
         },
         asObject: function (value) {
             try {
@@ -382,7 +381,7 @@ coerceTypes: true,
                 $('.form-actions [name="save"]').prop('disabled',false);
                 // un lock the howto
                 $('#editor-howto').prop('disabled',false);
-                indicator.html("<h3 style='display: inline; color: green;'>valid</h3>");
+                indicator.html("<b style='display: inline; color: green;'>valid</b>");
             }
         }
     };

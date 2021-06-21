@@ -71,41 +71,41 @@ def _override_is_enabled(d, set_to):
     for group in _catalog_groups(d):
         _override_items(group, set_to)
 
-# def _catalog_groups(terria_config):
-#     if u'catalog' in map(unicode.lower, terria_config.keys()):
-#         # TODO not case insensitive
-#         return terria_config[u'catalog']
-#     return []
+def _catalog_groups(terria_config):
+    if u'catalog' in map(unicode.lower, terria_config.keys()):
+        # TODO not case insensitive
+        return terria_config[u'catalog']
+    return []
 
-# def _items_of(group):
-#     if u'items' in map(unicode.lower, group.keys()):
-#         # TODO not case insensitive
-#         return group[u'items']
-#     return []
+def _items_of(group):
+    if u'items' in map(unicode.lower, group.keys()):
+        # TODO not case insensitive
+        return group[u'items']
+    return []
 
-# def terriajs_config_forced(resource_view_id):
-#     return json.dumps(_base(resource_view_id, True))
+def terriajs_config_forced(resource_view_id):
+    return json.dumps(_base(resource_view_id, True))
 
-# def terriajs_config(resource_view_id):
-#     return json.dumps(_base(resource_view_id))
+def terriajs_config(resource_view_id):
+    return json.dumps(_base(resource_view_id))
 
-# terriajs.add_url_rule(u'/terriajs/terriajs_config/force_enabled/<resource_view_id>.json', view_func=terriajs_config_forced, methods=[u'GET'])
-# terriajs.add_url_rule(u'/terriajs/terriajs_config/<resource_view_id>.json', view_func=terriajs_config, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/force_enabled/<resource_view_id>.json', view_func=terriajs_config_forced, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=terriajs_config, methods=[u'GET'])
 
-# def config_groups_forced(resource_view_id):
-#     terria_config = _base(resource_view_id, True)
+def config_groups_forced(resource_view_id):
+    terria_config = _base(resource_view_id, True)
 
-#     # returns all the first level items (groups)
-#     return json.dumps(_catalog_groups(terria_config))
+    # returns all the first level items (groups)
+    return json.dumps(_catalog_groups(terria_config))
 
-# def config_groups(resource_view_id):
-#     terria_config = _base(resource_view_id)
+def config_groups(resource_view_id):
+    terria_config = _base(resource_view_id)
 
-#     # returns all the first level items (groups)
-#     return json.dumps(_catalog_groups(terria_config))
+    # returns all the first level items (groups)
+    return json.dumps(_catalog_groups(terria_config))
 
-# terriajs.add_url_rule(u'/terriajs/terriajs_config/groups/force_enabled/<resource_view_id>', view_func=config_groups_forced, methods=[u'GET'])
-# terriajs.add_url_rule(u'/terriajs/terriajs_config/groups/<resource_view_id>', view_func=config_groups, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/groups/force_enabled/<resource_view_id>', view_func=config_groups_forced, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/groups/<resource_view_id>', view_func=config_groups, methods=[u'GET'])
 
 
 ### 
@@ -126,25 +126,25 @@ def _base(resource_view_id, force_enabled=False):
     # TODO _override_is_enabled(terria_config,force_enabled, terria_type)
 
     if terria_type == constants.DEFAULT_TYPE:
-        terria_config = json.loads(resource_view.get('terriajs_config',{}))
+        terria_config = json.loads(resource_view.get('config',{}))
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
         terria_config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-        terria_config['catalog'].append(json.loads(resource_view.get('terriajs_config',{})))
+        terria_config['catalog'].append(json.loads(resource_view.get('config',{})))
 
     return terria_config
 
-def terriajs_config(resource_view_id):
+def config(resource_view_id):
     return json.dumps(_base(resource_view_id))
 
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=terriajs_config, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
 
 
 # TODO better manage error conditions with appropriate http code and message
 import requests
 import os
 schema_path=os.path.abspath(os.path.join(os.path.dirname(__file__),'../../../schema/'))
-def terriajs_mapping(type):
+def mapping(type):
     '''
     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
     '''
@@ -157,7 +157,7 @@ def terriajs_mapping(type):
     else:
         raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
 
-terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=terriajs_mapping, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=mapping, methods=[u'GET'])
 
 
 
