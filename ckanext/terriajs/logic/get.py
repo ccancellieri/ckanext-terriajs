@@ -112,8 +112,7 @@ terriajs.add_url_rule(u'/terriajs/config/groups/<resource_view_id>', view_func=c
 import copy
 def _base(resource_view_id, force_enabled=False):
 
-    resource_view = get_action(u'resource_view_show')\
-        (None, {u'id': resource_view_id})
+    resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
     if resource_view is None:
         raise NotFound(_('View was not found.'))
     # return h.dump_json(view.config)
@@ -126,11 +125,11 @@ def _base(resource_view_id, force_enabled=False):
     # TODO _override_is_enabled(terria_config,force_enabled, terria_type)
 
     if terria_type == constants.DEFAULT_TYPE:
-        terria_config = json.loads(resource_view.get('config',{}))
+        terria_config = json.loads(resource_view.get('terriajs_config',{}))
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
         terria_config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-        terria_config['catalog'].append(json.loads(resource_view.get('config',{})))
+        terria_config['catalog'].append(json.loads(resource_view.get('terriajs_config',{})))
 
     return terria_config
 

@@ -160,7 +160,12 @@ class TerriajsPlugin(p.SingletonPlugin):
         terriajs_config=resource_view.get('terriajs_config',None)
         if not terriajs_config:
             # generate base configuration
-            if full_catalog:
+
+###################################################            
+# TODO : EXTENSION POINT TO CONFIGURE BASED ON TYPE
+###################################################
+
+            if full_catalog: # TODO base over type, remove flag
                 terriajs_config=json.dumps(constants.TERRIAJS_CONFIG)
             else:
                 terriajs_config=json.dumps({
@@ -171,6 +176,7 @@ class TerriajsPlugin(p.SingletonPlugin):
                 })
 
         config_view['config_view'] = {
+            # TODO remove 'terriajs_' prefix (also js and html)
             'terriajs_url': config.get(*constants.TERRIAJS_URL),
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
