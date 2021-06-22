@@ -51,6 +51,7 @@ class TestTerria(object):
             'view_type': constants.NAME,
             'title': 'TerriajsView',
             'description': 'A nice view',
+            'terriajs_type': constants.DEFAULT_TYPE,
             'terriajs_config': constants.TERRIAJS_CONFIG
 
         }
