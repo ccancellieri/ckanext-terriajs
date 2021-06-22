@@ -13,10 +13,7 @@
     "description": {
       "title": "Description",
       "type": "string",
-      "format": "jodit",
-      "options":{
-        "width":"auto"
-      }
+      "format": "jodit"
     },
     "tableStyle": {
       "type": "object",

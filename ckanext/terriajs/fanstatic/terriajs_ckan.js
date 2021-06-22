@@ -272,7 +272,7 @@ coerceTypes: true,
                 // disable_array_add: 0,
                 // disable_array_reorder: 0,
                 // disable_array_delete: 0,
-                enable_array_copy: 1
+                enable_array_copy: 1,
                 // array_controls_top: 0,
                 // disable_array_delete_all_rows: 0,
                 // disable_array_delete_last_row: 0,
@@ -281,7 +281,7 @@ coerceTypes: true,
                 // lib_autocomplete: 1,
                 // lib_sceditor: 0,
                 // lib_simplemde: 0,
-                // lib_select2: 1,
+                lib_select2: 1,
                 // lib_selectize: 0,
                 // lib_choices: 0,
                 // lib_flatpickr: 0,
@@ -289,8 +289,8 @@ coerceTypes: true,
                 // lib_mathjs: 0,
                 // lib_cleavejs: 0,
                 // lib_jodit: 1,
-                // lib_jquery: 1,
-                // lib_dompurify: 1
+                lib_jquery: 1,
+                lib_dompurify: 1
             });
             this.editor.on('ready',this.editorReady);
             this.editor.on('change',()=>{

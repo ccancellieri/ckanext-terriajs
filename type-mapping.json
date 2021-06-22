@@ -1,6 +1,6 @@
 {
     "smart-csv":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/SmartCsvCatalogItem.json?&alt=media",
-    "csv":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CsvCatalogItem_type.json?&alt=media",
+    "csv":"CsvCatalogItem_type.json",
     "group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogGroup_type.json?&alt=media",
     "ckan-group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CkanCatalogGroup_type.json?&alt=media",
     "ckan":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CkanCatalogItem_type.json?&alt=media",
