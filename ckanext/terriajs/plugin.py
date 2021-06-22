@@ -7,7 +7,7 @@ import json as json
 
 import ckan.plugins as p
 
-
+import copy
 import ckanext.terriajs.constants as constants
 import ckan.logic.validators as v
 
@@ -75,23 +75,18 @@ class TerriajsPlugin(p.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'ckanext-terriajs')
-        # 
-#        
-
-    def configure(self, config):
-        self.proxy_is_enabled = config.get('ckan.resource_proxy_enabled', False)
         # TERRIAJS_SCHEMA_URL
         # self.terriajs_url = config.get(*constants.TERRIAJS_URL)
         schema_mapping_file=config.get('ckanext.terriajs.schema.type_mapping','./type-mapping.json')
-        try:
-            with open(schema_mapping_file) as f:
-                constants.TYPE_MAPPING = json.load(f)
-            constants.FORMATS = constants.TYPE_MAPPING.keys()
-            # for k in constants.FORMATS:
-            #     if not h.is_url(constants.TYPE_MAPPING[k]):
-            #         constants.TYPE_MAPPING[k]=h.url_for(constants.TYPE_MAPPING[k], _external=True)
-        except:
-            pass
+        with open(schema_mapping_file) as f:
+            constants.TYPE_MAPPING = json.load(f)
+
+        for type in constants.TYPE_MAPPING.keys():
+            constants.FORMATS.append(type.lower())
+
+    def configure(self, config):
+        self.proxy_is_enabled = config.get('ckan.resource_proxy_enabled', False)
+        self.formats = constants.FORMATS
         
     def notify(self, resource):
         # Receives notification of changed URL on a resource.
@@ -119,18 +114,18 @@ class TerriajsPlugin(p.SingletonPlugin):
         }
 
     def can_view(self, data_dict):
-        resource = data_dict['resource']
-        format_lower = resource['format'].lower()
-        if format_lower:
-            format_lower = os.path.splitext(resource['url'])[1][1:].lower()
-#        print format_lower
-        if format_lower in constants.FORMATS:
-            return True
+        resource = data_dict.get('resource',None)
+        if resource:
+            format_lower = resource.get('format','').lower()
+            return format_lower in constants.FORMATS
         return False
+
+    
+    
 
     def setup_template_variables(self, context, data_dict):
 
-        _dict = data_dict.copy()
+        _dict = copy.deepcopy(data_dict)
         resource_view = _dict['resource_view']
         config_view = {}
         
