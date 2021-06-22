@@ -81,8 +81,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         with open(schema_mapping_file) as f:
             constants.TYPE_MAPPING = json.load(f)
 
-        for type in constants.TYPE_MAPPING.keys():
-            constants.FORMATS.append(type.lower())
+        constants.FORMATS=constants.TYPE_MAPPING.keys()
 
     def configure(self, config):
         self.proxy_is_enabled = config.get('ckan.resource_proxy_enabled', False)
@@ -119,9 +118,6 @@ class TerriajsPlugin(p.SingletonPlugin):
             format_lower = resource.get('format','').lower()
             return format_lower in constants.FORMATS
         return False
-
-    
-    
 
     def setup_template_variables(self, context, data_dict):
 
