@@ -161,7 +161,7 @@ class TerriajsPlugin(p.SingletonPlugin):
             else:
                 package=data_dict.get('package','')
                 terriajs_config=json.dumps(
-                    {
+                    # {
                         # 'description': package.get('notes',''),
                         # 'name': package.get('title',''),
                         # 'order': 1,
@@ -173,10 +173,10 @@ class TerriajsPlugin(p.SingletonPlugin):
                                 'url': resource.get('url',''),
                                 'description': resource.get('description',''),
                                 'id': resource.get('id',''),
-                                'type': str(resource_type)
+                                'type': resource_type
                             }
                             # ]
-                    }
+                    # }
                 )
 
         config_view['config_view'] = {
