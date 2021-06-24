@@ -173,7 +173,7 @@ class TerriajsPlugin(p.SingletonPlugin):
                                 'url': resource.get('url',''),
                                 'description': resource.get('description',''),
                                 'id': resource.get('id',''),
-                                'type': resource_type
+                                'type': str(resource_type)
                             }
                             # ]
                     }
