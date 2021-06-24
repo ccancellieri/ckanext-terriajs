@@ -159,12 +159,25 @@ class TerriajsPlugin(p.SingletonPlugin):
             if full_catalog: # TODO base over type, remove flag
                 terriajs_config=json.dumps(constants.TERRIAJS_CONFIG)
             else:
-                terriajs_config=json.dumps({
-                    'name': resource.get('name',''),
-                    'url': resource.get('url',''),
-                    'description': resource.get('description',''),
-                    'id': resource.get('id',''),
-                })
+                package=data_dict.get('package','')
+                terriajs_config=json.dumps(
+                    {
+                        # 'description': package.get('notes',''),
+                        # 'name': package.get('title',''),
+                        # 'order': 1,
+                        # 'preserveOrder': True,
+                        # 'type': "group",
+                        # 'items': [
+                            {
+                                'name': resource.get('name',''),
+                                'url': resource.get('url',''),
+                                'description': resource.get('description',''),
+                                'id': resource.get('id',''),
+                                'type': resource_type
+                            }
+                            # ]
+                    }
+                )
 
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
