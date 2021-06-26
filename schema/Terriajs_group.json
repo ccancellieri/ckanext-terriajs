@@ -1,11 +1,26 @@
 {
   "type": "object",
+  "title": "Terria view connector",
   "required": [
-    "items","id"
+    "items","id","type"
+  ],
+  "default": [
+    "items"
   ],
   "properties":{
     "id":{
       "type":"string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "terriajs-group"
+      ]
+    },
+    "description": {
+      "title": "Description",
+      "type": "string",
+      "format": "jodit"
     },
     "items":{
       "type":"array",
@@ -37,7 +52,6 @@
       }
     }
   },
-  "title": "Terria view connector",
   "allOf": [
     {
       "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
