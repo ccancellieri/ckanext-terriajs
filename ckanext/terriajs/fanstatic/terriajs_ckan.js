@@ -303,7 +303,7 @@ coerceTypes: true,
         
                 // Setup API calls
                     "view_search": function search(jseditor_editor, input) {
-                        var url = new URL('/terriajs/search?resource_name='
+                        var url = new URL('terriajs/search?resource_name='
                                  + encodeURI(input) +
                                 '&resource_name='+ encodeURI(input)+
                                 '&dataset_title='+ encodeURI(input)+
