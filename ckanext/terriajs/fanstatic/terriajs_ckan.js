@@ -66,7 +66,7 @@ ckan.module('terriajs', function (jQuery, _) {
 
             var package = self.options.package;
             var resource = self.options.resource;
-            var resource_view = self.options.resourceView;
+            terriajs.resource_view = self.options.resourceView;
             var config_view = self.options.configView;
 
             terriajs.ckan_url = self.options.ckanUrl;
@@ -303,11 +303,11 @@ coerceTypes: true,
         
                 // Setup API calls
                     "view_search": function search(jseditor_editor, input) {
-                        var url = '/terriajs/search?resource_name='
+                        var url = new URL('/terriajs/search?resource_name='
                                  + encodeURI(input) +
                                 '&resource_name='+ encodeURI(input)+
                                 '&dataset_title='+ encodeURI(input)+
-                                '&dataset_description='+ encodeURI(input);
+                                '&dataset_description='+ encodeURI(input),terriajs.ckan_url);
             
                         return new Promise(function (resolve) {
                             if (input.length < 2) {
@@ -322,12 +322,13 @@ coerceTypes: true,
                         });
                     },
                     "view_renderer": function(jseditor_editor, result, props) {
-                        return ['<li ' + props + '>',
-                            '<div class="eiao-object-title">' + result.resource_name + '</div>',
-                            '<div class="eiao-object-snippet">' + result.resource_description.substring(0,150),
-                                '<small>' + result.dataset_title +' - ',
-                                result.dataset_description.substring(0,150) +'</small>',
-                            '</div>',
+                        return terriajs.resource_view.id == result.id ? '':
+                            ['<li ' + props + '>',
+                                '<div class="eiao-object-title">' + result.resource_name + '</div>',
+                                '<div class="eiao-object-snippet">' + result.resource_description.substring(0,150),
+                                    '<small>' + result.dataset_title +' - ',
+                                    result.dataset_description.substring(0,150) +'</small>',
+                                '</div>',
                             '</li>'].join('');
                     },
                     "view_getValue": function getResultValue(jseditor_editor, result) {

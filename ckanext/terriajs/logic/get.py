@@ -274,12 +274,10 @@ def navigate(root_view_id):
 
     config = _get_config(root_view_id)
     if not config:
-        raise InvalidSchema(_('No config found for view: ')+str(root_view))
+        raise InvalidSchema(_('No config found for view: ')+str(config))
     
     _resolve(config)
 
-    
-            
     return json.dumps(config)
 
 terriajs.add_url_rule(u'/terriajs/config/<root_view_id>.json', view_func=navigate, methods=[u'GET'])
