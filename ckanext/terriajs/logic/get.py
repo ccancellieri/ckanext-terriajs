@@ -87,11 +87,9 @@ def _items_of(group):
 def terriajs_config_forced(resource_view_id):
     return json.dumps(_base(resource_view_id, True))
 
-def terriajs_config(resource_view_id):
-    return json.dumps(_base(resource_view_id))
 
 terriajs.add_url_rule(u'/terriajs/config/force_enabled/<resource_view_id>.json', view_func=terriajs_config_forced, methods=[u'GET'])
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=terriajs_config, methods=[u'GET'])
+
 
 def config_groups_forced(resource_view_id):
     terria_config = _base(resource_view_id, True)
@@ -114,32 +112,32 @@ import copy
 def _base(resource_view_id, force_enabled=False):
 
     #TODO checkme
-    resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
-    if resource_view is None:
-        raise NotFound(_('View was not found.'))
+    # resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
+    # if resource_view is None:
+    #     raise NotFound(_('View was not found.'))
 
-    # config = _get_view(resource_view_id)
-    # .get('config',None)
+    terria_config, terria_type = _get_config(resource_view_id)
     
     # if not config:
     #     raise InvalidSchema(_('No config found for view: ')+str(resource_view_id))
     
-    terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
+    # terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
 
     # TODO _override_is_enabled(terria_config,force_enabled, terria_type)
     
-    terria_config = json.loads(resource_view.get('terriajs_config',{}))
+    # terria_config = json.loads(resource_view.get('terriajs_config',{}))
     
     if terria_type != constants.DEFAULT_TYPE:
         # terria_config is an item we've to wrap to obtain a valid catalog
         config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-        config['catalog'].append(_resolve(terria_config))
+        # config['catalog'].append(_resolve(terria_config))
+        config['catalog'].append(terria_config)
         terria_config = config
 
     return terria_config
 
 def config(resource_view_id):
-    return json.dumps(_base(resource_view_id))
+    return json.dumps(_base(resource_view_id)).decode('string_escape')
 
 terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
 
@@ -162,17 +160,6 @@ def mapping(type):
         raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
 
 terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=mapping, methods=[u'GET'])
-
-
-
-
-def test():
-# Set the pagination configuration
-    page = 0 #request.args.get('page', 1, type=int)
-    existing_views=query_view_by_type(constants.NAME)
-    start=page*constants.PAGE_SIZE
-    views = existing_views.order_by(ResourceView.title).slice(start, start+constants.PAGE_SIZE).all()
-
 
 from ckan.model import meta
 from ckan.model.resource_view import ResourceView
@@ -240,7 +227,11 @@ def _get_config(id_view):
     config = view.config and view.config.get('terriajs_config',None)
     if not config:
         raise InvalidSchema(_('No config found for view: ')+str(view))
-    return json.loads(config)
+    type = view.config and view.config.get('terriajs_type',None)
+    if not type:
+        raise InvalidSchema(_('No type found for view: ')+str(view))
+    
+    return json.loads(config), type
 
 def _resolve(item):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -261,7 +252,7 @@ def _resolve(item):
             pass
 
     elif type ==constants.LAZY_GROUP_TYPE:
-        item.update({'type':'group'})
+        item.update({u'type':u'group'})
 
     items = item.get('items',None)
     if items:
@@ -278,7 +269,7 @@ def navigate(root_view_id):
     
     _resolve(config)
 
-    return json.dumps(config)
+    return json.dumps(config).decode('string_escape')
 
-terriajs.add_url_rule(u'/terriajs/config/<root_view_id>.json', view_func=navigate, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/navigate/<root_view_id>.json', view_func=navigate, methods=[u'GET'])
 

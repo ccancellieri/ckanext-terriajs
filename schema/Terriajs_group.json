@@ -26,13 +26,18 @@
       "type":"array",
       "format":"table",
       "items":{
+        "type": "object",
         "required": [
           "type","id"
         ],
+        "format": "grid",
         "properties":{
           "type":{ 
             "type":"string",
-            "enum":["terriajs-view"]
+            "enum":["terriajs-view"],
+            "options": {
+              "grid_columns": 2
+            }
           },
           "id":{
             "title": "id",
@@ -45,7 +50,8 @@
                     "getResultValue": "view_getValue",
                     "renderResult": "view_renderer",
                     "autoSelect": true
-                }
+                },
+                "grid_columns": 10
             }
           }
         }

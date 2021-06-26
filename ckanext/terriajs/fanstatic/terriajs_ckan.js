@@ -292,8 +292,19 @@ coerceTypes: true,
                 lib_jquery: 1,
                 lib_dompurify: 1
             });
-            // this.editor.options={};
+            // window.JSONEditor.theme.options = {
+            //     "input_size": "small",
+            //     "custom_forms": true,
+            //     "object_indent": true,
+            //     "object_background": "bg-dark",
+            //     "table_border": true,
+            //     "table_zebrastyle": true
+            // }
+            // window.JSONEditor.defaults
             window.JSONEditor.defaults.callbacks = {
+                // "button":  function view_info(jseditor_editor, input){
+                //         console.log(input);
+                // },
                 "autocomplete": {
                 // This is callback functions for the "autocomplete" editor
                 // In the schema you refer to the callback function by key
