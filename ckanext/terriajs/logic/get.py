@@ -226,7 +226,7 @@ def _get_config(id_view):
     if not view:
         raise InvalidSchema(_('View not found for item id: ')+str(id_view))
     view_config=view.config
-    
+
     config = view_config and json.loads(view_config.get('terriajs_config',None))
     if not config:
         raise InvalidSchema(_('No config found for view: ')+str(view))
@@ -235,7 +235,8 @@ def _get_config(id_view):
     if not type:
         raise InvalidSchema(_('No type found for view: ')+str(view))
     
-    return config.decode('string_escape'), type
+    # return config.decode('string_escape'), type
+    return config, type
 
 def _resolve(item):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
