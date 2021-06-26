@@ -109,38 +109,39 @@ terriajs.add_url_rule(u'/terriajs/config/groups/<resource_view_id>', view_func=c
 
 ### 
 import copy
-def _base(resource_view_id, force_enabled=False):
+def _base(resource_view_id, resolve=True, force_enabled=False):
 
     #TODO checkme
-    # resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
-    # if resource_view is None:
-    #     raise NotFound(_('View was not found.'))
+    resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
+    if resource_view is None:
+        raise NotFound(_('View was not found.'))
 
-    terria_config, terria_type = _get_config(resource_view_id)
+    # terria_config, terria_type = _get_config(resource_view_id)
     
     # if not config:
     #     raise InvalidSchema(_('No config found for view: ')+str(resource_view_id))
     
-    # terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
-
+    terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
+    
     # TODO _override_is_enabled(terria_config,force_enabled, terria_type)
     
-    # terria_config = json.loads(resource_view.get('terriajs_config',{}))
+    terria_config = json.loads(resource_view.get('terriajs_config',{}))
     
     if terria_type != constants.DEFAULT_TYPE:
         # terria_config is an item we've to wrap to obtain a valid catalog
         config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-        # config['catalog'].append(_resolve(terria_config))
-        config['catalog'].append(terria_config)
-        terria_config = config
+    
+    if resolve:
+        config['catalog'].append(_resolve(terria_config))
+    else:
+        config['catalog'].append(terria_config) 
 
-    return terria_config
+    return config
 
 def config(resource_view_id):
     return json.dumps(_base(resource_view_id)).decode('string_escape')
 
 terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
-
 
 # TODO better manage error conditions with appropriate http code and message
 import requests
@@ -224,14 +225,17 @@ def _get_config(id_view):
     view = _get_view(id_view)
     if not view:
         raise InvalidSchema(_('View not found for item id: ')+str(id_view))
-    config = view.config and view.config.get('terriajs_config',None)
+    view_config=view.config
+    
+    config = view_config and json.loads(view_config.get('terriajs_config',None))
     if not config:
         raise InvalidSchema(_('No config found for view: ')+str(view))
-    type = view.config and view.config.get('terriajs_type',None)
+
+    type = view_config and view_config.get('terriajs_type',None)
     if not type:
         raise InvalidSchema(_('No type found for view: ')+str(view))
     
-    return json.loads(config), type
+    return config.decode('string_escape'), type
 
 def _resolve(item):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -245,7 +249,7 @@ def _resolve(item):
     elif type==constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
         try:
-            config = _get_config(item.get('id',None))
+            config, type = _get_config(item.get('id',None))
             item.update(config)
         except Exception as e:
             #TODO LOG (skipping unrecognized object)

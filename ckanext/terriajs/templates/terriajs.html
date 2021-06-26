@@ -1,14 +1,28 @@
-{% extends 'dataviewer/base.html' %}
+{% extends 'package/snippets/resource_view.html' %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
 
 
-{% block page %}
-<div style="display: flex;justify-content: space-around;">
-    <h2>Dataset: {{ package.name }}</h2>
+{% block resource_view %}
+<div>
+    
 </div>
-<iframe src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.terriajs_config', resource_view_id=resource_view.id, _external=True)}}" style="height: 100%; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
+
+    <div style="display: flex;justify-content: space-evenly;align-items: baseline;">
+        <h2>Dataset: {{ package.name }}</h2>
+        <a class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Click to open the configuration"
+        href="{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True) }}">
+    {{_('Open configuration')}}
+    </a>
+    </div>
+    <div style="display:block; width: auto; height: auto;">
+        <iframe style="display: block;width: 100%; height: 100%; min-height: 500px;" src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True)}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>    
+    </div>
+{% endblock %}
 
 {# <iframe src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.terriajs_config_forced', resource_view_id=resource_view.id, _external=True)}}" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/> #}
 
 {# <iframe id="terriajs-iframe" src="{{config_view.terriajs_url}}?clean" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>#}
 
-{% endblock %}
