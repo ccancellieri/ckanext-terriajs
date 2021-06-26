@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "required": [
+    "items","id"
+  ],
+  "properties":{
+    "id":{
+      "type":"string"
+    },
+    "items":{
+      "type":"array",
+      "items":{
+        "required": [
+          "type","id"
+        ],
+        "properties":{
+          "type":{ 
+            "type":"string",
+            "enum":["terriajs-view"]
+          },
+          "id":{
+            "title": "id",
+            "type": "string",
+            "description": "Terria view (autocomplete)",
+            "format": "autocomplete",
+            "options": {
+                "autocomplete": {
+                    "search": "view_search",
+                    "getResultValue": "view_getValue",
+                    "renderResult": "view_renderer",
+                    "autoSelect": true
+                }
+            }
+          }
+        }
+      }
+    }
+  },
+  "title": "Terria view connector",
+  "allOf": [
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
+    },
+    {
+      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogGroup.json?&alt=media"
+    }
+  ]
+}

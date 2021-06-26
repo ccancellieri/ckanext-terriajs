@@ -178,7 +178,34 @@ class TerriajsPlugin(p.SingletonPlugin):
                             # ]
                     # }
                 )
-
+        #TODO TESTS
+        # terriajs_schema='''{
+        #     "items": {
+        #         "properties":{
+        #             "type":{ 
+        #                 "type":"string",
+        #                 "enum":["terriajs-view"]
+        #             },
+        #             "view-id":{
+        #                 "title": "id",
+        #                 "type": "string",
+        #                 "description": "Terria view (autocomplete)",
+        #                 "format": "autocomplete",
+        #                 "options": {
+        #                     "autocomplete": {
+        #                         "search": "view_search",
+        #                         "getResultValue": "view_getValue",
+        #                         "renderResult": "view_renderer",
+        #                         "autoSelect": true
+        #                     }
+        #                 }
+        #             }
+        #         }
+        #     },
+        #     "title": "Project references",
+        #     "type": "array"
+        # }'''
+        ###
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
             'terriajs_url': config.get(*constants.TERRIAJS_URL),
@@ -194,3 +221,5 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def form_template(self, context, data_dict):
         return 'terriajs_form.html'
+
+

@@ -278,7 +278,7 @@ coerceTypes: true,
                 // disable_array_delete_last_row: 0,
                 // prompt_before_delete: 1,
                 // lib_aceeditor: 1,
-                // lib_autocomplete: 1,
+                lib_autocomplete: 1,
                 // lib_sceditor: 0,
                 // lib_simplemde: 0,
                 lib_select2: 1,
@@ -292,6 +292,49 @@ coerceTypes: true,
                 lib_jquery: 1,
                 lib_dompurify: 1
             });
+            // this.editor.options={};
+            window.JSONEditor.defaults.callbacks = {
+                "autocomplete": {
+                // This is callback functions for the "autocomplete" editor
+                // In the schema you refer to the callback function by key
+                // Note: 1st parameter in callback is ALWAYS a reference to the current editor.
+                // So you need to add a variable to the callback to hold this (like the
+                // "jseditor_editor" variable in the examples below.)
+        
+                // Setup API calls
+                    "view_search": function search(jseditor_editor, input) {
+                        var url = '/terriajs/search?resource_name='
+                                 + encodeURI(input) +
+                                '&resource_name='+ encodeURI(input)+
+                                '&dataset_title='+ encodeURI(input)+
+                                '&dataset_description='+ encodeURI(input);
+            
+                        return new Promise(function (resolve) {
+                            if (input.length < 2) {
+                                return resolve([]);
+                            }
+            
+                            fetch(url).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                resolve(data);
+                            });
+                        });
+                    },
+                    "view_renderer": function(jseditor_editor, result, props) {
+                        return ['<li ' + props + '>',
+                            '<div class="eiao-object-title">' + result.resource_name + '</div>',
+                            '<div class="eiao-object-snippet">' + result.resource_description.substring(0,150),
+                                '<small>' + result.dataset_title +' - ',
+                                result.dataset_description.substring(0,150) +'</small>',
+                            '</div>',
+                            '</li>'].join('');
+                    },
+                    "view_getValue": function getResultValue(jseditor_editor, result) {
+                        return result.id
+                    }
+                }
+            };
             this.editor.on('ready',this.editorReady);
             this.editor.on('change',()=>{
 
