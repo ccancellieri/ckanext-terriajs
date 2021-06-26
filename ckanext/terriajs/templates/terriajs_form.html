@@ -164,7 +164,7 @@
                     {#<button class="btn btn-primary" id="editor-preview" onclick="javascript:terriajs.wrap(terriajs.preview);">Preview</button>#}
                     {% if resource_view.id %}
                     <button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Click to obtain the link to this configuration"
-                            onclick="copy(this, event, '{{h.url_for('terriajs.terriajs_config', resource_view_id=resource_view.id, _external=True)}}')">
+                            onclick="copy(this, event, '{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True)}}')">
                         <i class="fa fa-clipboard" aria-hidden="true"></i> Resulting endpoint
                     </button>
                     {% endif %}
