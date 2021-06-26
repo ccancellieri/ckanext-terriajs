@@ -9,6 +9,7 @@
     },
     "items":{
       "type":"array",
+      "format":"table",
       "items":{
         "required": [
           "type","id"
