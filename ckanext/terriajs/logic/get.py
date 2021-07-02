@@ -73,19 +73,19 @@ def _override_is_enabled(d, set_to):
         _override_items(group, set_to)
 
 def _catalog_groups(terria_config):
-    if u'catalog' in map(unicode.lower, terria_config.keys()):
+    if u'catalog' in map(terria_config.lower, terria_config.keys()):
         # TODO not case insensitive
         return terria_config[u'catalog']
     return []
 
 def _items_of(group):
-    if u'items' in map(unicode.lower, group.keys()):
+    if u'items' in map(group.lower, group.keys()):
         # TODO not case insensitive
         return group[u'items']
     return []
 
 def terriajs_config_forced(resource_view_id):
-    return json.dumps(_base(resource_view_id, True))
+    return json.dumps(_base(resource_view_id, force_enabled=True))
 
 
 terriajs.add_url_rule(u'/terriajs/config/force_enabled/<resource_view_id>.json', view_func=terriajs_config_forced, methods=[u'GET'])
@@ -184,9 +184,6 @@ def query_view_by_type():
 
 from sqlalchemy import or_
 
-
-
-
 def _get_list_of_views():
     
     # Set the pagination configuration
@@ -247,16 +244,18 @@ def _resolve(item):
         #TODO LOG WARN
         return item
 
-    elif type==constants.LAZY_ITEM_TYPE:
+    elif type== constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
         try:
             config, type = _get_config(item.get('id',None))
             item.update(config)
+            # is it a nested lazy load item?
+            _resolve(item)
         except Exception as e:
             #TODO LOG (skipping unrecognized object)
             pass
 
-    elif type ==constants.LAZY_GROUP_TYPE:
+    elif type == constants.LAZY_GROUP_TYPE:
         item.update({u'type':u'group'})
 
     items = item.get('items',None)
