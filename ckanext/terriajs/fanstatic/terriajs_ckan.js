@@ -336,10 +336,10 @@ coerceTypes: true,
                         return terriajs.resource_view.id == result.id ? '':
                             ['<li ' + props + '>',
                                 '<div class="eiao-object-title">' + result.resource_name || '-' + '</div>',
-                                '<div class="eiao-object-snippet">' + result.resource_description && result.resource_description.substring(0,150),
-                                    '<small>' + result.dataset_title && result.dataset_title +' - ',
+                                '<p class="eiao-object-snippet">' + result.resource_description && result.resource_description.substring(0,150),
+                                    ' <small>' + result.dataset_title && result.dataset_title +' - ',
                                     result.dataset_description && result.dataset_description.substring(0,150) +'</small>',
-                                '</div>',
+                                '</p>',
                             '</li>'].join('');
                     },
                     "view_getValue": function getResultValue(jseditor_editor, result) {

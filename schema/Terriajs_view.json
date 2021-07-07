@@ -1,0 +1,26 @@
+{
+    "items": {
+        "properties":{
+            "type":{ 
+                "type":"string",
+                "enum":["terriajs-view"]
+            },
+            "view-id":{
+                "title": "id",
+                "type": "string",
+                "description": "Terria view (autocomplete)",
+                "format": "autocomplete",
+                "options": {
+                    "autocomplete": {
+                        "search": "view_search",
+                        "getResultValue": "view_getValue",
+                        "renderResult": "view_renderer",
+                        "autoSelect": true
+                    }
+                }
+            }
+        }
+    },
+    "title": "Project references",
+    "type": "array"
+}

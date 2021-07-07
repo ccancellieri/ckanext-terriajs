@@ -9,8 +9,12 @@ TERRIAJS_URL=('ckanext.terriajs.url', 'https://localhost/terriajs')
 TERRIAJS_SCHEMA_URL=('ckanext.terriajs.schema.url', 'https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json')
 
 DEFAULT_TYPE = 'terriajs'
+CONFIG_TYPE = 'terriajs-config'
 LAZY_ITEM_TYPE = 'terriajs-view'
 LAZY_GROUP_TYPE = 'terriajs-group'
+
+SYNCH_WITH=['none','resource','dataset']
+
 
 TYPE_MAPPING = {}
 FORMATS = TYPE_MAPPING.keys()

@@ -30,6 +30,7 @@ config = toolkit.config
 not_empty = p.toolkit.get_validator('not_empty')
 #ignore_missing = p.toolkit.get_validator('ignore_missing')
 #ignore_empty = p.toolkit.get_validator('ignore_empty')
+is_boolean = p.toolkit.get_validator('boolean_validator')
 
 
 # https://docs.ckan.org/en/2.8/extensions/validators.html#ckan.logic.validators.json_object
@@ -108,7 +109,8 @@ class TerriajsPlugin(p.SingletonPlugin):
                 #'__extras': [ignore_empty]
                 #'terriajs_config': [not_empty, json_object]
                 'terriajs_config': [not_empty],
-                'terriajs_type': [not_empty]
+                'terriajs_type': [not_empty],
+                'terriajs_synch': [not_empty]
             }
         }
 
@@ -123,6 +125,9 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         _dict = copy.deepcopy(data_dict)
         resource_view = _dict['resource_view']
+
+        # _dict['data']={}
+        # _dict['data']['title']='test'
         config_view = {}
         
         resource = data_dict.get('resource',None)
@@ -146,8 +151,10 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         terriajs_schema=get.mapping(resource_type)
         if not terriajs_schema:
-            raise InvalidURL(resource_type+' not defined, check your config')
-
+            raise InvalidURL(resource_type+_(' not defined, check your config'))
+        
+        terriajs_synch=resource_view.get('terriajs_synch','none')
+        
         terriajs_config=resource_view.get('terriajs_config',None)
         if not terriajs_config:
             # generate base configuration
@@ -178,40 +185,27 @@ class TerriajsPlugin(p.SingletonPlugin):
                             # ]
                     # }
                 )
-        #TODO TESTS
-        # terriajs_schema='''{
-        #     "items": {
-        #         "properties":{
-        #             "type":{ 
-        #                 "type":"string",
-        #                 "enum":["terriajs-view"]
-        #             },
-        #             "view-id":{
-        #                 "title": "id",
-        #                 "type": "string",
-        #                 "description": "Terria view (autocomplete)",
-        #                 "format": "autocomplete",
-        #                 "options": {
-        #                     "autocomplete": {
-        #                         "search": "view_search",
-        #                         "getResultValue": "view_getValue",
-        #                         "renderResult": "view_renderer",
-        #                         "autoSelect": true
-        #                     }
-        #                 }
-        #             }
-        #         }
-        #     },
-        #     "title": "Project references",
-        #     "type": "array"
-        # }'''
-        ###
+
+                
+                # if terriajs_synch is not 'none':
+                #     if terriajs_synch is not 'resource':
+                #         terriajs_config['name']=resource.get('name',terriajs_config['name'])
+                #         terriajs_config['description']=resource.get('description',terriajs_config['description'])
+                #     elif terriajs_synch is not 'dataset':
+                #         dataset = data_dict.get('package',None)
+                #         terriajs_config['name']=dataset.get('name',terriajs_config['name'])
+                #         terriajs_config['description']=dataset.get('notes',terriajs_config['description'])
+                #     else:
+                #         raise Exception(_("Unsupported synch mode: ")+str(terriajs_synch))
+        
+        # synch_resource
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
             'terriajs_url': config.get(*constants.TERRIAJS_URL),
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
-            'terriajs_type': resource_type
+            'terriajs_type': resource_view.get('terriajs_type',resource_type),
+            'terriajs_synch': resource_view.get('terriajs_synch','none')
         }
         _dict.update(config_view)
         return _dict

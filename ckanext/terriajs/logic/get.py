@@ -112,28 +112,24 @@ import copy
 def _base(resource_view_id, resolve=True, force_enabled=False):
 
     #TODO checkme
-    resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
-    if resource_view is None:
-        raise NotFound(_('View was not found.'))
+    # resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
+    # if resource_view is None:
+    #     raise NotFound(_('View was not found.'))
 
-    # terria_config, terria_type = _get_config(resource_view_id)
-    
-    # if not config:
-    #     raise InvalidSchema(_('No config found for view: ')+str(resource_view_id))
-    
-    terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
-    
-    # TODO _override_is_enabled(terria_config,force_enabled, terria_type)
-    
-    terria_config = json.loads(resource_view.get('terriajs_config',{}))
-    
-    if terria_type != constants.DEFAULT_TYPE:
+    # terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
+    # terria_config = json.loads(resource_view.get('terriajs_config',{}))
+
+    terria_config, type, synch = _get_config(resource_view_id)
+    # TODO _override_is_enabled(terria_config,f_get_vieworce_enabled, terria_type)
+        
+    if type != constants.DEFAULT_TYPE:
         # terria_config is an item we've to wrap to obtain a valid catalog
         config = copy.deepcopy(constants.TERRIAJS_CONFIG)
     
     if resolve:
         config['catalog'].append(_resolve(terria_config))
     else:
+        # terria_config, terria_type, synch = _get_config(resource_view_id)
         config['catalog'].append(terria_config) 
 
     return config
@@ -215,31 +211,14 @@ def _get_list_of_views():
 
 terriajs.add_url_rule(u'/terriajs/search', view_func=_get_list_of_views, methods=[u'GET'])
 
-def _get_view(id_view):
-    return id_view and query_view_by_type().filter(ResourceView.id==id_view).one()
 
-def _get_config(id_view):    
-    view = _get_view(id_view)
-    if not view:
-        raise InvalidSchema(_('View not found for item id: ')+str(id_view))
-    view_config=view.config
-
-    config = view_config and json.loads(view_config.get('terriajs_config',None))
-    if not config:
-        raise InvalidSchema(_('No config found for view: ')+str(view))
-
-    type = view_config and view_config.get('terriajs_type',None)
-    if not type:
-        raise InvalidSchema(_('No type found for view: ')+str(view))
-    
-    # return config.decode('string_escape'), type
-    return config, type
 
 def _resolve(item):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
         cherry picking the view by ID from all the available metadata views'''
-
+    
     type = item and item.get('type',None)
+
     if not type:
         #TODO LOG WARN
         return item
@@ -247,10 +226,11 @@ def _resolve(item):
     elif type== constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
         try:
-            config, type = _get_config(item.get('id',None))
-            item.update(config)
-            # is it a nested lazy load item?
-            _resolve(item)
+            _config, type, synch = _get_config(item.get('id',None))
+            
+            # is it a nested lazy load item, let's try to resolve again
+            item.update(_resolve(_config))
+            
         except Exception as e:
             #TODO LOG (skipping unrecognized object)
             pass
@@ -265,4 +245,34 @@ def _resolve(item):
 
     return item
 
+def _get_view(view_id):
+    return view_id and query_view_by_type().filter(ResourceView.id==view_id).one()
 
+def _get_config(view_id):
+
+    view = view_id and _get_view(view_id)
+    if not view:
+        raise Exception(_('No view found for view_id: ')+str(view_id))
+
+    view_config = view.config
+
+    config = view_config and json.loads(view_config.get('terriajs_config',None))
+    if not config:
+        raise Exception(_('No config found for view: ')+str(view_id))
+
+    type = view_config and view_config.get('terriajs_type',None)
+    if not type:
+        raise Exception(_('No type found for view: ')+str(view_id))
+    
+    synch=view_config.get('terriajs_synch','none')
+    if synch != 'none':
+        if synch == 'resource':
+            config['name']=view.resource_name or config['name']
+            config['description']=view.resource_description or config['description']
+        elif synch == 'dataset':
+            config['name']=view.dataset_title or config['name']
+            config['description']=view.dataset_description or config['description']
+        else:
+            raise Exception(_("Unsupported synch mode: ")+str(synch))
+    
+    return config, type, synch

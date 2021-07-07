@@ -1,6 +1,10 @@
 {% extends "package/view_edit_base.html" %}
 
 
+{% block view_form_filters %}
+    {{super()}}
+{% endblock %}
+
 {% block scripts %}
   {{ super() }}
   <!-- <link rel="stylesheet" id="theme-link" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
@@ -59,8 +63,14 @@
             <b>{{_('View Type:')}}</b>
             <input id="terriajs_type" readonly="true" style="border-width:0px" name="terriajs_type" value="{{resource['format'].lower()}}" />
         </p>
-    {% endblock %}
 
+        <label for="terriajs_synch_dd">Overwrite (and keep in synch) name and description</label>
+        <select id="terriajs_synch_dd" name="terriajs_synch">
+            <option value="none" {{'selected' if resource_view.terriajs_synch=='none'}}>Don't overwrite</option>
+            <option value="resource" {{'selected' if resource_view.terriajs_synch=='resource'}}>From the resource</option>
+            <option value="dataset" {{'selected' if resource_view.terriajs_synch=='dataset'}}>From the dataset</option>
+        </select>
+    {% endblock %}
     <p>
         <button class="btn btn-primary" type="button"  data-toggle="collapse" 
             title="{{_('Shows a table with copy to clipboard buttons for a fast usage of available informations from the dataset and resources')}}"
@@ -92,9 +102,9 @@
                     {% endif %}
                 </td>
                 <td class="col">
-                    {% if package.description %}
-                        <button class="btn btn-secondary" onclick="copy(this, event, '{{package.description}}')" data-toggle="tooltip" data-placement="bottom" title="{{package.description}}">
-                            <span style="display:block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100px;"><i class="fa fa-clipboard" aria-hidden="true"></i> {{package.description}}</span>
+                    {% if package.notes %}
+                        <button class="btn btn-secondary" onclick="copy(this, event, '{{package.notes}}')" data-toggle="tooltip" data-placement="bottom" title="{{package.notes}}">
+                            <span style="display:block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100px;"><i class="fa fa-clipboard" aria-hidden="true"></i> {{package.notes}}</span>
                         </button>
                     {% endif %}
                 </td>
