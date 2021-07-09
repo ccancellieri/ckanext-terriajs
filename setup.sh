@@ -14,7 +14,7 @@ paster --plugin=ckan config-tool /srv/app/production.ini \
     "ckanext.terriajs.default.title=TerriaJS view" \
     "ckanext.terriajs.icon=globe" \
     "ckanext.terriajs.url=http://localhost:8080" \
-    "ckanext.terriajs.schema.default_type='terriaj'" \
-    "ckanext.terriajs.schema.type_mapping = $APP_DIR/terriajs-type-mapping.json"
+    "ckanext.terriajs.schema.default_type=terriajs" \
+    "ckanext.terriajs.schema.type_mapping=$APP_DIR/terriajs-type-mapping.json"
 
 cp ./type-mapping.json $APP_DIR/terriajs-type-mapping.json
