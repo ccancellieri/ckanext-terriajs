@@ -251,21 +251,30 @@ def _get_config(resource):
     
         # generate base configuration
 
-###################################################            
-# TODO : EXTENSION POINT TO CONFIGURE BASED ON TYPE
-###################################################
     terriajs_config= None
     resource_type = _get_view_type(resource)
 
     if resource_type == constants.DEFAULT_TYPE:
-        terriajs_config=json.dumps(constants.TERRIAJS_CONFIG)
+        terriajs_config = constants.TERRIAJS_CONFIG
     else:
         # package=data_dict.get('package','')
-        terriajs_config=json.dumps({
+        terriajs_config = {
                         'name': resource.get('name',''),
                         'url': resource.get('url',''),
                         'description': resource.get('description',''),
                         'id': resource.get('id',''),
                         'type': resource_type or ''
-                    })
-    return terriajs_config
+                    }
+
+###################################################            
+# TODO : EXTENSION POINT TO CONFIGURE BASED ON TYPE
+###################################################
+
+    if resource_type=='wms':
+        terriajs_config.update({'layers': resource.get('name','')})
+    elif resource_type=='wmts':
+        terriajs_config.update({'layer': resource.get('name','')})
+    
+    # TODO BBOX based on the layer...
+    
+    return json.dumps(terriajs_config)
