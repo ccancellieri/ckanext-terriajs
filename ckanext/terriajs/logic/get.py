@@ -111,6 +111,13 @@ terriajs.add_url_rule(u'/terriajs/config/groups/<resource_view_id>', view_func=c
 import copy
 def _base(resource_view_id, resolve=True, force_enabled=False):
 
+    def __resolve(resolve):
+        if resolve:
+            return _resolve(terria_config)
+        else:
+        # terria_config, terria_type, synch = _get_config(resource_view_id)
+            return terria_config 
+
     #TODO checkme
     # resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
     # if resource_view is None:
@@ -121,16 +128,14 @@ def _base(resource_view_id, resolve=True, force_enabled=False):
 
     terria_config, type, synch = _get_config(resource_view_id)
     # TODO _override_is_enabled(terria_config,f_get_vieworce_enabled, terria_type)
-        
-    if type != constants.DEFAULT_TYPE:
+
+    if type == constants.DEFAULT_TYPE:
+        # it's default type, let's leave it as it is (raw)
+        config = terria_config
+    else:
         # terria_config is an item we've to wrap to obtain a valid catalog
         config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-    
-    if resolve:
-        config['catalog'].append(_resolve(terria_config))
-    else:
-        # terria_config, terria_type, synch = _get_config(resource_view_id)
-        config['catalog'].append(terria_config) 
+        config['catalog'].append(__resolve(terria_config))
 
     return config
 

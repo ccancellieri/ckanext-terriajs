@@ -3,6 +3,7 @@ import ckan.plugins.toolkit as toolkit
 
 import logging
 import json as json
+# from ckan.common import json
 #from jsonschema import RefResolver
 
 import ckan.plugins as p
@@ -13,13 +14,6 @@ import ckan.logic.validators as v
 
 import requests
 import ckan.lib.helpers as h
-from ckan.common import json
-import json as _json
-try:
-    import os
-    import ckanext.resourceproxy.plugin as proxy
-except ImportError:
-    pass
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +33,50 @@ is_boolean = p.toolkit.get_validator('boolean_validator')
 
 import ckanext.terriajs.logic.get as get
 
+import ckan.lib.navl.dictization_functions as df
+
+missing = df.missing
+StopOnError = df.StopOnError
+Invalid = df.Invalid
+
+def default_type(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    type = data.get(key)
+    if not type or type is missing:
+        resource = _instance_to_dict(context['resource'])
+        type = _get_view_type(resource)
+        if not type:
+            errors[key].append(_('Missing value'))
+            raise StopOnError
+
+        data[key] = type
+
+def default_synch(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    synch = data.get(key)
+    if not synch or synch is missing:
+        data[key] = 'dataset'
+    
+
+def default_config(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    config = data.get(key)
+    if not config or config is missing:
+        resource = context['resource']
+        _resource = _instance_to_dict(resource)
+        # _resource.update({ 'type': _get_view_type(resource)})
+        
+        config = _get_config(_resource)
+        if not config:
+            errors[key].append(_('Missing value'))
+            raise StopOnError
+        data[key] = config
 
 def resolve_mapping(type):
     '''
@@ -53,7 +91,37 @@ def resolve_mapping(type):
     else:
         raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
 
+def _instance_to_dict(i):
+    # EXTENSION POINT
+    # TODO WARNING
+    # resource = i.__dict__
+    # if resource.get('url_type') == 'upload':
+    #     resource['url'] = h.url_for(
+    #                                 controller='package',
+    #                                 action='resource_download',
+    #                                 id=resource['package_id'],
+    #                                 resource_id=resource['id'],
+    #                                 filename=resource['url'],
+    #                                 qualified=True)
+    #     resource['url_type']='link'
 
+    # return resource
+    resource = {'name': i.name or '',
+                'url': i.url or '',
+                'description': i.description or '',
+                'id': i.id or '',
+                'package_id': i.package_id or '',
+                'format': (i.format or '').lower()
+    }
+    if i.url_type == 'upload':
+        resource['url'] = h.url_for(
+                                    controller='package',
+                                    action='resource_download',
+                                    id=resource['package_id'],
+                                    resource_id=resource['id'],
+                                    filename=resource['url'],
+                                    qualified=True)
+    return resource
 
 class TerriajsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer)
@@ -108,104 +176,41 @@ class TerriajsPlugin(p.SingletonPlugin):
             u'schema': {
                 #'__extras': [ignore_empty]
                 #'terriajs_config': [not_empty, json_object]
-                'terriajs_config': [not_empty],
-                'terriajs_type': [not_empty],
-                'terriajs_synch': [not_empty]
+                'terriajs_type': [default_type, not_empty],
+                'terriajs_synch': [default_synch, not_empty],
+                'terriajs_config': [default_config, not_empty]
             }
         }
 
     def can_view(self, data_dict):
         resource = data_dict.get('resource',None)
-        if resource:
-            format_lower = resource.get('format','').lower()
-            return format_lower in constants.FORMATS
-        return False
+        return _get_view_type(resource) in constants.FORMATS
 
     def setup_template_variables(self, context, data_dict):
 
         _dict = copy.deepcopy(data_dict)
+
         resource_view = _dict['resource_view']
 
-        # _dict['data']={}
-        # _dict['data']['title']='test'
-        config_view = {}
-        
-        resource = data_dict.get('resource',None)
+        resource = _dict.get('resource',None)
 
-        full_catalog = False
-        if resource and 'format' in resource:
-            resource_type = resource[u'format'].lower()
+        resource_type = resource_view.get('terriajs_type',_get_view_type(resource))
 
-            # type has been configured, is it matching into the config?
-            if resource_type not in constants.TYPE_MAPPING.keys():
-                resource_type = constants.DEFAULT_TYPE
-        
-        if resource_type == constants.DEFAULT_TYPE:
-            full_catalog = True
-        
-        # if resource:    
-        #     schema_url= resolve_mapping(resource_type.lower() or constants.DEFAULT_TYPE)
-
-        # if not schema_url:
-        #     raise InvalidURL(_('Invalid schema url'))
-
-        terriajs_schema=get.mapping(resource_type)
+        terriajs_schema = resource_view.get('terriajs_schema', get.mapping(resource_type))
         if not terriajs_schema:
             raise InvalidURL(resource_type+_(' not defined, check your config'))
         
-        terriajs_synch=resource_view.get('terriajs_synch','none')
-        
-        terriajs_config=resource_view.get('terriajs_config',None)
-        if not terriajs_config:
-            # generate base configuration
-
-###################################################            
-# TODO : EXTENSION POINT TO CONFIGURE BASED ON TYPE
-###################################################
-
-            if full_catalog: # TODO base over type, remove flag
-                terriajs_config=json.dumps(constants.TERRIAJS_CONFIG)
-            else:
-                package=data_dict.get('package','')
-                terriajs_config=json.dumps(
-                    # {
-                        # 'description': package.get('notes',''),
-                        # 'name': package.get('title',''),
-                        # 'order': 1,
-                        # 'preserveOrder': True,
-                        # 'type': "group",
-                        # 'items': [
-                            {
-                                'name': resource.get('name',''),
-                                'url': resource.get('url',''),
-                                'description': resource.get('description',''),
-                                'id': resource.get('id',''),
-                                'type': resource_type
-                            }
-                            # ]
-                    # }
-                )
-
-                
-                # if terriajs_synch is not 'none':
-                #     if terriajs_synch is not 'resource':
-                #         terriajs_config['name']=resource.get('name',terriajs_config['name'])
-                #         terriajs_config['description']=resource.get('description',terriajs_config['description'])
-                #     elif terriajs_synch is not 'dataset':
-                #         dataset = data_dict.get('package',None)
-                #         terriajs_config['name']=dataset.get('name',terriajs_config['name'])
-                #         terriajs_config['description']=dataset.get('notes',terriajs_config['description'])
-                #     else:
-                #         raise Exception(_("Unsupported synch mode: ")+str(terriajs_synch))
+        terriajs_config=resource_view.get('terriajs_config',_get_config(resource))
         
         # synch_resource
+        config_view = {}
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
             'terriajs_url': config.get(*constants.TERRIAJS_URL),
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
-            'terriajs_type': resource_view.get('terriajs_type',resource_type),
-            'terriajs_synch': resource_view.get('terriajs_synch','none')
+            'terriajs_type': resource_type,
+            'terriajs_synch': _get_synch(resource_view)
         }
         _dict.update(config_view)
         return _dict
@@ -216,4 +221,51 @@ class TerriajsPlugin(p.SingletonPlugin):
     def form_template(self, context, data_dict):
         return 'terriajs_form.html'
 
+# TODO DOCUMENT (Default mapping)
+def _get_view_type(resource):
+    resource_type = resource.get('format','').lower()
+    # type has been configured, is it matching into the config?
+    if resource_type not in constants.TYPE_MAPPING.keys():
+        resource_type = constants.DEFAULT_TYPE
+    
+    return resource_type
 
+
+
+def _get_synch(resource_view):
+
+    # if terriajs_synch is not 'none':
+    #     if terriajs_synch is not 'resource':
+    #         terriajs_config['name']=resource.get('name',terriajs_config['name'])
+    #         terriajs_config['description']=resource.get('description',terriajs_config['description'])
+    #     elif terriajs_synch is not 'dataset':
+    #         dataset = data_dict.get('package',None)
+    #         terriajs_config['name']=dataset.get('name',terriajs_config['name'])
+    #         terriajs_config['description']=dataset.get('notes',terriajs_config['description'])
+    #     else:
+    #         raise Exception(_("Unsupported synch mode: ")+str(terriajs_synch))
+
+    return resource_view.get('terriajs_synch','none')
+
+def _get_config(resource):
+    
+        # generate base configuration
+
+###################################################            
+# TODO : EXTENSION POINT TO CONFIGURE BASED ON TYPE
+###################################################
+    terriajs_config= None
+    resource_type = _get_view_type(resource)
+
+    if resource_type == constants.DEFAULT_TYPE:
+        terriajs_config=json.dumps(constants.TERRIAJS_CONFIG)
+    else:
+        # package=data_dict.get('package','')
+        terriajs_config=json.dumps({
+                        'name': resource.get('name',''),
+                        'url': resource.get('url',''),
+                        'description': resource.get('description',''),
+                        'id': resource.get('id',''),
+                        'type': resource_type or ''
+                    })
+    return terriajs_config

@@ -20,47 +20,44 @@
       "defaultProperties": [
       ],
       "properties": {
-        "columns":{
-          "type": "array",
 
-          "items": {
-            "type": "object",
-            "defaultProperties": [
-              "name"
-            ],
-            "properties":{
-              "type":{
-                "type":"string"
-              },
-              "name":{
-                "type":"string"
-              },
-              "format":{
-                "format": "json",
-                "type": "string"
-              },
-              "units":{
-                "description": "The units of this column",
-                "type": "string"
-              },
-              "legendName":{
-                "description": "Display name for the legend for this column (defaults to the column name).",
-                "type": "string"
-              },
-              "legendTicks":{
-                "description": "How many horizontal ticks to draw on the generated color ramp legend, not counting the top or bottom.",
-                "type": "string"
-              },
-              "active":{
-                "description": "Is this column active?",
-                "type": "boolean"
-              },
-              "colorBins":{
-                "description": "Either the number of discrete colours that a color gradient should be quantised into (ie. an integer), or an array of values specifying the boundaries between the color bins.",
-                "format": "json",
-                "type": "string"
+        "columns":{
+          "type": "object",
+          "additionalProperties": {
+              "type": "object",
+              "properties":{
+                  "type":{
+                      "type":"string"
+                    },
+                    "name":{
+                      "type":"string"
+                    },
+                    "format":{
+                      "format": "json",
+                      "type": "string"
+                    },
+                    "units":{
+                      "description": "The units of this column",
+                      "type": "string"
+                    },
+                    "legendName":{
+                      "description": "Display name for the legend for this column (defaults to the column name).",
+                      "type": "string"
+                    },
+                    "legendTicks":{
+                      "description": "How many horizontal ticks to draw on the generated color ramp legend, not counting the top or bottom.",
+                      "type": "string"
+                    },
+                    "active":{
+                      "description": "Is this column active?",
+                      "type": "boolean"
+                    },
+                    "colorBins":{
+                      "description": "Either the number of discrete colours that a color gradient should be quantised into (ie. an integer), or an array of values specifying the boundaries between the color bins.",
+                      "format": "json",
+                      "type": "string"
+                    }
               }
-            }
           }
         },
         "dataVariable": {
@@ -99,27 +96,17 @@
           "format": "json",
           "type": "string"
         },
-        "tableStyle": {
-          "format": "json",
-          "type": "string"
-        },
         "imageUrl":{
           "type":"string",
           "description": "imageUrl - A string representing an image to display at each point, for lat-long datasets."
+        },
+        "timeColumn":{
+            "type":"string",
+            "title": "Time Column",
+            "description": "The time column"
         }
       }
     }
   },
-  "title": "Comma-Separated Values (CSV)",
-  "allOf": [
-    {
-      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogItem.json?&alt=media"
-    },
-    {
-      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
-    },
-    {
-      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CsvCatalogItem.json?&alt=media"
-    }
-  ]
-}
+  "title": "Comma-Separated Values (CSV)"
+} 
