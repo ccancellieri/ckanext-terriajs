@@ -71,6 +71,8 @@ You must make sure that the following is set in your CKAN config::
     ckanext.terriajs.default.title=TerriaJS view
     ckanext.terriajs.icon=globe
     ckanext.terriajs.url=http://localhost:8080
+    ckanext.terriajs.default.formats=['csv']
+  
 
 |
 |

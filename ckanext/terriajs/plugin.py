@@ -144,17 +144,12 @@ class TerriajsPlugin(p.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'ckanext-terriajs')
-        # TERRIAJS_SCHEMA_URL
-        # self.terriajs_url = config.get(*constants.TERRIAJS_URL)
-        schema_mapping_file=config.get('ckanext.terriajs.schema.type_mapping','./type-mapping.json')
-        with open(schema_mapping_file) as f:
-            constants.TYPE_MAPPING = json.load(f)
 
+    def configure(self, config_):
+        with open(constants.SCHEMA_TYPE_MAPPING_FILE) as f:
+            constants.TYPE_MAPPING = json.load(f)
         constants.FORMATS=constants.TYPE_MAPPING.keys()
 
-    def configure(self, config):
-        self.proxy_is_enabled = config.get('ckan.resource_proxy_enabled', False)
-        self.formats = constants.FORMATS
         
     def notify(self, resource):
         # Receives notification of changed URL on a resource.
@@ -164,11 +159,11 @@ class TerriajsPlugin(p.SingletonPlugin):
     def info(self):
         # log.warn("---------------->"+_(config.get(*constants.DEFAULT_TITLE)))
         return {
-            u'icon': config.get(*constants.ICON),
+            u'icon': constants.ICON,
             u'name': constants.NAME,
-            u'title': _(config.get(*constants.DEFAULT_TITLE)),
-            u'default_title': _(config.get(*constants.DEFAULT_TITLE)),
-            u'always_available': config.get(*constants.ALWAYS_AVAILABLE),
+            u'title': _(constants.DEFAULT_TITLE),
+            u'default_title': _(constants.DEFAULT_TITLE),
+            u'always_available': constants.ALWAYS_AVAILABLE,
             u'iframed': False,
             #u'filterable': False,
             u'preview_enabled': False,
@@ -184,7 +179,7 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def can_view(self, data_dict):
         resource = data_dict.get('resource',None)
-        return _get_view_type(resource) in constants.FORMATS
+        return _get_view_type(resource) in constants.DEFAULT_FORMATS
 
     def setup_template_variables(self, context, data_dict):
 
@@ -206,7 +201,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         config_view = {}
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
-            'terriajs_url': config.get(*constants.TERRIAJS_URL),
+            'terriajs_url': constants.TERRIAJS_URL,
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
             'terriajs_type': resource_type,
@@ -273,7 +268,12 @@ def _get_config(resource):
     if resource_type=='wms':
         terriajs_config.update({'layers': resource.get('name','')})
     elif resource_type=='wmts':
-        terriajs_config.update({'layer': resource.get('name','')})
+        terriajs_config.update({'layer': resource.get('name',''),
+                            "useResourceTemplate": False,
+                            "ignoreUnknownTileErrors": True,
+                            "treat403AsError": False,
+                            "treat404AsError": False,
+                            "isLegendVisible": False})
     
     # TODO BBOX based on the layer...
     
