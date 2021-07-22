@@ -22,6 +22,10 @@
       "type": "string",
       "format": "jodit"
     },
+    "preserveOrder": {
+      "type": "boolean",
+      "default": true
+    },
     "items":{
       "type":"array",
       "format":"table",

@@ -336,7 +336,7 @@ def _get_config(resource):
                             "isLegendVisible": False})
 
     elif resource_type==constants.LAZY_GROUP_TYPE:
-        terriajs_config.update({'items': []})
+        terriajs_config.update({'items': [], "preserveOrder": True})
     
     # TODO BBOX based on the layer...
     
