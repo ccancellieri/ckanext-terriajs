@@ -79,6 +79,8 @@ Description: ckanext-terriajs
             ckanext.terriajs.default.title=TerriaJS view
             ckanext.terriajs.icon=globe
             ckanext.terriajs.url=http://localhost:8080
+            ckanext.terriajs.default.formats=['csv']
+          
         
         |
         |

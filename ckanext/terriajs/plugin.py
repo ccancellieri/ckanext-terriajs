@@ -78,6 +78,58 @@ def default_config(key, data, errors, context):
             raise StopOnError
         data[key] = config
 
+def default_lon_e(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    if not data[key]:
+        data[key]=180
+        return
+    try:
+        if int(data[key])>180:
+            data[key]=180
+    except ValueError:
+        data[key]=180
+
+def default_lon_w(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    if not data[key]:
+        data[key]=-180
+        return
+    try:
+        if int(data[key])<-180:
+            data[key]=-180
+    except ValueError:
+        data[key]=-180
+
+def default_lat_n(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    if not data[key]:
+        data[key]=90
+        return
+    try:
+        if int(data[key])>90:
+            data[key]=90
+    except ValueError:
+        data[key]=90
+
+def default_lat_s(key, data, errors, context):
+    '''
+    Validator providing default values 
+    '''
+    if not data[key]:
+        data[key]=-90
+        return
+    try:
+        if int(data[key])<-90:
+            data[key]=-90
+    except ValueError:
+        data[key]=-90
+    
 def resolve_mapping(type):
     '''
     try to resolve the url from the schema-mapping configuration.
@@ -173,7 +225,11 @@ class TerriajsPlugin(p.SingletonPlugin):
                 #'terriajs_config': [not_empty, json_object]
                 'terriajs_type': [default_type, not_empty],
                 'terriajs_synch': [default_synch, not_empty],
-                'terriajs_config': [default_config, not_empty]
+                'terriajs_config': [default_config, not_empty],
+                'west':[default_lon_w],
+                'east':[default_lon_e],
+                'north':[default_lat_n],
+                'south':[default_lat_s]
             }
         }
 
@@ -205,7 +261,11 @@ class TerriajsPlugin(p.SingletonPlugin):
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
             'terriajs_type': resource_type,
-            'terriajs_synch': _get_synch(resource_view)
+            'terriajs_synch': _get_synch(resource_view),
+            'west': -180,
+            'east': 180,
+            'north': 90,
+            'south': -90
         }
         _dict.update(config_view)
         return _dict
@@ -274,6 +334,9 @@ def _get_config(resource):
                             "treat403AsError": False,
                             "treat404AsError": False,
                             "isLegendVisible": False})
+
+    elif resource_type==constants.LAZY_GROUP_TYPE:
+        terriajs_config.update({'items': []})
     
     # TODO BBOX based on the layer...
     

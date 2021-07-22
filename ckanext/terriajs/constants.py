@@ -49,8 +49,6 @@ LAZY_ITEM_TYPE = 'terriajs-view'
 SYNCH_WITH=['none','resource','dataset']
 
 
-
-
 TERRIAJS_CONFIG = {
                'catalog':[],
                'homeCamera':{

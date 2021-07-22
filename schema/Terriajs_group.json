@@ -25,6 +25,7 @@
     "items":{
       "type":"array",
       "format":"table",
+      "minItems": 1,
       "items":{
         "type": "object",
         "required": [

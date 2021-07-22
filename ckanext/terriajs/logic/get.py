@@ -61,93 +61,45 @@ from paste.deploy.converters import asbool
 
 terriajs = Blueprint(constants.NAME, __name__)
 
-def _override_is_enabled(d, set_to):
-    def _override_items(group, set_to):
-        for item in _items_of(group):
-            if u'type' in item and item[u'type'] == u'group':
-                _override_items(item,set_to)
-                continue
-            item[u'isEnabled'] = set_to
+def config_disabled(resource_view_id):
+    return json.dumps(_base(resource_view_id, force=True, force_to=False))
 
-    for group in _catalog_groups(d):
-        _override_items(group, set_to)
+def config_enabled(resource_view_id):
+    return json.dumps(_base(resource_view_id, force=True, force_to=True))
+    
+def config(resource_view_id):
+    return json.dumps(_base(resource_view_id, force=False))
 
-def _catalog_groups(terria_config):
-    if u'catalog' in map(terria_config.lower, terria_config.keys()):
-        # TODO not case insensitive
-        return terria_config[u'catalog']
-    return []
+terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_func=config_enabled, methods=[u'GET'])
 
-def _items_of(group):
-    if u'items' in map(group.lower, group.keys()):
-        # TODO not case insensitive
-        return group[u'items']
-    return []
+terriajs.add_url_rule(u'/terriajs/config/disabled/<resource_view_id>.json', view_func=config_disabled, methods=[u'GET'])
 
-def terriajs_config_forced(resource_view_id):
-    return json.dumps(_base(resource_view_id, force_enabled=True))
-
-
-terriajs.add_url_rule(u'/terriajs/config/force_enabled/<resource_view_id>.json', view_func=terriajs_config_forced, methods=[u'GET'])
-
-
-def config_groups_forced(resource_view_id):
-    terria_config = _base(resource_view_id, True)
-
-    # returns all the first level items (groups)
-    return json.dumps(_catalog_groups(terria_config))
-
-def config_groups(resource_view_id):
-    terria_config = _base(resource_view_id)
-
-    # returns all the first level items (groups)
-    return json.dumps(_catalog_groups(terria_config))
-
-terriajs.add_url_rule(u'/terriajs/config/groups/force_enabled/<resource_view_id>', view_func=config_groups_forced, methods=[u'GET'])
-terriajs.add_url_rule(u'/terriajs/config/groups/<resource_view_id>', view_func=config_groups, methods=[u'GET'])
-
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
 
 ### 
 import copy
-def _base(resource_view_id, resolve=True, force_enabled=False):
+def _base(resource_view_id, force=False, force_to=False):
 
-    def __resolve(resolve):
-        if resolve:
-            return _resolve(terria_config)
-        else:
-        # terria_config, terria_type, synch = _get_config(resource_view_id)
-            return terria_config 
-
-    #TODO checkme
-    # resource_view = _get_action(u'resource_view_show')(None, {u'id': resource_view_id})
-    # if resource_view is None:
-    #     raise NotFound(_('View was not found.'))
-
-    # terria_type = resource_view.get('terriajs_type',constants.DEFAULT_TYPE)
-    # terria_config = json.loads(resource_view.get('terriajs_config',{}))
-
-    terria_config, type, synch = _get_config(resource_view_id)
+    view_config = _get_config(resource_view_id)
     # TODO _override_is_enabled(terria_config,f_get_vieworce_enabled, terria_type)
 
     if type == constants.DEFAULT_TYPE:
         # it's default type, let's leave it as it is (raw)
-        config = terria_config
+        config = view_config['config']
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
         config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-        config['catalog'].append(__resolve(terria_config))
+        config['catalog'].append(_resolve(view_config['config'], force, force_to))
+        config.update({'homeCamera':view_config['camera']})
 
     return config
 
-def config(resource_view_id):
-    return json.dumps(_base(resource_view_id))#.decode('string_escape')
-
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
 
 # TODO better manage error conditions with appropriate http code and message
 import requests
 import os
 schema_path=os.path.abspath(os.path.join(os.path.dirname(__file__),'../../../schema/'))
+
 def mapping(type):
     '''
     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
@@ -218,23 +170,22 @@ terriajs.add_url_rule(u'/terriajs/search', view_func=_get_list_of_views, methods
 
 
 
-def _resolve(item):
+def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
         cherry picking the view by ID from all the available metadata views'''
     
     type = item and item.get('type',None)
-
     if not type:
         #TODO LOG WARN
         return item
-
+    
     elif type== constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
         try:
-            _config, type, synch = _get_config(item.get('id',None))
+            view_config = _get_config(item.get('id',None))
             
             # is it a nested lazy load item, let's try to resolve again
-            item.update(_resolve(_config))
+            item.update(_resolve(view_config['config'], force, force_to))
             
         except Exception as e:
             #TODO LOG (skipping unrecognized object)
@@ -243,11 +194,15 @@ def _resolve(item):
     elif type == constants.LAZY_GROUP_TYPE:
         item.update({u'type':u'group'})
 
-    items = item.get('items',None)
-    if items:
-        for _item in items:
-            _resolve(_item)
 
+    if force and item.get('type', None) != 'group':
+        item['isEnabled'] = force_to
+    else:
+        items = item.get('items',None)
+        if items:
+            for _item in items:
+                _resolve(_item, force, force_to)
+    
     return item
 
 def _get_view(view_id):
@@ -280,4 +235,11 @@ def _get_config(view_id):
         else:
             raise Exception(_("Unsupported synch mode: ")+str(synch))
     
-    return config, type, synch
+    camera={
+        'east':view_config.get('east',180),
+        'west':view_config.get('west',-180),
+        'north':view_config.get('north',90),
+        'south':view_config.get('south',-90)
+    }
+    
+    return { 'config':config, 'type':type, 'synch':synch, 'camera':camera }

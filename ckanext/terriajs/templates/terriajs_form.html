@@ -63,13 +63,21 @@
             <b>{{_('View Type:')}}</b>
             <input id="terriajs_type" readonly="true" style="border-width:0px" name="terriajs_type" value="{{resource['format'].lower()}}" />
         </p>
-
-        <label for="terriajs_synch_dd">Overwrite (and keep in synch) name and description</label>
-        <select id="terriajs_synch_dd" name="terriajs_synch">
-            <option value="none" {{'selected' if resource_view.terriajs_synch=='none'}}>Don't overwrite</option>
-            <option value="resource" {{'selected' if resource_view.terriajs_synch=='resource'}}>From the resource</option>
-            <option value="dataset" {{'selected' if resource_view.terriajs_synch=='dataset'}}>From the dataset</option>
-        </select>
+        <p>
+            <label for="terriajs_synch_dd">Overwrite (and keep in synch) name and description</label>
+            <select id="terriajs_synch_dd" name="terriajs_synch">
+                <option value="none" {{'selected' if resource_view.terriajs_synch=='none'}}>Don't overwrite</option>
+                <option value="resource" {{'selected' if resource_view.terriajs_synch=='resource'}}>From the resource</option>
+                <option value="dataset" {{'selected' if resource_view.terriajs_synch=='dataset'}}>From the dataset</option>
+            </select>
+        </p>
+        <p>
+            <label for="terriajs_view_camera">Camera</label>
+            <label for="east">{{_('East')}}</label><input id="east" name="east" type="number" min="-180" max="180" value="{{resource_view['east']}}" />
+            <label for="west">{{_('West')}}</label><input id="west" name="west" type="number" min="-180" max="180" value="{{resource_view['west']}}" />
+            <label for="north">{{_('North')}}</label><input id="north" name="north" type="number" min="-90" max="90" value="{{resource_view['north']}}" />
+            <label for="south">{{_('South')}}</label><input id="south" name="south" type="number" min="-90" max="90" value="{{resource_view['south']}}" />
+        </p>
     {% endblock %}
     <p>
         <button class="btn btn-primary" type="button"  data-toggle="collapse" 
