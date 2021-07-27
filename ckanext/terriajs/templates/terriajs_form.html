@@ -73,10 +73,10 @@
         </p>
         <p>
             <label for="terriajs_view_camera">Camera</label>
-            <label for="east">{{_('East')}}</label><input id="east" name="east" type="number" min="-180" max="180" value="{{resource_view['east']}}" />
-            <label for="west">{{_('West')}}</label><input id="west" name="west" type="number" min="-180" max="180" value="{{resource_view['west']}}" />
-            <label for="north">{{_('North')}}</label><input id="north" name="north" type="number" min="-90" max="90" value="{{resource_view['north']}}" />
-            <label for="south">{{_('South')}}</label><input id="south" name="south" type="number" min="-90" max="90" value="{{resource_view['south']}}" />
+            <label for="east">{{_('East')}}</label><input id="east" format="0.001" name="east" type="number" min="-180" max="180" value="{{resource_view['east']}}" />
+            <label for="west">{{_('West')}}</label><input id="west" format="0.001" name="west" type="number" min="-180" max="180" value="{{resource_view['west']}}" />
+            <label for="north">{{_('North')}}</label><input id="north" format="0.001" name="north" type="number" min="-90" max="90" value="{{resource_view['north']}}" />
+            <label for="south">{{_('South')}}</label><input id="south" format="0.001" name="south" type="number" min="-90" max="90" value="{{resource_view['south']}}" />
         </p>
     {% endblock %}
     <p>

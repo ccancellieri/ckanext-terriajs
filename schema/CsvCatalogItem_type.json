@@ -19,6 +19,22 @@
       "type": "string",
       "format": "jodit"
     },
+    "rectangle": {
+      "type": "array",
+      "title": "Rectangle",
+      "items": {
+        "type": "number"
+      }
+    },
+    "zoomOnEnable": {
+      "type": "boolean"
+    },
+    "isEnabled": {
+      "type": "boolean"
+    },
+    "featureInfoTemplate": {
+      "type": "string"
+    },
     "tableStyle": {
       "title": "Table Style",
       "type": "object",

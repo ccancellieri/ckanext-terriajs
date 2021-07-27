@@ -86,7 +86,7 @@ def default_lon_e(key, data, errors, context):
         data[key]=180
         return
     try:
-        if int(data[key])>180:
+        if float(data[key])>180:
             data[key]=180
     except ValueError:
         data[key]=180
@@ -99,7 +99,7 @@ def default_lon_w(key, data, errors, context):
         data[key]=-180
         return
     try:
-        if int(data[key])<-180:
+        if float(data[key])<-180:
             data[key]=-180
     except ValueError:
         data[key]=-180
@@ -112,7 +112,7 @@ def default_lat_n(key, data, errors, context):
         data[key]=90
         return
     try:
-        if int(data[key])>90:
+        if float(data[key])>90:
             data[key]=90
     except ValueError:
         data[key]=90
@@ -125,7 +125,7 @@ def default_lat_s(key, data, errors, context):
         data[key]=-90
         return
     try:
-        if int(data[key])<-90:
+        if float(data[key])<-90:
             data[key]=-90
     except ValueError:
         data[key]=-90
