@@ -1,4 +1,5 @@
 {
+  "id": "terriajs-group",
   "type": "object",
   "title": "Terria view connector",
   "required": [
@@ -27,21 +28,23 @@
       "default": true
     },
     "items":{
+      "id": "items",
       "type":"array",
       "format":"table",
       "minItems": 1,
       "items":{
         "type": "object",
+        "id": "terriajs-item",
         "required": [
           "type","id"
         ],
-        "format": "grid",
+        "format": "grid-strict",
         "properties":{
           "type":{ 
             "type":"string",
             "enum":["terriajs-view"],
             "options": {
-              "grid_columns": 2
+              "grid_columns": 3
             }
           },
           "id":{
@@ -56,7 +59,27 @@
                     "renderResult": "view_renderer",
                     "autoSelect": true
                 },
-                "grid_columns": 10
+                "grid_columns": 3
+            },
+            "links": [
+              {
+                "href": "/terriajs/config/{{self}}.json",
+                "mediaType": "application/json",
+                "rel": "go to..."
+              }
+            ]
+          },
+          "desc":{
+            "title": "description",
+            "type": "string",
+            "format": "string",
+            "description": "Description",
+            "watch": {
+              "id": "terriajs-item.id"
+            },
+            "template": "view_template",
+            "options": {
+              "grid_columns": 8
             }
           }
         }

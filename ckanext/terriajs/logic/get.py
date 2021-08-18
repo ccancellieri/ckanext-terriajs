@@ -119,6 +119,7 @@ from ckan.model import meta
 from ckan.model.resource_view import ResourceView
 from ckan.model.resource import Resource
 from ckan.model.package import Package
+from ckan.model.group import Group
 
 import sqlalchemy as sa
 from ckan.model import types as _types
@@ -126,6 +127,7 @@ def query_view_by_type():
     '''Returns the count of ResourceView not in the view types list'''
     return meta.Session.query(
                     ResourceView.id,
+                    Group.title.label('organization_title'),
                     Package.title.label('dataset_title'),
                     Package.notes.label('dataset_description'),
                     Resource.name.label('resource_name'),
@@ -133,9 +135,10 @@ def query_view_by_type():
                     ResourceView.config
                 ).filter(Package.id == Resource.package_id)\
                 .filter(ResourceView.resource_id == Resource.id)\
+                .filter(Package.owner_org == Group.id)\
                 .filter(ResourceView.view_type == constants.NAME)
 
-from sqlalchemy import or_
+from sqlalchemy import or_, and_, not_
 
 def _get_list_of_views():
     
@@ -155,16 +158,38 @@ def _get_list_of_views():
         .filter(or_(_resource_name and Resource.name.like(_resource_name),
                     _dataset_title and Package.title.like(_dataset_title),
                     _dataset_description and Package.notes.like(_dataset_description)))
-    
+                # Skip DEFAULT_TYPE (full config)
+                #.and_(not_(ResourceView.config.like('%\'terriajs_type\': \'{}\'%'.format(constants.DEFAULT_TYPE)))))
+
     views = existing_views.order_by(Resource.name)
 
     page = args.get('page', 0, type=int)
     start=page*constants.PAGE_SIZE
-
-    views.slice(start, start+constants.PAGE_SIZE)
-    return json.dumps(views.all())
+    return json.dumps(views.slice(start, start+constants.PAGE_SIZE).all())
     # return views
 
+
+def _get_view_details():
+
+    args = request.args
+    
+    _view_id = args.get('view_id', None, type=str)
+    
+    view=meta.Session.query(
+                    ResourceView.id,
+                    Group.title.label('organization_title'),
+                    Package.title.label('dataset_title'),
+                    Package.notes.label('dataset_description'),
+                    Resource.name.label('resource_name'),
+                    Resource.description.label('resource_description'),
+                    ResourceView.config
+                ).filter(ResourceView.id == _view_id)\
+                .filter(Package.owner_org == Group.id)\
+                .filter(Package.id == Resource.package_id)\
+                .filter(ResourceView.resource_id == Resource.id)
+    return json.dumps(view.one())
+
+terriajs.add_url_rule(u'/terriajs/describe', view_func=_get_view_details, methods=[u'GET'])
 
 terriajs.add_url_rule(u'/terriajs/search', view_func=_get_list_of_views, methods=[u'GET'])
 

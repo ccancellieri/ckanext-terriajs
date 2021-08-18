@@ -305,6 +305,47 @@ coerceTypes: true,
                 // "button":  function view_info(jseditor_editor, input){
                 //         console.log(input);
                 // },
+                "template": {
+                    "view_template": (jseditor,e) => {
+
+                        if (!e || !e.id || e.id == '') {
+                            return "Please set a view id";
+                        }
+                        
+                        var url = new URL('terriajs/describe?view_id='+e.id, terriajs.ckan_url);
+                        var request = new XMLHttpRequest();
+                        request.open('GET', url, false);  // `false` makes the request synchronous
+                        request.send(null);
+
+                        if (request.status === 200) {
+                            const res = JSON.parse(request.response);
+                            return res.resource_name+" - "+res.dataset_title;
+                            //{"dataset_description":"METADATA DESCRIPTION",
+                            //"resource_name":"","organization_title":"myorg",
+                            //"resource_description":"",
+                            //"config":{"terriajs_config":"{\"url\": \"http://localhost:5000/dataset/new_resource/test\", 
+                            //\"id\": \"cacea0c8-d1e0-4995-9702-b5c988d356b0\", \"type\": \"csv\", \"name\": \"\", \"description\": \"\"}",
+                            //"terriajs_type":"csv","terriajs_synch":"dataset"},
+                            //"id":"bd784907-e781-4340-a5cd-33f6ff75bbcb",
+                            //"dataset_title":"TEST"}
+                        } else {
+                            console.error("Unable to resolve item: "+e.id+".\n Response: "+request.response);
+                            return "";
+                        }
+                        
+                        // asynch ???
+                        /*return (async (resolve) => { 
+                            return await fetch(url).then(function (response) {
+                                return response.json();
+                            }).then(function (data) {
+                                resolve(data);
+                            }).catch(function (err) {
+                                console.error(err);
+                                return "";
+                            });
+                        })();*/
+                    }
+                },
                 "autocomplete": {
                 // This is callback functions for the "autocomplete" editor
                 // In the schema you refer to the callback function by key
@@ -319,18 +360,17 @@ coerceTypes: true,
                                 '&resource_name='+ encodeURI(input)+
                                 '&dataset_title='+ encodeURI(input)+
                                 '&dataset_description='+ encodeURI(input),terriajs.ckan_url);
-            
-                        return new Promise(function (resolve) {
-                            if (input.length < 2) {
-                                return resolve([]);
-                            }
-            
-                            fetch(url).then(function (response) {
+                        if (input.length < 2) {
+                            return [];
+                        }
+                        return fetch(url).then(function (response) {
                                 return response.json();
                             }).then(function (data) {
-                                resolve(data);
+                                return data;
+                            }).catch(function (err) {
+                                console.error(err);
+                                return "";
                             });
-                        });
                     },
                     "view_renderer": function(jseditor_editor, result, props) {
                         return terriajs.resource_view.id == result.id ? '':
@@ -363,6 +403,18 @@ coerceTypes: true,
                                         '<small> ',
                                             result.dataset_description && result.dataset_description.substring(0,150),
                                         '</small>',
+                                    '</div>',
+                                '</div>',
+                                '<div class="eiao-object-title">',
+                                    '<div>',
+                                        '<b>',
+                                            'From Organization:',
+                                        '</b>',
+                                    '</div>',
+                                    '<div>',
+                                        '<b>',
+                                            result.organization_title || 'Unnamed organization',
+                                        '</b>',
                                     '</div>',
                                 '</div>',
                             '</li>'].join('');
