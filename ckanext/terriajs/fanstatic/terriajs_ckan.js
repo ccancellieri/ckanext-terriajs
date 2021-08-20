@@ -1,6 +1,14 @@
 // json preview module
 ckan.module('terriajs', function (jQuery, _) {
-  terriajs = {
+    /* Check if string is valid UUID */
+    isValidUUID = (str) => {
+        // Regular expression to check if string is a valid UUID
+        const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+        return regexExp.test(str);
+    };
+    
+    terriajs = {
+        
         preview: function (){
             let value=terriajs.editor.getValue();
             let catalog=terriajs.asObject(value);
@@ -236,63 +244,9 @@ coerceTypes: true,
                 // save changes in local context
                 value=terriajs.asObject(terriajs.terriajs_config);
             }
+            
             // Initialize the editor
-            this.editor = new JSONEditor(document.getElementById('editor-terriajs-config'),{
-                // Enable fetching schemas via ajax
-                ajax: true,
-                ajaxBase: terriajs.ckan_url,
-//                ajaxCredentials: true
-
-                // The schema for the editor
-                schema: schema,
-
-                // Seed the form with a starting value
-                startval: value,
-
-                // https://github.com/json-editor/json-editor#css-integration
-                // barebones, html (the default), bootstrap4, spectre, tailwind
-                theme: 'bootstrap4',
-                //jqueryui, fontawesome3, fontawesome4, fontawesome5, openiconic, spectre
-                // iconlib: "spectre",
-                iconlib: "fontawesome4",
-                //,
-                // Disable additional properties
-                //no_additional_properties: true,
-
-                // Require all properties by default
-                // required_by_default: true,
-                // object_layout: "grid",
-                // template: "mustache",
-                show_errors: "always",
-                // keep_oneof_values: 1,
-                // show_opt_in: 1
-                // disable_edit_json: 0,
-                // disable_collapse: 0,
-                // disable_properties: 0,
-                // disable_array_add: 0,
-                // disable_array_reorder: 0,
-                // disable_array_delete: 0,
-                enable_array_copy: 1,
-                // array_controls_top: 0,
-                // disable_array_delete_all_rows: 0,
-                // disable_array_delete_last_row: 0,
-                // prompt_before_delete: 1,
-                // lib_aceeditor: 1,
-                lib_autocomplete: 1,
-                // lib_sceditor: 0,
-                // lib_simplemde: 0,
-                lib_select2: 1,
-                // lib_selectize: 0,
-                // lib_choices: 0,
-                // lib_flatpickr: 0,
-                // lib_signaturepad: 0,
-                // lib_mathjs: 0,
-                // lib_cleavejs: 0,
-                // lib_jodit: 1,
-                lib_jquery: 1,
-                lib_dompurify: 1
-            });
-            // window.JSONEditor.theme.options = {
+                        // window.JSONEditor.theme.options = {
             //     "input_size": "small",
             //     "custom_forms": true,
             //     "object_indent": true,
@@ -308,7 +262,7 @@ coerceTypes: true,
                 "template": {
                     "view_template": (jseditor,e) => {
 
-                        if (!e || !e.id || e.id == '') {
+                        if (!e || !e.id || e.id == '' || !isValidUUID(e.id)) {
                             return "Please set a view id";
                         }
                         
@@ -334,16 +288,14 @@ coerceTypes: true,
                         }
                         
                         // asynch ???
-                        /*return (async (resolve) => { 
-                            return await fetch(url).then(function (response) {
+                        /*return fetch(url).then(function (response) {
                                 return response.json();
                             }).then(function (data) {
                                 resolve(data);
                             }).catch(function (err) {
                                 console.error(err);
                                 return "";
-                            });
-                        })();*/
+                            });;*/
                     }
                 },
                 "autocomplete": {
@@ -424,6 +376,63 @@ coerceTypes: true,
                     }
                 }
             };
+            this.editor = new JSONEditor(document.getElementById('editor-terriajs-config'),{
+                // Enable fetching schemas via ajax
+                ajax: true,
+                ajaxBase: terriajs.ckan_url,
+//                ajaxCredentials: true
+
+                // The schema for the editor
+                schema: schema,
+
+                // Seed the form with a starting value
+                startval: value,
+
+                // https://github.com/json-editor/json-editor#css-integration
+                // barebones, html (the default), bootstrap4, spectre, tailwind
+                theme: 'bootstrap3',
+                //jqueryui, fontawesome3, fontawesome4, fontawesome5, openiconic, spectre
+                // iconlib: "spectre",
+                iconlib: "fontawesome4",
+                //,
+                // Disable additional properties
+                //no_additional_properties: true,
+
+                // Require all properties by default
+                // required_by_default: true,
+                // object_layout: "grid",
+                //template: "mustache",
+                //template: "handlebars",
+                show_errors: "always",
+                keep_oneof_values: false, // https://github.com/jdorn/json-editor/issues/293
+                // show_opt_in: 1
+                // disable_edit_json: 0,
+                // disable_collapse: 0,
+                // disable_properties: 0,
+                // disable_array_add: 0,
+                // disable_array_reorder: 0,
+                // disable_array_delete: 0,
+                enable_array_copy: 0,
+                // array_controls_top: 0,
+                // disable_array_delete_all_rows: 0,
+                // disable_array_delete_last_row: 0,
+                // prompt_before_delete: 1,
+                // lib_aceeditor: 1,
+                lib_autocomplete: 1,
+                // lib_sceditor: 0,
+                // lib_simplemde: 0,
+                lib_select2: 1,
+                // lib_selectize: 0,
+                // lib_choices: 0,
+                // lib_flatpickr: 0,
+                // lib_signaturepad: 0,
+                // lib_mathjs: 0,
+                // lib_cleavejs: 0,
+                // lib_jodit: 1,
+                lib_jquery: 1,
+                lib_dompurify: 1
+            });
+            this.editor.isHowto=true
             this.editor.on('ready',this.editorReady);
             this.editor.on('change',()=>{
 
@@ -433,7 +442,7 @@ coerceTypes: true,
                 }
                 // TODO call when instantiate -> refactor to function and call onReady
                 var errors = terriajs.editor.validate();
-                if (errors.lenght)
+                if (errors && Object.keys(errors).length)
                     this.editorOnChange({'html':'<div id="outher-error">'+
                                 errors.reduce(o=>'<p>'+o+'</p>','')+'</div>', 'lock':true});
                 else
@@ -484,14 +493,22 @@ coerceTypes: true,
             if(errors) {
 
                 if (lock){
-                    // lock the howto
-                    $('#editor-howto').prop('disabled',true);
+                    // prevent switch between editors (locks buttons)
+                    if (this.editor.isHowto){
+                        $('#editor-editor').prop('disabled',true);
+                    } else {
+                        $('#editor-howto').prop('disabled',true);
+                    }
                     // lock the save button
                     $('.form-actions [name="save"]').prop('disabled',true);
                     indicator.css("color","red");
                 } else {
-                    // lock the howto
-                    $('#editor-howto').prop('disabled',false);
+                    // lock inverted
+                    if (this.editor.isHowto){
+                        $('#editor-howto').prop('disabled',true);
+                    } else {
+                        $('#editor-editor').prop('disabled',true);
+                    }
                     // lock the save button
                     $('.form-actions [name="save"]').prop('disabled',false);
                     indicator.css("color","black");
@@ -511,8 +528,9 @@ coerceTypes: true,
             else {
                 // un lock the save button
                 $('.form-actions [name="save"]').prop('disabled',false);
-                // un lock the howto
+                // un lock the toggles
                 $('#editor-howto').prop('disabled',false);
+                $('#editor-editor').prop('disabled',false);
                 indicator.html("<b style='display: inline; color: green;'>valid</b>");
             }
         }

@@ -1,0 +1,13 @@
+/* https://github.com/json-editor/json-editor/issues/1042 */
+.js .tab-content {
+  display: block;
+}
+
+/* terriajs-view  table does not respect width
+  overriding 
+  style="width: auto; max-width: none;"
+
+#editor-terriajs-config .table {
+  width: 100% !important;
+  max-width: 100% !important;
+}*/
