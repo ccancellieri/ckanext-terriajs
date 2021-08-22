@@ -3,6 +3,37 @@
   display: block;
 }
 
+
+/*
+ Save space and higlight borders
+*/
+
+div#terriajs-group {
+  padding: 5px;
+}
+
+.je-header{
+  margin: 5px;
+}
+
+.well .well-sm {
+  border: none;
+  background-color: #FFFFFF;
+  border-top: 2px solid #ccc;
+  border-left: 2px solid #ccc;
+  margin: 5px;
+  /*border-color: #000000; /*#0c6cac;*/
+}
+
+.well.well-sm div[data-schemapath^=root] {
+  padding-right: 5px;
+  border: none
+}
+
+.form-group {
+  margin-bottom: 5px;
+}
+
 /* terriajs-view  table does not respect width
   overriding 
   style="width: auto; max-width: none;"

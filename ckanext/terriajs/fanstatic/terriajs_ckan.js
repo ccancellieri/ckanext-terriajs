@@ -108,6 +108,7 @@ ckan.module('terriajs', function (jQuery, _) {
                 // save changes in local context
                 value=terriajs.asString(terriajs.terriajs_config);
             }
+            this.isHowto=false
 
             let schema={
               "type": "string",
@@ -186,7 +187,15 @@ coerceTypes: true,
                         terriajs.validate=val;
                         terriajs.editorOnChange(terriajs.ajvValidation());
                     }
-                );
+                ).catch(err => {
+                    if (confirm("An error occurred validating the schema: schema not supported by this editor.\n"+
+                                "Continuing validation will be disabled, this may allow creating corrupted configurations:\nContinue?")){
+                        console.error(err);
+                    } else {
+                        terriajs.getEditor();
+                        return;
+                    }
+                });
             }
             this.editor.on('ready',this.editorReady);
             this.editor.on('change',()=>{
@@ -244,6 +253,7 @@ coerceTypes: true,
                 // save changes in local context
                 value=terriajs.asObject(terriajs.terriajs_config);
             }
+            this.isHowto=true
             
             // Initialize the editor
                         // window.JSONEditor.theme.options = {
@@ -432,7 +442,6 @@ coerceTypes: true,
                 lib_jquery: 1,
                 lib_dompurify: 1
             });
-            this.editor.isHowto=true
             this.editor.on('ready',this.editorReady);
             this.editor.on('change',()=>{
 
@@ -494,7 +503,7 @@ coerceTypes: true,
 
                 if (lock){
                     // prevent switch between editors (locks buttons)
-                    if (this.editor.isHowto){
+                    if (this.isHowto){
                         $('#editor-editor').prop('disabled',true);
                     } else {
                         $('#editor-howto').prop('disabled',true);
@@ -504,7 +513,7 @@ coerceTypes: true,
                     indicator.css("color","red");
                 } else {
                     // lock inverted
-                    if (this.editor.isHowto){
+                    if (this.isHowto){
                         $('#editor-howto').prop('disabled',true);
                     } else {
                         $('#editor-editor').prop('disabled',true);
