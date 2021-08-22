@@ -50,8 +50,7 @@ NotFound = logic.NotFound
 ValidationError = logic.ValidationError
 _get_or_bust = logic.get_or_bust
 
-
-from flask import Blueprint
+from flask import Blueprint, abort, jsonify
 from six import text_type
 
 from ckan.common import json
@@ -62,13 +61,22 @@ from paste.deploy.converters import asbool
 terriajs = Blueprint(constants.NAME, __name__)
 
 def config_disabled(resource_view_id):
-    return json.dumps(_base(resource_view_id, force=True, force_to=False))
+    try:
+        return json.dumps(_base(resource_view_id, force=True, force_to=False))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 500
 
 def config_enabled(resource_view_id):
-    return json.dumps(_base(resource_view_id, force=True, force_to=True))
-    
+    try:
+        return json.dumps(_base(resource_view_id, force=True, force_to=True))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 500
+
 def config(resource_view_id):
-    return json.dumps(_base(resource_view_id, force=False))
+    try:
+        return json.dumps(_base(resource_view_id, force=False))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 500
 
 terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_func=config_enabled, methods=[u'GET'])
 
@@ -81,7 +89,6 @@ import copy
 def _base(resource_view_id, force=False, force_to=False):
 
     view_config = _get_config(resource_view_id)
-    # TODO _override_is_enabled(terria_config,f_get_vieworce_enabled, terria_type)
 
     if type == constants.DEFAULT_TYPE:
         # it's default type, let's leave it as it is (raw)
@@ -104,14 +111,17 @@ def mapping(type):
     '''
     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
     '''
-    if type in constants.TYPE_MAPPING:
-        if not h.is_url(constants.TYPE_MAPPING[type]):
-            with open(schema_path+'/'+constants.TYPE_MAPPING[type]) as s:
-                return json.dumps(json.load(s))
+    try:
+        if type in constants.TYPE_MAPPING:
+            if not h.is_url(constants.TYPE_MAPPING[type]):
+                with open(schema_path+'/'+constants.TYPE_MAPPING[type]) as s:
+                    return json.dumps(json.load(s))
+            else:
+                return requests.get(constants.TYPE_MAPPING[type]).content
         else:
-            return requests.get(constants.TYPE_MAPPING[type]).content
-    else:
-        raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
+            raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 404
 
 terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=mapping, methods=[u'GET'])
 
@@ -141,53 +151,58 @@ def query_view_by_type():
 from sqlalchemy import or_, and_, not_
 
 def _get_list_of_views():
-    
-    # Set the pagination configuration
-    args = request.args
-    
-    _dataset_title = args.get('dataset_title', None, type=str)
-    _dataset_title = _dataset_title and '%{}%'.format(_dataset_title)
+    try:
+        # Set the pagination configuration
+        args = request.args
+        
+        _dataset_title = args.get('dataset_title', None, type=str)
+        _dataset_title = _dataset_title and '%{}%'.format(_dataset_title)
 
-    _dataset_description = args.get('dataset_description', None, type=str)
-    _dataset_description = _dataset_description and '%{}%'.format(_dataset_description)
+        _dataset_description = args.get('dataset_description', None, type=str)
+        _dataset_description = _dataset_description and '%{}%'.format(_dataset_description)
 
-    _resource_name = args.get('resource_name', None, type=str)
-    _resource_name = _resource_name and '%{}%'.format(_resource_name)
+        _resource_name = args.get('resource_name', None, type=str)
+        _resource_name = _resource_name and '%{}%'.format(_resource_name)
 
-    existing_views=query_view_by_type()\
-        .filter(or_(_resource_name and Resource.name.like(_resource_name),
-                    _dataset_title and Package.title.like(_dataset_title),
-                    _dataset_description and Package.notes.like(_dataset_description)))
-                # Skip DEFAULT_TYPE (full config)
-                #.and_(not_(ResourceView.config.like('%\'terriajs_type\': \'{}\'%'.format(constants.DEFAULT_TYPE)))))
+        existing_views=query_view_by_type()\
+            .filter(or_(_resource_name and Resource.name.like(_resource_name),
+                        _dataset_title and Package.title.like(_dataset_title),
+                        _dataset_description and Package.notes.like(_dataset_description)))
+                    # Skip DEFAULT_TYPE (full config)
+                    #.and_(not_(ResourceView.config.like('%\'terriajs_type\': \'{}\'%'.format(constants.DEFAULT_TYPE)))))
 
-    views = existing_views.order_by(Resource.name)
+        views = existing_views.order_by(Resource.name)
 
-    page = args.get('page', 0, type=int)
-    start=page*constants.PAGE_SIZE
-    return json.dumps(views.slice(start, start+constants.PAGE_SIZE).all())
-    # return views
-
+        page = args.get('page', 0, type=int)
+        start=page*constants.PAGE_SIZE
+        return json.dumps(views.slice(start, start+constants.PAGE_SIZE).all())
+        # return views
+    except Exception as ex:
+        return jsonify(error=str(ex)), 404
+        #abort(404)
 
 def _get_view_details():
-
-    args = request.args
-    
-    _view_id = args.get('view_id', None, type=str)
-    
-    view=meta.Session.query(
-                    ResourceView.id,
-                    Group.title.label('organization_title'),
-                    Package.title.label('dataset_title'),
-                    Package.notes.label('dataset_description'),
-                    Resource.name.label('resource_name'),
-                    Resource.description.label('resource_description'),
-                    ResourceView.config
-                ).filter(ResourceView.id == _view_id)\
-                .filter(Package.owner_org == Group.id)\
-                .filter(Package.id == Resource.package_id)\
-                .filter(ResourceView.resource_id == Resource.id)
-    return json.dumps(view.one())
+    try:    
+        args = request.args
+        
+        _view_id = args.get('view_id', None, type=str)
+        
+        view=meta.Session.query(
+                        ResourceView.id,
+                        Group.title.label('organization_title'),
+                        Package.title.label('dataset_title'),
+                        Package.notes.label('dataset_description'),
+                        Resource.name.label('resource_name'),
+                        Resource.description.label('resource_description'),
+                        ResourceView.config
+                    ).filter(ResourceView.id == _view_id)\
+                    .filter(Package.owner_org == Group.id)\
+                    .filter(Package.id == Resource.package_id)\
+                    .filter(ResourceView.resource_id == Resource.id)
+        return json.dumps(view.one())
+    except Exception as ex:
+        return jsonify(error=_("Unable to get details for id: {} -> {}".format(_view_id, str(ex)))), 404
+        #abort(404)
 
 terriajs.add_url_rule(u'/terriajs/describe', view_func=_get_view_details, methods=[u'GET'])
 
@@ -206,15 +221,14 @@ def _resolve(item, force=False, force_to=False):
     
     elif type== constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
-        try:
-            view_config = _get_config(item.get('id',None))
+        view_config = _get_config(item.get('id',None))
+        
+        if not view_config:
+            raise Exception(_('Unable to resolve view id: {}'.format(item.get('id',None))))
+
+        # is it a nested lazy load item, let's try to resolve again
+        item.update(_resolve(view_config['config'], force, force_to))
             
-            # is it a nested lazy load item, let's try to resolve again
-            item.update(_resolve(view_config['config'], force, force_to))
-            
-        except Exception as e:
-            #TODO LOG (skipping unrecognized object)
-            pass
 
     elif type == constants.LAZY_GROUP_TYPE:
         item.update({u'type':u'group'})
@@ -235,8 +249,9 @@ def _get_view(view_id):
 
 def _get_config(view_id):
 
-    view = view_id and _get_view(view_id)
-    if not view:
+    try:
+        view = view_id and _get_view(view_id)
+    except Exception as ex:
         raise Exception(_('No view found for view_id: ')+str(view_id))
 
     view_config = view.config

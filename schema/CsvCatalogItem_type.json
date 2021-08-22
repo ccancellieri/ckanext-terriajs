@@ -202,11 +202,24 @@
         },
         "featureInfoFields": {
           "title": "Feature Information Fields",
-          "description": "An object of { 'myCol': 'My column'} properties, defining which columns get displayed in feature info boxes (when clicked on), and what label is used instead of the column's actual name.",
-          "additionalProperties": {
-            "type": "string"
-          },
-          "type": "object"
+          "description": "An object of { 'myCol': 'My column'} properties or a list of ['col1','col2'] properties, defining which columns get displayed in feature info boxes (when clicked on), and what label is used instead of the column's actual name.",
+          "oneOf": [
+            {
+              "type": "object",
+              "title": "Object List",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "format": "table",
+              "title": "Column List",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
         },
         "imageUrl": {
           "title": "Image URL",
