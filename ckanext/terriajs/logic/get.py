@@ -160,25 +160,45 @@ from ckan.model.resource_view import ResourceView
 from ckan.model.resource import Resource
 from ckan.model.package import Package
 from ckan.model.group import Group
+from ckan.model.package_extra import PackageExtra
+from ckan.model.core import State
+
+
+from sqlalchemy.dialects import postgresql
 
 import sqlalchemy as sa
 from ckan.model import types as _types
+
+from sqlalchemy import or_
+_array_agg = sa.sql.functions.array_agg
+_json_build_object = sa.func.json_build_object
+
 def query_view_by_type():
     '''Returns the count of ResourceView not in the view types list'''
+
     return meta.Session.query(
+                    Group.id.label('group_id'),
+                    Package.id.label('package_id'),
+                    Resource.id.label('resource_id'),
                     ResourceView.id,
                     Group.title.label('organization_title'),
                     Package.title.label('dataset_title'),
                     Package.notes.label('dataset_description'),
                     Resource.name.label('resource_name'),
                     Resource.description.label('resource_description'),
+                    # _json_build_object(Resource.as_dict(Resource)).label('resource'),
+                    # postgresql.array_agg(_json_build_object(PackageExtra.key,PackageExtra.value)).label('extras'),
                     ResourceView.config
-                ).filter(Package.id == Resource.package_id)\
-                .filter(ResourceView.resource_id == Resource.id)\
-                .filter(Package.owner_org == Group.id)\
+                )\
+                .select_from(Package)\
+                .join(PackageExtra, Package.id == PackageExtra.package_id, isouter=True)\
+                .join(Resource, Package.id == Resource.package_id)\
+                .join(ResourceView, ResourceView.resource_id == Resource.id)\
+                .join(Group, Package.owner_org == Group.id)\
                 .filter(ResourceView.view_type == constants.NAME)
+                # .filter(PackageExtra.state == State.ACTIVE).group_by(Group.id,Package.id,Resource.id,ResourceView.id)\
+                
 
-from sqlalchemy import or_, and_, not_
 
 def _get_list_of_views():
     try:
@@ -279,11 +299,7 @@ def _get_view(view_id):
 
 def _get_config(view_id):
 
-    try:
-        view = view_id and _get_view(view_id)
-    except Exception as ex:
-        raise Exception(_('No view found for view_id: ')+str(view_id))
-
+    view = view_id and _get_view(view_id)
     if not view:
         raise Exception(_('No view found for view_id: ')+str(view_id))
 
@@ -293,9 +309,19 @@ def _get_config(view_id):
     if not config:
         raise Exception(_('No config found for view: ')+str(view_id))
 
-    type = view_config and view_config.get('terriajs_type',None)
-    if not type:
-        raise Exception(_('No type found for view: ')+str(view_id))
+
+    from jinja2 import Template
+    pkg = Package.get(view.package_id).as_dict()
+    res = next(r for r in pkg['resources'] if r['id'] == view.resource_id)
+    # res = filter(lambda r: r['id'] == view.resource_id,pkg['resources'])[0]
+    model = {
+        'dataset':pkg,
+        'resource':res,
+        'ckan':{'base_url':h.url_for('/', _external=True)}
+        }
+    for f in config.keys():
+        template = Template(config[f])
+        config[f] = template.render(model)
     ###########################################################################
     # synch=view_config.get('terriajs_synch','none')
     # if synch != 'none':
@@ -307,6 +333,10 @@ def _get_config(view_id):
     #         config['description']=view.dataset_description or config['description']
     #     else:
     #         raise Exception(_("Unsupported synch mode: ")+str(synch))
+
+    type = view_config and view_config.get('terriajs_type',None)
+    if not type:
+        raise Exception(_('No type found for view: ')+str(view_id))
     
     camera={
         'east':view_config.get('east',180),
