@@ -53,14 +53,13 @@ def default_type(key, data, errors, context):
 
         data[key] = type
 
-def default_synch(key, data, errors, context):
-    '''
-    Validator providing default values 
-    '''
-    synch = data.get(key)
-    if not synch or synch is missing:
-        data[key] = 'dataset'
-    
+# def default_synch(key, data, errors, context):
+#     '''
+#     Validator providing default values 
+#     '''
+#     synch = data.get(key)
+#     if not synch or synch is missing:
+#         data[key] = 'dataset'
 
 def default_config(key, data, errors, context):
     '''
@@ -223,7 +222,7 @@ class TerriajsPlugin(p.SingletonPlugin):
                 #'__extras': [ignore_empty]
                 #'terriajs_config': [not_empty, json_object]
                 'terriajs_type': [default_type, not_empty],
-                'terriajs_synch': [default_synch, not_empty],
+                # 'terriajs_synch': [default_synch, not_empty],
                 'terriajs_config': [default_config, not_empty],
                 'west':[default_lon_w],
                 'east':[default_lon_e],
@@ -252,7 +251,6 @@ class TerriajsPlugin(p.SingletonPlugin):
         
         terriajs_config=resource_view.get('terriajs_config',_get_config(resource))
         
-        # synch_resource
         config_view = {}
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
@@ -260,7 +258,7 @@ class TerriajsPlugin(p.SingletonPlugin):
             'terriajs_schema': json.loads(terriajs_schema),
             'terriajs_config': terriajs_config,
             'terriajs_type': resource_type,
-            'terriajs_synch': _get_synch(resource_view),
+            # 'terriajs_synch': _get_synch(resource_view),
             'west': -180,
             'east': 180,
             'north': 90,
@@ -286,20 +284,8 @@ def _get_view_type(resource):
 
 
 
-def _get_synch(resource_view):
-
-    # if terriajs_synch is not 'none':
-    #     if terriajs_synch is not 'resource':
-    #         terriajs_config['name']=resource.get('name',terriajs_config['name'])
-    #         terriajs_config['description']=resource.get('description',terriajs_config['description'])
-    #     elif terriajs_synch is not 'dataset':
-    #         dataset = data_dict.get('package',None)
-    #         terriajs_config['name']=dataset.get('name',terriajs_config['name'])
-    #         terriajs_config['description']=dataset.get('notes',terriajs_config['description'])
-    #     else:
-    #         raise Exception(_("Unsupported synch mode: ")+str(terriajs_synch))
-
-    return resource_view.get('terriajs_synch','none')
+# def _get_synch(resource_view):
+#     return resource_view.get('terriajs_synch','none')
 
 def _get_config(resource):
     
@@ -340,3 +326,5 @@ def _get_config(resource):
     # TODO BBOX based on the layer...
     
     return json.dumps(terriajs_config)
+
+

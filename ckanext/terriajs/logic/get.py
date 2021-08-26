@@ -60,6 +60,31 @@ from paste.deploy.converters import asbool
 
 terriajs = Blueprint(constants.NAME, __name__)
 
+
+def item_disabled(resource_view_id):
+    try:
+        return json.dumps(_base(resource_view_id, force=True, force_to=False, itemOnly=True))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 500
+
+def item_enabled(resource_view_id):
+    try:
+        return json.dumps(_base(resource_view_id, force=True, force_to=True, itemOnly=True))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 500
+
+def item(resource_view_id):
+    try:
+        return json.dumps(_base(resource_view_id, force=False, itemOnly=True))
+    except Exception as ex:
+        return jsonify(error=str(ex)), 500
+
+terriajs.add_url_rule(u'/terriajs/item/<resource_view_id>.json', view_func=item, methods=[u'GET'])
+
+terriajs.add_url_rule(u'/terriajs/item/disabled/<resource_view_id>.json', view_func=item_disabled, methods=[u'GET'])
+
+terriajs.add_url_rule(u'/terriajs/item/enabled/<resource_view_id>.json', view_func=item_enabled, methods=[u'GET'])
+
 def config_disabled(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=True, force_to=False))
@@ -72,10 +97,12 @@ def config_enabled(resource_view_id):
     except Exception as ex:
         return jsonify(error=str(ex)), 500
 
+
 def config(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=False))
     except Exception as ex:
+        # raise ex
         return jsonify(error=str(ex)), 500
 
 terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_func=config_enabled, methods=[u'GET'])
@@ -86,13 +113,16 @@ terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=con
 
 ### 
 import copy
-def _base(resource_view_id, force=False, force_to=False):
+def _base(resource_view_id, force=False, force_to=False, itemOnly=False):
 
     view_config = _get_config(resource_view_id)
 
     if type == constants.DEFAULT_TYPE:
         # it's default type, let's leave it as it is (raw)
         config = view_config['config']
+    elif itemOnly:
+        # do not wrap the item with a valid terria configuration
+        config = _resolve(view_config['config'], force, force_to)
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
         config = copy.deepcopy(constants.TERRIAJS_CONFIG)
@@ -254,6 +284,9 @@ def _get_config(view_id):
     except Exception as ex:
         raise Exception(_('No view found for view_id: ')+str(view_id))
 
+    if not view:
+        raise Exception(_('No view found for view_id: ')+str(view_id))
+
     view_config = view.config
 
     config = view_config and json.loads(view_config.get('terriajs_config',None))
@@ -263,17 +296,17 @@ def _get_config(view_id):
     type = view_config and view_config.get('terriajs_type',None)
     if not type:
         raise Exception(_('No type found for view: ')+str(view_id))
-    
-    synch=view_config.get('terriajs_synch','none')
-    if synch != 'none':
-        if synch == 'resource':
-            config['name']=view.resource_name or config['name']
-            config['description']=view.resource_description or config['description']
-        elif synch == 'dataset':
-            config['name']=view.dataset_title or config['name']
-            config['description']=view.dataset_description or config['description']
-        else:
-            raise Exception(_("Unsupported synch mode: ")+str(synch))
+    ###########################################################################
+    # synch=view_config.get('terriajs_synch','none')
+    # if synch != 'none':
+    #     if synch == 'resource':
+    #         config['name']=view.resource_name or config['name']
+    #         config['description']=view.resource_description or config['description']
+    #     elif synch == 'dataset':
+    #         config['name']=view.dataset_title or config['name']
+    #         config['description']=view.dataset_description or config['description']
+    #     else:
+    #         raise Exception(_("Unsupported synch mode: ")+str(synch))
     
     camera={
         'east':view_config.get('east',180),
@@ -281,5 +314,4 @@ def _get_config(view_id):
         'north':view_config.get('north',90),
         'south':view_config.get('south',-90)
     }
-    
-    return { 'config':config, 'type':type, 'synch':synch, 'camera':camera }
+    return { 'config':config, 'type':type, 'camera':camera }
