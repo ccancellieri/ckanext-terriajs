@@ -17,7 +17,7 @@
     "description": {
       "title": "Description",
       "type": "string",
-      "format": "jodit"
+      "format": "markdown"
     },
     "rectangle": {
       "type": "array",

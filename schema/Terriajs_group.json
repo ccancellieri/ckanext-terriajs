@@ -72,7 +72,10 @@
                 "$ref": "#/definitions/terriajs-view"
               },
               {
-                "$ref": "#/definitions/lazy-load-group"
+                "$ref": "#/definitions/remote-config-item"
+              },
+              {
+                "$ref": "#/definitions/remote-config-group"
               },
               {
                 "$ref": "#/definitions/terriajs-group"
@@ -142,9 +145,10 @@
         }
       }
     },
-    "lazy-load-group": {
+    "remote-config-item": {
+      "description": "This catalog item can be used to load a single catalog item from a remote source.",
       "type": "object",
-      "title": "lazy-load-group",
+      "title": "remote-config-item",
       "format": "grid-strict",
       "required": [
         "type","url","name"
@@ -157,7 +161,7 @@
       "properties":{
         "type":{ 
           "type":"string",
-          "enum":["lazy-load-group"],
+          "enum":["remote-config-item"],
           "options": {
             "hidden": true,
             "grid_columns": 0
@@ -176,6 +180,46 @@
           "type": "string",
           "format": "url",
           "description": "The url to a Terriajs to lazily load (loaded on click)",
+          "options": {
+            "grid_columns": 8
+          }
+        }
+      }
+    },
+    "remote-config-group": {
+      "type": "object",
+      "title": "remote-config-group",
+      "format": "grid-strict",
+      "required": [
+        "type","url","name"
+      ],
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true,
+        "disable_properties": true
+      },
+      "properties":{
+        "type":{ 
+          "type":"string",
+          "enum":["remote-config-group"],
+          "options": {
+            "hidden": true,
+            "grid_columns": 0
+          }
+        },
+        "name":{
+          "title": "name",
+          "type": "string",
+          "minLength": 1,
+          "options": {
+            "grid_columns": 4
+          }
+        },
+        "url":{
+          "title": "url",
+          "type": "string",
+          "format": "url",
+          "description": "The URL from where the system fetches the configuration from. The url should return a valid terriajs configuration that contains either items or catalog in the JSON structure returned at the top level. Camera definition is not required (and has no effect) by this implementation.",
           "options": {
             "grid_columns": 8
           }
