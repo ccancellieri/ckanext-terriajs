@@ -22,6 +22,7 @@ NotFound = logic.NotFound
 ValidationError = logic.ValidationError
 
 import ckanext.terriajs.constants as constants
+import ckanext.terriajs.logic.query as query
 import logging, traceback
 log = logging.getLogger(__name__)
 
@@ -173,6 +174,7 @@ def _get_config(view_id):
     view_config = view.get('config',None)
     if not view_config:
         raise Exception('Unable to find a valid configuration for view ID: '+str(view_id))
+    view_config = json.dumps(view_config)
 
     ###########################################################################
     # Jinja2 template
@@ -189,7 +191,7 @@ def _get_config(view_id):
         'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
 
-    template = view_config and Template(json.dumps(get_or_bust(view_config,'terriajs_config')))
+    template = view_config and Template(get_or_bust(view_config,'terriajs_config'))
     config = template and template.render(model)
     try:
         config = view_config and json.loads(config)
@@ -214,9 +216,6 @@ def _get_config(view_id):
         'south':view_config.get('south',-90)
     }
     return { 'config':config, 'type':type, 'camera':camera }
-
-
-import query
 
 def _get_list_of_views():
     try:
