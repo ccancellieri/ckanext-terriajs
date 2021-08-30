@@ -71,7 +71,7 @@ def config_enabled(resource_view_id):
         return jsonify(error=str(ex)), 500
 
 
-def config(resource_view_id):
+def _config(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=False))
     except Exception as ex:
@@ -82,7 +82,7 @@ terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_
 
 terriajs.add_url_rule(u'/terriajs/config/disabled/<resource_view_id>.json', view_func=config_disabled, methods=[u'GET'])
 
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=_config, methods=[u'GET'])
 
 ### 
 import copy
@@ -163,7 +163,7 @@ def _resolve(item, force=False, force_to=False):
     
     return item
 
-from jinja2 import Template
+from jinja2 import Template,Markup
 
 def _get_config(view_id):
 
@@ -174,7 +174,7 @@ def _get_config(view_id):
     view_config = view.get('config',None)
     if not view_config:
         raise Exception('Unable to find a valid configuration for view ID: '+str(view_id))
-    view_config = json.dumps(view_config)
+    #view_config = json.dumps(view_config)
 
     ###########################################################################
     # Jinja2 template
@@ -191,14 +191,16 @@ def _get_config(view_id):
         'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
 
-    template = view_config and Template(get_or_bust(view_config,'terriajs_config'))
+    template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config')))
     config = template and template.render(model)
     try:
         config = view_config and json.loads(config)
         if not config:
             raise Exception(_('No config found for view: ')+str(view_id))
     except Exception as ex:
-        raise Exception(_('Unable to parse resulting object should be a valid json: '+str(config)+' Exception: '+str(ex)))
+        raise Exception(_('Unable to parse resulting object should be a valid json:\n'+str(config)+
+        '\nException: '+str(ex)+
+        '\nPlease check your template.'))
     # for f in config.keys():
     #     template = Template(config[f])
     #     config[f] = template.render(model)
