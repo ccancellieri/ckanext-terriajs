@@ -189,7 +189,7 @@ def _get_config(view_id):
         'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
 
-    template = view_config and Template(get_or_bust(view_config,'terriajs_config'))
+    template = view_config and Template(json.dumps(get_or_bust(view_config,'terriajs_config')))
     config = template and template.render(model)
     try:
         config = view_config and json.loads(config)
