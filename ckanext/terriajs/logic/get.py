@@ -191,11 +191,12 @@ def _get_config(view_id):
 
     template = view_config and Template(get_or_bust(view_config,'terriajs_config'))
     config = template and template.render(model)
-
-    config = view_config and json.loads(config)
-    if not config:
-        raise Exception(_('No config found for view: ')+str(view_id))
-
+    try:
+        config = view_config and json.loads(config)
+        if not config:
+            raise Exception(_('No config found for view: ')+str(view_id))
+    except Exception as ex:
+        raise Exception(_(str('Unable to parse resulting object should be a valid json: '+ex)))
     # for f in config.keys():
     #     template = Template(config[f])
     #     config[f] = template.render(model)
