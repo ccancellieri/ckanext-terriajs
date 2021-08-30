@@ -15,8 +15,8 @@
       ]
     },
     "description": {
-      "title": "Description",
       "type": "string",
+      "title": "Description",
       "format": "markdown"
     },
     "rectangle": {

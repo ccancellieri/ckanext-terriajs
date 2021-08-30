@@ -23,7 +23,7 @@ ValidationError = logic.ValidationError
 
 import ckanext.terriajs.constants as constants
 import ckanext.terriajs.logic.query as query
-import logging, traceback
+import logging
 log = logging.getLogger(__name__)
 
 from flask import Blueprint, abort, jsonify
@@ -70,8 +70,7 @@ def config_enabled(resource_view_id):
         logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
-
-def _config(resource_view_id):
+def config(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=False))
     except Exception as ex:
@@ -82,7 +81,7 @@ terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_
 
 terriajs.add_url_rule(u'/terriajs/config/disabled/<resource_view_id>.json', view_func=config_disabled, methods=[u'GET'])
 
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=_config, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
 
 ### 
 import copy
@@ -194,6 +193,7 @@ def _get_config(view_id):
     template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config')))
     config = template and template.render(model)
     try:
+        # decode needed for python2.7
         config = view_config and json.loads(config.decode("utf-8"))
         if not config:
             raise Exception(_('No config found for view: ')+str(view_id))
