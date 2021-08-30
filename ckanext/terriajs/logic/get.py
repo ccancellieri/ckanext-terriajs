@@ -196,7 +196,7 @@ def _get_config(view_id):
         if not config:
             raise Exception(_('No config found for view: ')+str(view_id))
     except Exception as ex:
-        raise Exception(_(str('Unable to parse resulting object should be a valid json: '+ex)))
+        raise Exception(_('Unable to parse resulting object should be a valid json: '+str(config)+' Exception: '+str(ex)))
     # for f in config.keys():
     #     template = Template(config[f])
     #     config[f] = template.render(model)
