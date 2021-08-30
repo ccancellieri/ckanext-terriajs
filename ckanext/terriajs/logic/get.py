@@ -1,82 +1,52 @@
 # encoding: utf-8
 
-import logging
-import datetime
-import time
+from ckan.common import json
+from ckan.plugins.toolkit import get_action, request, h, get_or_bust
+import re
+from paste.deploy.converters import asbool
 import json
-from requests.exceptions import InvalidSchema
-
 from requests.models import InvalidURL
-
-import ckanext.terriajs.constants as constants
 
 from ckan.common import config
 import ckan.common as converters
-import six
-from six import text_type
+# import six
+# from six import text_type
 
 import ckan.lib.helpers as h
-import ckan.plugins as plugins
 import ckan.logic as logic
-import ckan.logic.schema as schema_
-import ckan.lib.dictization as dictization
-import ckan.lib.dictization.model_dictize as model_dictize
-import ckan.lib.dictization.model_save as model_save
-import ckan.lib.navl.dictization_functions
-import ckan.lib.navl.validators as validators
-import ckan.lib.plugins as lib_plugins
-import ckan.lib.email_notifications as email_notifications
-import ckan.lib.search as search
-import ckan.lib.uploader as uploader
-import ckan.lib.datapreview
-import ckan.lib.app_globals as app_globals
-import ast
-
 import ckan.plugins.toolkit as toolkit
-
-context = toolkit.c
-
 from ckan.common import _, request
 
-log = logging.getLogger(__name__)
-
 # Define some shortcuts
-# Ensure they are module-private so that they don't get loaded as available
-# actions in the action API.
-_validate = ckan.lib.navl.dictization_functions.validate
-_get_action = logic.get_action
-_check_access = logic.check_access
 NotFound = logic.NotFound
 ValidationError = logic.ValidationError
-_get_or_bust = logic.get_or_bust
+
+import ckanext.terriajs.constants as constants
+import logging, traceback
+log = logging.getLogger(__name__)
 
 from flask import Blueprint, abort, jsonify
-from six import text_type
-
-from ckan.common import json
-from ckan.plugins.toolkit import get_action, request, h
-import re
-from paste.deploy.converters import asbool
-
 terriajs = Blueprint(constants.NAME, __name__)
-
 
 def item_disabled(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=True, force_to=False, itemOnly=True))
     except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
 def item_enabled(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=True, force_to=True, itemOnly=True))
     except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
 def item(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=False, itemOnly=True))
     except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
 terriajs.add_url_rule(u'/terriajs/item/<resource_view_id>.json', view_func=item, methods=[u'GET'])
@@ -89,12 +59,14 @@ def config_disabled(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=True, force_to=False))
     except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
 def config_enabled(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=True, force_to=True))
     except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
 
@@ -102,7 +74,7 @@ def config(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=False))
     except Exception as ex:
-        # raise ex
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
 terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_func=config_enabled, methods=[u'GET'])
@@ -151,114 +123,10 @@ def mapping(type):
         else:
             raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
     except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 404
 
 terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=mapping, methods=[u'GET'])
-
-from ckan.model import meta
-from ckan.model.resource_view import ResourceView
-from ckan.model.resource import Resource
-from ckan.model.package import Package
-from ckan.model.group import Group
-from ckan.model.package_extra import PackageExtra
-from ckan.model.core import State
-
-
-from sqlalchemy.dialects import postgresql
-
-import sqlalchemy as sa
-from ckan.model import types as _types
-
-from sqlalchemy import or_
-_array_agg = sa.sql.functions.array_agg
-_json_build_object = sa.func.json_build_object
-
-def query_view_by_type():
-    '''Returns the count of ResourceView not in the view types list'''
-
-    return meta.Session.query(
-                    Group.id.label('group_id'),
-                    Package.id.label('package_id'),
-                    Resource.id.label('resource_id'),
-                    ResourceView.id,
-                    Group.title.label('organization_title'),
-                    Package.title.label('dataset_title'),
-                    Package.notes.label('dataset_description'),
-                    Resource.name.label('resource_name'),
-                    Resource.description.label('resource_description'),
-                    # _json_build_object(Resource.as_dict(Resource)).label('resource'),
-                    # postgresql.array_agg(_json_build_object(PackageExtra.key,PackageExtra.value)).label('extras'),
-                    ResourceView.config
-                )\
-                .select_from(Package)\
-                .join(Resource, Package.id == Resource.package_id)\
-                .join(ResourceView, ResourceView.resource_id == Resource.id)\
-                .join(Group, Package.owner_org == Group.id)\
-                .filter(ResourceView.view_type == constants.NAME)
-                # .join(PackageExtra, Package.id == PackageExtra.package_id, isouter=True)\
-                # .filter(PackageExtra.state == State.ACTIVE).group_by(Group.id,Package.id,Resource.id,ResourceView.id)\
-                
-
-
-def _get_list_of_views():
-    try:
-        # Set the pagination configuration
-        args = request.args
-        
-        _dataset_title = args.get('dataset_title', None, type=str)
-        _dataset_title = _dataset_title and '%{}%'.format(_dataset_title)
-
-        _dataset_description = args.get('dataset_description', None, type=str)
-        _dataset_description = _dataset_description and '%{}%'.format(_dataset_description)
-
-        _resource_name = args.get('resource_name', None, type=str)
-        _resource_name = _resource_name and '%{}%'.format(_resource_name)
-
-        existing_views=query_view_by_type()\
-            .filter(or_(_resource_name and Resource.name.like(_resource_name),
-                        _dataset_title and Package.title.like(_dataset_title),
-                        _dataset_description and Package.notes.like(_dataset_description)))
-                    # Skip DEFAULT_TYPE (full config)
-                    #.and_(not_(ResourceView.config.like('%\'terriajs_type\': \'{}\'%'.format(constants.DEFAULT_TYPE)))))
-
-        views = existing_views.order_by(Resource.name)
-
-        page = args.get('page', 0, type=int)
-        start=page*constants.PAGE_SIZE
-        return json.dumps(views.slice(start, start+constants.PAGE_SIZE).all())
-        # return views
-    except Exception as ex:
-        return jsonify(error=str(ex)), 404
-        #abort(404)
-
-def _get_view_details():
-    try:    
-        args = request.args
-        
-        _view_id = args.get('view_id', None, type=str)
-        
-        view=meta.Session.query(
-                        ResourceView.id,
-                        Group.title.label('organization_title'),
-                        Package.title.label('dataset_title'),
-                        Package.notes.label('dataset_description'),
-                        Resource.name.label('resource_name'),
-                        Resource.description.label('resource_description'),
-                        ResourceView.config
-                    ).filter(ResourceView.id == _view_id)\
-                    .filter(Package.owner_org == Group.id)\
-                    .filter(Package.id == Resource.package_id)\
-                    .filter(ResourceView.resource_id == Resource.id)
-        return json.dumps(view.one())
-    except Exception as ex:
-        return jsonify(error=_("Unable to get details for id: {} -> {}".format(_view_id, str(ex)))), 404
-        #abort(404)
-
-terriajs.add_url_rule(u'/terriajs/describe', view_func=_get_view_details, methods=[u'GET'])
-
-terriajs.add_url_rule(u'/terriajs/search', view_func=_get_list_of_views, methods=[u'GET'])
-
-
 
 def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -294,45 +162,45 @@ def _resolve(item, force=False, force_to=False):
     
     return item
 
-def _get_view(view_id):
-    return view_id and query_view_by_type().filter(ResourceView.id==view_id).one()
+from jinja2 import Template
 
 def _get_config(view_id):
 
-    view = view_id and _get_view(view_id)
+    view = view_id and query.view_by_id(view_id)
     if not view:
         raise Exception(_('No view found for view_id: ')+str(view_id))
 
-    view_config = view.config
+    view_config = view.get('config',None)
+    if not view_config:
+        raise Exception('Unable to find a valid configuration for view ID: '+str(view_id))
 
-    config = view_config and json.loads(view_config.get('terriajs_config',None))
-    if not config:
-        raise Exception(_('No config found for view: ')+str(view_id))
-
-
-    from jinja2 import Template
-    pkg = Package.get(view.package_id).as_dict()
-    res = next(r for r in pkg['resources'] if r['id'] == view.resource_id)
+    ###########################################################################
+    # Jinja2 template
+    ###########################################################################
+    # TODO can we have a context instead of None?
+    pkg = toolkit.get_action('package_show')(None, {'id':get_or_bust(view,'package_id')})
+    res = next(r for r in pkg['resources'] if r['id'] == get_or_bust(view,'resource_id'))
     # res = filter(lambda r: r['id'] == view.resource_id,pkg['resources'])[0]
     model = {
         'dataset':pkg,
+        'organization': get_or_bust(pkg,'organization'),
         'resource':res,
-        'ckan':{'base_url':h.url_for('/', _external=True)}
+        'ckan':{'base_url':h.url_for('/', _external=True)},
+        'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
-    for f in config.keys():
-        template = Template(config[f])
-        config[f] = template.render(model)
+
+    template = view_config and Template(get_or_bust(view_config,'terriajs_config'))
+    config = template and template.render(model)
+
+    config = view_config and json.loads(config)
+    if not config:
+        raise Exception(_('No config found for view: ')+str(view_id))
+
+    # for f in config.keys():
+    #     template = Template(config[f])
+    #     config[f] = template.render(model)
+
     ###########################################################################
-    # synch=view_config.get('terriajs_synch','none')
-    # if synch != 'none':
-    #     if synch == 'resource':
-    #         config['name']=view.resource_name or config['name']
-    #         config['description']=view.resource_description or config['description']
-    #     elif synch == 'dataset':
-    #         config['name']=view.dataset_title or config['name']
-    #         config['description']=view.dataset_description or config['description']
-    #     else:
-    #         raise Exception(_("Unsupported synch mode: ")+str(synch))
 
     type = view_config and view_config.get('terriajs_type',None)
     if not type:
@@ -345,3 +213,48 @@ def _get_config(view_id):
         'south':view_config.get('south',-90)
     }
     return { 'config':config, 'type':type, 'camera':camera }
+
+
+import query
+
+def _get_list_of_views():
+    try:
+        # Set the pagination configuration
+        args = request.args
+        
+        _dataset_title = args.get('dataset_title', None, type=str)
+        _dataset_title = _dataset_title and '%{}%'.format(_dataset_title)
+
+        _dataset_description = args.get('dataset_description', None, type=str)
+        _dataset_description = _dataset_description and '%{}%'.format(_dataset_description)
+
+        _resource_name = args.get('resource_name', None, type=str)
+        _resource_name = _resource_name and '%{}%'.format(_resource_name)
+
+        views = query.views_list_query(_dataset_title,_dataset_description,_resource_name)
+
+        page = args.get('page', 0, type=int)
+        start=page*constants.PAGE_SIZE
+        return json.dumps([u._asdict() for u in views.slice(start, start+constants.PAGE_SIZE).all()])
+        # return views
+    except Exception as ex:
+        logging.log(logging.ERROR,str(ex), exc_info=1)
+        return jsonify(error=str(ex)), 404
+        #abort(404)
+
+terriajs.add_url_rule(u'/terriajs/search', view_func=_get_list_of_views, methods=[u'GET'])
+
+def _get_view_details():
+    try:    
+        args = request.args
+        
+        _view_id = args.get('view_id', None, type=str)
+        return json.dumps(query.view_details(_view_id))
+    except Exception as ex:
+        error=_("Unable to get details for id: {} -> {}".format(_view_id, str(ex)))
+        logging.log(logging.ERROR,error)
+        return jsonify(error), 404
+        #abort(404)
+
+
+terriajs.add_url_rule(u'/terriajs/describe', view_func=_get_view_details, methods=[u'GET'])

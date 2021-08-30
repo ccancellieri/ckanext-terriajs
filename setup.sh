@@ -9,9 +9,9 @@
 
 # paster --plugin=ckan config-tool $SRC_DIR/ckan/test-core.ini \
 paster --plugin=ckan config-tool /srv/app/production.ini \
-    "ckanext.terriajs.default.name=TerriaJS" \
+    "ckanext.terriajs.default.name=TerriaJS Map" \
     "ckanext.terriajs.always_available=True" \
-    "ckanext.terriajs.default.title=TerriaJS view" \
+    "ckanext.terriajs.default.title=Map" \
     "ckanext.terriajs.icon=globe" \
     "ckanext.terriajs.url=http://localhost:8080" \
     "ckanext.terriajs.schema.default_type=terriajs" \

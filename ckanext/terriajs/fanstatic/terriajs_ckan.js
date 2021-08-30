@@ -317,18 +317,19 @@ coerceTypes: true,
         
                 // Setup API calls
                     "view_search": function search(jseditor_editor, input) {
-                        var url = new URL('terriajs/search?resource_name='
-                                 + encodeURI(input) +
-                                '&resource_name='+ encodeURI(input)+
+                        var url = new URL('terriajs/search?'+
+                                'resource_name='+ encodeURI(input)+
                                 '&dataset_title='+ encodeURI(input)+
                                 '&dataset_description='+ encodeURI(input),terriajs.ckan_url);
                         if (input.length < 2) {
                             return [];
                         }
-                        return fetch(url).then(function (response) {
-                                return response.json();
-                            }).then(function (data) {
-                                return data;
+                        return fetch(url).then(function (request) {
+                                if (request.status === 200) {
+                                    return request.json();
+                                } else {
+                                    return [""];
+                                }
                             }).catch(function (err) {
                                 console.error(err);
                                 return "";

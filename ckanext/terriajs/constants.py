@@ -4,9 +4,9 @@ config = toolkit.config
 
 NAME='terriajs'
 PAGE_SIZE = 10
-DEFAULT_NAME=config.get('ckanext.terriajs.default.name', 'TerriaJS')
+DEFAULT_NAME=config.get('ckanext.terriajs.default.name', 'Map')
 
-DEFAULT_TITLE=config.get('ckanext.terriajs.default.title', 'TerriaJS view')
+DEFAULT_TITLE=config.get('ckanext.terriajs.default.title', 'Map')
 ICON=config.get('ckanext.terriajs.icon', 'globe')
 
 # MANDATORY

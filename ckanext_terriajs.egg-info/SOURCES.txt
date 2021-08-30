@@ -8,12 +8,15 @@ ckanext/__init__.py
 ckanext/terriajs/__init__.py
 ckanext/terriajs/constants.py
 ckanext/terriajs/plugin.py
+ckanext/terriajs/tools.py
+ckanext/terriajs/validators.py
 ckanext/terriajs/fanstatic/customizations.css
 ckanext/terriajs/fanstatic/geojson-extent.js
 ckanext/terriajs/fanstatic/jsoneditor.js
 ckanext/terriajs/fanstatic/terriajs_ckan.js
 ckanext/terriajs/logic/__init__.py
 ckanext/terriajs/logic/get.py
+ckanext/terriajs/logic/query.py
 ckanext/terriajs/templates/terriajs.html
 ckanext/terriajs/templates/terriajs_form.html
 ckanext/terriajs/tests/__init__.py
