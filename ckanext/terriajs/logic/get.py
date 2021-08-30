@@ -194,7 +194,7 @@ def _get_config(view_id):
     template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config')))
     config = template and template.render(model)
     try:
-        config = view_config and json.loads(config)
+        config = view_config and json.loads(config.decode("utf-8"))
         if not config:
             raise Exception(_('No config found for view: ')+str(view_id))
     except Exception as ex:
