@@ -190,21 +190,21 @@ def _get_config(view_id):
         'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
 
-    template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config')))
-    config = template and template.render(model)
-    try:
-        # decode needed for python2.7
-        config = view_config and json.loads(config.decode("utf-8"))
-        if not config:
-            raise Exception(_('No config found for view: ')+str(view_id))
-    except Exception as ex:
-        raise Exception(_('Unable to parse resulting object should be a valid json:\n'+str(config)+
-        '\nException: '+str(ex)+
-        '\nPlease check your template.'))
-    # for f in config.keys():
-    #     template = Template(config[f])
-    #     config[f] = template.render(model)
-
+    # template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config').decode('string_escape')))
+    # config = template and template.render(model)
+    # try:
+    #     # decode needed for python2.7
+    #     config = view_config and json.loads(config)
+    #     if not config:
+    #         raise Exception(_('No config found for view: ')+str(view_id))
+    # except Exception as ex:
+    #     raise Exception(_('Unable to parse resulting object should be a valid json:\n'+str(config)+
+    #     '\nException: '+str(ex)+
+    #     '\nPlease check your template.'))
+    config = json.loads(get_or_bust(view_config,'terriajs_config'))
+    for f in config.keys():
+        template = Template(Markup(config[f]))
+        config[f] = template.render(model)
     ###########################################################################
 
     type = view_config and view_config.get('terriajs_type',None)
