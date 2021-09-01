@@ -3,9 +3,10 @@
   "options":{
     "keep_oneof_values": true
   },
-  "oneOf": [
+  "anyOf": [
     {
       "title": "Default description",
+      "format": "textarea",
       "readonly": true
     },
     {
