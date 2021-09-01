@@ -48,6 +48,7 @@ def get_config(resource):
         return constants.TERRIAJS_CATALOG
     else:
         # USING template mechanism
+        # TODO this is slooow (file access), consider to load once at build time (maybe same for mapping+schemas)
         terriajs_config = utils.json_load(constants.PATH_TEMPLATE,''.join([resource_type, '.json']))
         if terriajs_config:
             return terriajs_config
