@@ -206,7 +206,7 @@ def _get_config(view_id):
                 loader=FunctionLoader(functionLoader),
                 # autoescape=select_autoescape(['html', 'xml']),
                 autoescape=True,
-                newline_sequence='\r\n',
+                #newline_sequence='\r\n',
                 trim_blocks=False,
                 keep_trailing_newline=True)
     for f in _config.keys():
