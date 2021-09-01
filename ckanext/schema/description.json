@@ -1,6 +1,9 @@
 {
   "type": "string",
-  "anyOf": [
+  "options":{
+    "keep_oneof_values": true
+  },
+  "oneOf": [
     {
       "title": "Default description",
       "readonly": true
