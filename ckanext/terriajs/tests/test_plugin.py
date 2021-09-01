@@ -52,7 +52,7 @@ class TestTerria(object):
             'title': 'TerriajsView',
             'description': 'A nice view',
             'terriajs_type': constants.DEFAULT_TYPE,
-            'terriajs_config': constants.TERRIAJS_CONFIG
+            'terriajs_config': constants.TERRIAJS_CATALOG
         }
 
     def test_can_create_a_terriajs_view(self):
@@ -83,7 +83,7 @@ class TestTerria(object):
         url = self.url_fetch_json.format(host_url=self.host_url, plugin_name=constants.NAME,
                                     resource_view_id=new_view['id'])
         response = requests.get(url, extra_environ=self.env)
-        assert (constants.TERRIAJS_CONFIG, response.body)
+        assert (constants.TERRIAJS_CATALOG, response.body)
 
         # Delete view
         helpers.call_action("resource_view_delete", context={}, **new_view)

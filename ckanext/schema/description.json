@@ -1,0 +1,19 @@
+{
+  "type": "string",
+  "anyOf": [
+    {
+      "title": "Default description",
+      "readonly": true
+    },
+    {
+      "title": "Custom markdown description",
+      "format": "markdown"
+    },
+    {
+      "title": "Custom html Description",
+      "description": "Warning don't mix html and markdown content",
+      "type": "string",
+      "format": "jodit"
+    }
+  ]
+}

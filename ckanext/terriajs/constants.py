@@ -1,4 +1,3 @@
-
 import ckan.plugins.toolkit as toolkit
 config = toolkit.config
 
@@ -14,7 +13,7 @@ ICON=config.get('ckanext.terriajs.icon', 'globe')
 TERRIAJS_URL=config.get('ckanext.terriajs.url', 'https://localhost/terriajs')
 
 # MANDATORY
-TERRIAJS_SCHEMA_URL=config.get('ckanext.terriajs.schema.url', 'https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json')
+#TERRIAJS_SCHEMA_URL=config.get('ckanext.terriajs.schema.url', 'https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json')
 
 # MANDATORY
 # (ref to type-mapping.json)
@@ -31,10 +30,6 @@ ALWAYS_AVAILABLE=config.get('ckanext.terriajs.always_available', True)
 # TODO wmts incoming...
 DEFAULT_FORMATS =config.get('ckanext.terriajs.default.formats', ['csv','wms'])
 
-# type to use as ckan resource when you would like to be free to write the 'full view' not only an item
-# it may match one of the items into 
-DEFAULT_TYPE = 'terriajs'
-
 # use this type to define a group into terria hierarchy
 # type used to define a group of pointers (to a set of views). (resolved internally) 
 LAZY_GROUP_TYPE = 'terriajs-group'
@@ -48,13 +43,26 @@ LAZY_ITEM_TYPE = 'terriajs-view'
 # dataset: Use name and description of the parent dataset
 SYNCH_WITH=['none','resource','dataset']
 
+import os
+path = os.path
 
-TERRIAJS_CONFIG = {
-               'catalog':[],
-               'homeCamera':{
-                  'west':-180,
-                  'east':180,
-                  'north':90,
-                  'south':-90
-               }
-            }
+PATH_ROOT=path.realpath(path.join(path.dirname(__file__),'..'))
+# 
+PATH_SCHEMA=path.realpath(config.get('ckanext.terriajs.path.schema', path.join(PATH_ROOT,'schema')))
+# Used as jinja template to initialize the items values, it's name is by convention the type
+# same type may also be located under mapping
+PATH_TEMPLATE=path.realpath(config.get('ckanext.terriajs.path.template', path.join(PATH_ROOT,'template')))
+
+
+# type to use as ckan resource when you would like to be free to write the 'full view' not only an item
+# it may match one of the items into 
+DEFAULT_TYPE = 'terriajs-catalog'
+import ckanext.terriajs.utils as utils
+import json
+TERRIAJS_CATALOG = json.loads(utils.json_load(PATH_TEMPLATE,''.join([DEFAULT_TYPE, '.json'])))
+if not TERRIAJS_CATALOG:
+   raise Exception('Unable to locate {} template into the template folder ({})'.format(DEFAULT_TYPE,PATH_TEMPLATE))
+
+# REST paths
+REST_MAPPING_PATH='/terriajs/mapping/'
+REST_SCHEMA_PATH='/terriajs/schema/'

@@ -5,7 +5,7 @@ from requests.models import InvalidURL
 import json
 
 import ckanext.terriajs.constants as constants
-# import ckanext.terriajs.tools
+import ckanext.terriajs.utils as utils
 # import ckanext.terriajs.logic.get as get
 # import ckanext.terriajs.validators as v
 import logging
@@ -20,13 +20,14 @@ def resolve_mapping(type):
     '''
     if type in constants.TYPE_MAPPING:
         if not h.is_url(constants.TYPE_MAPPING[type]):
-            return h.url_for('/terriajs/mapping/'+str(type), _external=True)
+            return h.url_for(constants.MAPPING_PATH+str(type), _external=True)
         else:
             return constants.TYPE_MAPPING[type]
     else:
         error = "Type "+type+" not found into available mappings, please check your configuration"
         logging.log(logging.ERROR,error)
         raise InvalidURL(_(error))
+
 
 # TODO DOCUMENT (Default mapping)
 def get_view_type(resource):
@@ -44,42 +45,18 @@ def get_config(resource):
     resource_type = get_view_type(resource)
 
     if resource_type == constants.DEFAULT_TYPE:
-        terriajs_config = constants.TERRIAJS_CONFIG
+        return constants.TERRIAJS_CATALOG
     else:
-        # package=data_dict.get('package','')
-        # terriajs_config = {
-        #                 'name': resource.get('name',''),
-        #                 'url': resource.get('url',''),
-        #                 'description': resource.get('description',''),
-        #                 'id': resource.get('id',''),
-        #                 'type': resource_type or ''
-        #             }
-        # USING jinja
-        terriajs_config = {
-                        'name': '{{resource.name}}',
-                        'url': '{{resource.url}}',
-                        'description': '{{dataset.notes or resource.description}}',
-                        'id': resource.get('id',''),
-                        'type': resource_type or ''
-                    }
-
-###################################################
-# TODO : EXTENSION POINT TO CONFIGURE BASED ON TYPE
-###################################################
-
-    if resource_type=='wms':
-        terriajs_config.update({'layers': '{{resource.name}}'})
-    elif resource_type=='wmts':
-        terriajs_config.update({'layer': '{{resource.name}}',
-                            "useResourceTemplate": False,
-                            "ignoreUnknownTileErrors": True,
-                            "treat403AsError": False,
-                            "treat404AsError": False,
-                            "isLegendVisible": False})
-
-    elif resource_type==constants.LAZY_GROUP_TYPE:
-        terriajs_config.update({'items': [], "preserveOrder": True})
-    
-    # TODO BBOX based on the layer...
-    
-    return json.dumps(terriajs_config)
+        # USING template mechanism
+        terriajs_config = utils.json_load(constants.PATH_TEMPLATE,''.join([resource_type, '.json']))
+        if terriajs_config:
+            return terriajs_config
+        else:
+            # fallback, no template has been found
+            return {
+                'name': resource.get('name',''),
+                'url': resource.get('url',''),
+                'description': resource.get('description',''),
+                'id': resource.get('id',''),
+                'type': resource_type or ''
+            }

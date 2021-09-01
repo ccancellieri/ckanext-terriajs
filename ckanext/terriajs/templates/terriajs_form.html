@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
   <!-- <script src="https://unpkg.com/@trevoreyre/autocomplete-js"></script> -->
+
+  <!-- Color -->
+  <script src="https://unpkg.com/vanilla-picker@2"></script>
 <!-- <link
   rel="stylesheet"
   href="https://unpkg.com/@trevoreyre/autocomplete-js/dist/style.css"
@@ -66,21 +69,43 @@
                 data-module-resource="{{ h.dump_json(resource) }}" data-module-ckan-url="{{ h.url_for('/',_external=True) }}"/>
         <input id="terriajs_config" type="hidden" name="terriajs_config" value="" />
         <p>
-            <b>{{_('View Type:')}}</b>
-            <input id="terriajs_type" readonly="true" style="border-width:0px" name="terriajs_type" value="{{resource['format'].lower()}}" />
-        </p>
-        <p>
-            <label for="terriajs_view_camera">Camera</label>
-            <label for="north">{{_('North')}}</label><input id="north" step="0.001" name="north" type="number" min="-90" max="90" value="{{resource_view['north']}}" />
-            <label for="east">{{_('East')}}</label><input id="east" step="0.001" name="east" type="number" min="-180" max="180" value="{{resource_view['east']}}" />
-            <label for="south">{{_('South')}}</label><input id="south" step="0.001" name="south" type="number" min="-90" max="90" value="{{resource_view['south']}}" />
-            <label for="west">{{_('West')}}</label><input id="west" step="0.001" name="west" type="number" min="-180" max="180" value="{{resource_view['west']}}" />
+            <table class="table table-condensed table-responsive">
+                <tr class="row">
+                    <th class="col-md-2"><label for="terriajs_type">{{_('View Type')}}</label></th>
+                    <th class="col-md-10"><label for="terriajs_view_camera">Camera</label></th>
+                </tr>
+                <tr class="row">
+                    <td>
+                        <!-- LOWERING THE FORMAT IS VERY IMPORTANT HERE -->
+                        <input id="terriajs_type" readonly="true" style="border-width:0px" name="terriajs_type" value="{{resource['format'].lower()}}" />
+                    </td>
+                    <td>
+                        <label for="north">{{_('North')}}</label><input id="north" step="0.001" name="north" type="number" min="-90" max="90" value="{{resource_view['north']}}" />
+                        <label for="east">{{_('East')}}</label><input id="east" step="0.001" name="east" type="number" min="-180" max="180" value="{{resource_view['east']}}" />
+                        <label for="south">{{_('South')}}</label><input id="south" step="0.001" name="south" type="number" min="-90" max="90" value="{{resource_view['south']}}" />
+                        <label for="west">{{_('West')}}</label><input id="west" step="0.001" name="west" type="number" min="-180" max="180" value="{{resource_view['west']}}" />
+                    </td>
+                </tr>
+            </table>
         </p>
     {% endblock %}
     <p>
-        <button class="btn btn-primary" type="button"  data-toggle="collapse" 
-            title="{{_('Shows a table with copy to clipboard buttons for a fast usage of available informations from the dataset and resources')}}"
-            data-target="#helperTable" >{{_('Tools')}}</button>
+
+        <div style="display: inline-block;">
+            <button class="btn btn-primary" type="button"  data-toggle="collapse" 
+                title="{{_('Shows a table with copy to clipboard buttons for a fast usage of available informations from the dataset and resources')}}"
+                data-target="#helperTable" >{{_('Tools')}}</button>
+            <a class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Click to open the model used by this configuration"
+                href="{{h.url_for('terriajs.model', resource_id=resource.id, dataset_id=package.id, _external=True)}}" target="_blank">
+                Model
+            </a>
+            {% if resource_view.id %}
+            <a class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Click to open the link to this configuration"
+                    href="{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True)}}" target="_blank">
+                Resulting endpoint
+            </a>
+            {% endif %}
+        </div>
     </p>
     <div id="helperTable" class="collapse">
         <table class="table card card-body" style="width:100%">
@@ -116,7 +141,7 @@
                 </td>
                 <td class="col">
                     <button class="btn btn-secondary"
-                            onclick="copy(this, event, '{{ h.url_for(controller='dataset', action='read', id=package.id, _external=True ) }}')"
+                            onclick="copy(this, event, {{h.url_for(controller='dataset', action='read', id=package.id, _external=True )}})"
                             data-toggle="tooltip" data-placement="bottom" title="{{package.url}}">
                         <i class="fa fa-clipboard" aria-hidden="true"></i> URL
                     </button>
@@ -178,12 +203,8 @@
                     <button class="btn btn-primary" id="editor-howto" onclick="javascript:terriajs.wrap(terriajs.getEditor);">HowTo</button>
                     <button class="btn btn-primary" id="editor-toggle" onclick="javascript:terriajs.wrap(terriajs.editorToggle);"></button>
                     {#<button class="btn btn-primary" id="editor-preview" onclick="javascript:terriajs.wrap(terriajs.preview);">Preview</button>#}
-                    {% if resource_view.id %}
-                    <button class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Click to obtain the link to this configuration"
-                            onclick="copy(this, event, '{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True)}}')">
-                        <i class="fa fa-clipboard" aria-hidden="true"></i> Resulting endpoint
-                    </button>
-                    {% endif %}
+                    
+                    
                 </div>
             </p>
             <!-- <p style="border: 2px solid gray;" id="editor-terriajs-config"> -->

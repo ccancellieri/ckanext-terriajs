@@ -38,7 +38,6 @@ class TerriajsPlugin(p.SingletonPlugin):
         with open(constants.SCHEMA_TYPE_MAPPING_FILE) as f:
             constants.TYPE_MAPPING = json.load(f)
         constants.FORMATS=constants.TYPE_MAPPING.keys()
-
         
     def notify(self, resource):
         # Receives notification of changed URL on a resource.

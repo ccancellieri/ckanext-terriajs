@@ -62,7 +62,7 @@ def default_type(key, data, errors, context):
             errors[key].append(_('Missing value'))
             raise StopOnError
 
-        data[key] = type
+        data[key] = type.lower()
 
 
 # def default_synch(key, data, errors, context):

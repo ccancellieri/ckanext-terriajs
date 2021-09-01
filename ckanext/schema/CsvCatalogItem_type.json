@@ -1,5 +1,6 @@
 {
   "type": "object",
+  "title": "Comma-Separated Values (CSV)",
   "required": [
     "type",
     "name",
@@ -14,10 +15,11 @@
         "csv"
       ]
     },
+    "id": {
+      "$ref":"/terriajs/schema/id.json"
+    },
     "description": {
-      "type": "string",
-      "title": "Description",
-      "format": "markdown"
+      "$ref":"/terriajs/schema/description.json"
     },
     "rectangle": {
       "type": "array",
@@ -114,8 +116,7 @@
                           "type": "string"
                         },
                         "color": {
-                          "type": "string",
-                          "format": "color"
+                          "$ref":"terriajs/schema/ColorPicker.json"
                         }
                       }
                     }
@@ -143,13 +144,13 @@
         "colorPalette": {
           "title": "Color Palette",
           "type": "string",
-          "enum": [
-            "10-class BrBG",
-            "10-class Set3",
-            "9-class Set1",
-            "Spectral"
-          ],
-          "format": "select"
+          "links": [
+            {
+              "href": "https://colorbrewer2.org",
+              "mediaType": "application/html",
+              "rel": "go to palette helper"
+            }
+          ]
         },
         "colorBins": {
           "title": "Color Bins for Resource",
@@ -181,6 +182,9 @@
               "type": "array",
               "format": "table",
               "title": "List of Color and Offset",
+              "options": {       
+                "disable_collapse": true
+              },
               "items": {
                 "type": "object",
                 "required": [
@@ -192,8 +196,7 @@
                     "type": "number"
                   },
                   "color": {
-                    "type": "string",
-                    "format": "color"
+                    "$ref":"terriajs/schema/ColorPicker.json"
                   }
                 }
               }
@@ -233,6 +236,5 @@
         }
       }
     }
-  },
-  "title": "Comma-Separated Values (CSV)"
+  }
 }

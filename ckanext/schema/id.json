@@ -1,0 +1,11 @@
+{
+  "title": "id",
+  "type":"string",
+  "links": [
+    {
+      "href": "https://www.uuidgenerator.net/version4",
+      "mediaType": "text/html",
+      "rel": "generator..."
+    }
+  ]
+}

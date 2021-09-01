@@ -2,15 +2,11 @@
 
 from ckan.common import json
 from ckan.plugins.toolkit import get_action, request, h, get_or_bust
-import re
-from paste.deploy.converters import asbool
 import json
 from requests.models import InvalidURL
 
-from ckan.common import config
-import ckan.common as converters
-# import six
-# from six import text_type
+# import ckan.common as converters
+# from paste.deploy.converters import asbool
 
 import ckan.lib.helpers as h
 import ckan.logic as logic
@@ -23,9 +19,12 @@ ValidationError = logic.ValidationError
 
 import ckanext.terriajs.constants as constants
 import ckanext.terriajs.logic.query as query
+# import ckanext.terriajs.tools as tools
+import ckanext.terriajs.utils as utils
 import logging
 log = logging.getLogger(__name__)
 
+from jinja2 import Template,Markup
 from flask import Blueprint, abort, jsonify
 terriajs = Blueprint(constants.NAME, __name__)
 
@@ -70,7 +69,7 @@ def config_enabled(resource_view_id):
         logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
-def config(resource_view_id):
+def _config(resource_view_id):
     try:
         return json.dumps(_base(resource_view_id, force=False))
     except Exception as ex:
@@ -81,7 +80,7 @@ terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_
 
 terriajs.add_url_rule(u'/terriajs/config/disabled/<resource_view_id>.json', view_func=config_disabled, methods=[u'GET'])
 
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', view_func=config, methods=[u'GET'])
+terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', endpoint='config', view_func=_config, methods=[u'GET'])
 
 ### 
 import copy
@@ -91,42 +90,48 @@ def _base(resource_view_id, force=False, force_to=False, itemOnly=False):
 
     if type == constants.DEFAULT_TYPE:
         # it's default type, let's leave it as it is (raw)
-        config = view_config['config']
+        _config = view_config['config']
     elif itemOnly:
         # do not wrap the item with a valid terria configuration
-        config = _resolve(view_config['config'], force, force_to)
+        _config = _resolve(view_config['config'], force, force_to)
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
-        config = copy.deepcopy(constants.TERRIAJS_CONFIG)
-        config['catalog'].append(_resolve(view_config['config'], force, force_to))
-        config.update({'homeCamera':view_config['camera']})
+        _config = copy.deepcopy(constants.TERRIAJS_CATALOG)
+        _config['catalog'].append(_resolve(view_config['config'], force, force_to))
+        _config.update({'homeCamera':view_config['camera']})
 
-    return config
+    return _config
 
 
 # TODO better manage error conditions with appropriate http code and message
 import requests
-import os
-schema_path=os.path.abspath(os.path.join(os.path.dirname(__file__),'../../../schema/'))
 
 def mapping(type):
     '''
     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
     '''
-    try:
-        if type in constants.TYPE_MAPPING:
-            if not h.is_url(constants.TYPE_MAPPING[type]):
-                with open(schema_path+'/'+constants.TYPE_MAPPING[type]) as s:
-                    return json.dumps(json.load(s))
-            else:
-                return requests.get(constants.TYPE_MAPPING[type]).content
+    # try:
+    if type in constants.TYPE_MAPPING:
+        if not h.is_url(constants.TYPE_MAPPING[type]):
+            return _schema(constants.TYPE_MAPPING[type])
         else:
-            raise InvalidURL(_("Type "+type+" not found into available mappings, please check your configuration"))
-    except Exception as ex:
-        logging.log(logging.ERROR,str(ex), exc_info=1)
-        return jsonify(error=str(ex)), 404
+            return requests.get(constants.TYPE_MAPPING[type]).content
+    else:
+        raise InvalidURL(_(("Type {} not found into available mappings, please check your configuration").format(type)))
+    # except Exception as ex:
+    #     logging.log(logging.ERROR,str(ex), exc_info=1)
+    #     return jsonify(error=str(ex)), 404
 
-terriajs.add_url_rule(u'/terriajs/mapping/<type>', view_func=mapping, methods=[u'GET'])
+terriajs.add_url_rule(''.join([constants.REST_MAPPING_PATH,"<type>"]), view_func=mapping, endpoint='mapping', methods=[u'GET'])
+
+def _schema(name):
+    '''
+    provides a proxy for local schema definitions
+    '''
+    # TODO increase security should be/ensure to be under schema_path folder
+    return utils.json_load(constants.PATH_SCHEMA, name)
+
+terriajs.add_url_rule(''.join([constants.REST_SCHEMA_PATH,'<name>']), view_func=_schema, endpoint='schema', methods=[u'GET'])
 
 def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -146,7 +151,6 @@ def _resolve(item, force=False, force_to=False):
 
         # is it a nested lazy load item, let's try to resolve again
         item.update(_resolve(view_config['config'], force, force_to))
-            
 
     elif type == constants.LAZY_GROUP_TYPE:
         item.update({u'type':u'group'})
@@ -162,33 +166,22 @@ def _resolve(item, force=False, force_to=False):
     
     return item
 
-from jinja2 import Template,Markup
-
 def _get_config(view_id):
 
     view = view_id and query.view_by_id(view_id)
     if not view:
-        raise Exception(_('No view found for view_id: ')+str(view_id))
+        raise Exception(_('No view found for view_id: {}'.format(str(view_id))))
 
     view_config = view.get('config',None)
     if not view_config:
-        raise Exception('Unable to find a valid configuration for view ID: '+str(view_id))
+        raise Exception(_('Unable to find a valid configuration for view ID: {}'.format(str(view_id))))
     #view_config = json.dumps(view_config)
 
     ###########################################################################
     # Jinja2 template
     ###########################################################################
-    # TODO can we have a context instead of None?
-    pkg = toolkit.get_action('package_show')(None, {'id':get_or_bust(view,'package_id')})
-    res = next(r for r in pkg['resources'] if r['id'] == get_or_bust(view,'resource_id'))
-    # res = filter(lambda r: r['id'] == view.resource_id,pkg['resources'])[0]
-    model = {
-        'dataset':pkg,
-        'organization': get_or_bust(pkg,'organization'),
-        'resource':res,
-        'ckan':{'base_url':h.url_for('/', _external=True)},
-        'terriajs':{'base_url':constants.TERRIAJS_URL}
-        }
+    
+    model = _get_model(dataset_id=get_or_bust(view,'package_id'),resource_id=get_or_bust(view,'resource_id'))
 
     # template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config').decode('string_escape')))
     # config = template and template.render(model)
@@ -196,20 +189,23 @@ def _get_config(view_id):
     #     # decode needed for python2.7
     #     config = view_config and json.loads(config)
     #     if not config:
-    #         raise Exception(_('No config found for view: ')+str(view_id))
+    #         raise Exception(_('No config found for view: {}'.format(str(view_id))
     # except Exception as ex:
-    #     raise Exception(_('Unable to parse resulting object should be a valid json:\n'+str(config)+
+    #     raise Exception(_('Unable to parse resulting object should be a valid json:\n {}'.format(str(config),
     #     '\nException: '+str(ex)+
     #     '\nPlease check your template.'))
-    config = json.loads(get_or_bust(view_config,'terriajs_config'))
-    for f in config.keys():
-        template = Template(Markup(config[f]))
-        config[f] = template.render(model)
+
+    _config = json.loads(get_or_bust(view_config,'terriajs_config'))
+    for f in _config.keys():
+        # TODO check python3 compatibility 'unicode' may disappear?
+        if isinstance(_config[f],(str,unicode)):
+            template = Template(Markup(_config[f]))
+            _config[f] = template.render(model)
     ###########################################################################
 
     type = view_config and view_config.get('terriajs_type',None)
     if not type:
-        raise Exception(_('No type found for view: ')+str(view_id))
+        raise Exception(_('No type found for view: {}'.format(str(view_id))))
     
     camera={
         'east':view_config.get('east',180),
@@ -217,7 +213,47 @@ def _get_config(view_id):
         'north':view_config.get('north',90),
         'south':view_config.get('south',-90)
     }
-    return { 'config':config, 'type':type, 'camera':camera }
+    return { 'config':_config, 'type':type, 'camera':camera }
+
+def _get_model(dataset_id, resource_id):
+    '''
+    Returns the model used by jinja2 template
+    '''
+
+    if not dataset_id or not resource_id:
+        raise Exception('wrong parameters we expect a dataset_id and a resource_id')
+
+    # TODO can we have a context instead of None?
+    pkg = toolkit.get_action('package_show')(None, {'id':dataset_id})
+    if not pkg:
+        raise Exception('Unable to find dataset, check input params')
+
+    # res = filter(lambda r: r['id'] == view.resource_id,pkg['resources'])[0]
+    res = next(r for r in pkg['resources'] if r['id'] == resource_id)
+    if not res:
+        raise Exception('Unable to find resource under this dataset, check input params')
+
+    # return the model as dict
+    return {
+        'dataset':pkg,
+        'organization': get_or_bust(pkg,'organization'),
+        'resource':res,
+        'ckan':{'base_url':h.url_for('/', _external=True)},
+        'terriajs':{'base_url':constants.TERRIAJS_URL}
+        }
+    
+def _model(dataset_id, resource_id):
+    try:    
+        # args = request.args
+        # dataset_id = args.get('dataset_id', None, type=str)
+        # resource_id = args.get('resource_id', None, type=str)
+        return json.dumps(_get_model(dataset_id,resource_id))
+    except Exception as ex:
+        error=_("Unable to get model: {}".format(str(ex)))
+        logging.log(logging.ERROR,error)
+        return jsonify(error), 404
+
+terriajs.add_url_rule(u'/terriajs/model/<dataset_id>/<resource_id>', endpoint='model', view_func=_model, methods=[u'GET'])
 
 def _get_list_of_views():
     try:

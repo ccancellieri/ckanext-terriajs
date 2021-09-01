@@ -1,0 +1,7 @@
+{
+    "name": "{{resource.name}}",
+    "url": "{{resource.url}}",
+    "description": "{{dataset.notes or resource.description}}",
+    "id": "{{resource.id}}",
+    "type": "{{resource.type|lower}}"
+}

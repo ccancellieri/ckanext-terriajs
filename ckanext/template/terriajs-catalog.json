@@ -1,0 +1,9 @@
+{
+    "catalog":[],
+    "homeCamera":{
+       "west":-180,
+       "east":180,
+       "north":90,
+       "south":-90
+    }
+ }

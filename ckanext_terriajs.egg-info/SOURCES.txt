@@ -9,9 +9,9 @@ ckanext/terriajs/__init__.py
 ckanext/terriajs/constants.py
 ckanext/terriajs/plugin.py
 ckanext/terriajs/tools.py
+ckanext/terriajs/utils.py
 ckanext/terriajs/validators.py
 ckanext/terriajs/fanstatic/customizations.css
-ckanext/terriajs/fanstatic/geojson-extent.js
 ckanext/terriajs/fanstatic/jsoneditor.js
 ckanext/terriajs/fanstatic/terriajs_ckan.js
 ckanext/terriajs/logic/__init__.py

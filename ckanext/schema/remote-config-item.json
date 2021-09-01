@@ -1,0 +1,41 @@
+{
+  "description": "This catalog item can be used to load a single catalog item from a remote source.",
+  "type": "object",
+  "title": "remote-config-item",
+  "format": "grid-strict",
+  "required": [
+    "type","url","name"
+  ],
+  "options": {
+    "disable_collapse": true,
+    "disable_edit_json": true,
+    "disable_properties": true
+  },
+  "properties":{
+    "type":{ 
+      "type":"string",
+      "enum":["remote-config-item"],
+      "options": {
+        "hidden": true,
+        "grid_columns": 0
+      }
+    },
+    "name":{
+      "title": "name",
+      "type": "string",
+      "minLength": 1,
+      "options": {
+        "grid_columns": 4
+      }
+    },
+    "url":{
+      "title": "url",
+      "type": "string",
+      "format": "url",
+      "description": "The url to a Terriajs to lazily load (loaded on click)",
+      "options": {
+        "grid_columns": 8
+      }
+    }
+  }
+}

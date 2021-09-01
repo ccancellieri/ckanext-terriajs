@@ -1,0 +1,64 @@
+{
+    "title": "terriajs-view",
+    "id": "terriajs-view",
+    "type": "object",
+    "format": "grid-strict",
+    "required": [
+        "type",
+        "id",
+        "name"
+    ],
+    "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true,
+        "disable_properties": true
+    },
+    "properties": {
+        "type": {
+            "type": "string",
+            "enum": [
+                "terriajs-view"
+            ],
+            "options": {
+                "hidden": true,
+                "grid_columns": 0
+            }
+        },
+        "id": {
+            "title": "Id",
+            "type": "string",
+            "description": "Target Ckan terriajs view ID (autocomplete)",
+            "format": "autocomplete",
+            "minLength": 36,
+            "options": {
+                "autocomplete": {
+                    "search": "view_search",
+                    "getResultValue": "view_getValue",
+                    "renderResult": "view_renderer",
+                    "autoSelect": true
+                },
+                "grid_columns": 6
+            },
+            "links": [
+                {
+                    "href": "/terriajs/config/{{self}}.json",
+                    "mediaType": "application/json",
+                    "rel": "go to..."
+                }
+            ]
+        },
+        "name": {
+            "title": "Name",
+            "type": "string",
+            "format": "string",
+            "description": "Auto generated descriptive name",
+            "watch": {
+                "id": "terriajs-view.id"
+            },
+            "template": "view_template",
+            "options": {
+                "grid_columns": 6
+            }
+        }
+    }
+}

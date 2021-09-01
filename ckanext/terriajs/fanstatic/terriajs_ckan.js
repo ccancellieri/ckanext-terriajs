@@ -264,7 +264,13 @@ coerceTypes: true,
             //     "table_border": true,
             //     "table_zebrastyle": true
             // }
-            // window.JSONEditor.defaults
+            
+            // window.JSONEditor.defaults.options.colorpicker = {
+            //         "editor": false, /* default no editor */
+            //         "alpha": false, /* default no alpha */
+            //         "editorFormat": "rgb", 
+            //         "popup": 'up' /*bottom show in the bottom */
+            // }
             window.JSONEditor.defaults.callbacks = {
                 // "button":  function view_info(jseditor_editor, input){
                 //         console.log(input);
@@ -284,14 +290,6 @@ coerceTypes: true,
                         if (request.status === 200) {
                             const res = JSON.parse(request.response);
                             return res.resource_name+" - "+res.dataset_title;
-                            //{"dataset_description":"METADATA DESCRIPTION",
-                            //"resource_name":"","organization_title":"myorg",
-                            //"resource_description":"",
-                            //"config":{"terriajs_config":"{\"url\": \"http://localhost:5000/dataset/new_resource/test\", 
-                            //\"id\": \"cacea0c8-d1e0-4995-9702-b5c988d356b0\", \"type\": \"csv\", \"name\": \"\", \"description\": \"\"}",
-                            //"terriajs_type":"csv","terriajs_synch":"dataset"},
-                            //"id":"bd784907-e781-4340-a5cd-33f6ff75bbcb",
-                            //"dataset_title":"TEST"}
                         } else {
                             console.error("Unable to resolve item: "+e.id+".\n Response: "+request.response);
                             return "";

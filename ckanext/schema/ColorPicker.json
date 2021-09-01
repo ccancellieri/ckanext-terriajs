@@ -1,0 +1,13 @@
+{
+  "type": "string",
+  "format": "color",
+  "options": {
+    "colorpicker": {
+      "cancelButton": true,
+      "editor": true,
+      "alpha": false,
+      "editorFormat": "rgb",
+      "popup": "bottom"
+    }
+  } 
+}
