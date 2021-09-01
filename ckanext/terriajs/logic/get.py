@@ -1,5 +1,8 @@
 # encoding: utf-8
 
+from jinja2.environment import Environment
+from jinja2.loaders import FunctionLoader
+# from jinja2.utils import select_autoescape
 from ckan.common import json
 from ckan.plugins.toolkit import get_action, request, h, get_or_bust
 import json
@@ -196,10 +199,20 @@ def _get_config(view_id):
     #     '\nPlease check your template.'))
 
     _config = json.loads(get_or_bust(view_config,'terriajs_config'))
+
+    def functionLoader(name):
+        return _config[name]
+    env = Environment(
+                loader=FunctionLoader(functionLoader),
+                # autoescape=select_autoescape(['html', 'xml']),
+                autoescape=True,
+                newline_sequence='\r\n',
+                trim_blocks=False,
+                keep_trailing_newline=True)
     for f in _config.keys():
         # TODO check python3 compatibility 'unicode' may disappear?
         if isinstance(_config[f],(str,unicode)):
-            template = Template(Markup(_config[f]))
+            template = env.get_template(f)
             _config[f] = template.render(model)
     ###########################################################################
 

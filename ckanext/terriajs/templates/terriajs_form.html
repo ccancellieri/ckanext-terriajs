@@ -141,7 +141,7 @@
                 </td>
                 <td class="col">
                     <button class="btn btn-secondary"
-                            onclick="copy(this, event, {{h.url_for(controller='dataset', action='read', id=package.id, _external=True )}})"
+                            onclick="copy(this, event, '{{package.url}}')"
                             data-toggle="tooltip" data-placement="bottom" title="{{package.url}}">
                         <i class="fa fa-clipboard" aria-hidden="true"></i> URL
                     </button>
