@@ -3,7 +3,7 @@
     "url": "{{resource.url}}",
     "description": "{{dataset.notes or resource.description}}",
     "id": "{{resource.id}}",
-    "type": "{{resource.type|lower}}",
+    "type": "{{resource.format|lower}}",
     "layer": "{{resource.name}}",
     "useResourceTemplate": false,
     "ignoreUnknownTileErrors": true,
