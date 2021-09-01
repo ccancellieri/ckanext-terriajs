@@ -18,7 +18,7 @@
       ],
       "properties":{
         "id":{
-          "$ref":"/terriajs/schema/id.json"
+          "$ref":"terriajs/schema/id.json"
         },
         "type": {
           "type": "string",
@@ -35,7 +35,7 @@
           "type": "string"
         },
         "description": {
-          "$ref":"/terriajs/schema/description.json"
+          "$ref":"terriajs/schema/description.json"
         },
         "preserveOrder": {
           "title": "Preserve order",
@@ -56,13 +56,13 @@
             ],
             "oneOf":[
               {
-                "$ref": "/terriajs/schema/terriajs-view.json"
+                "$ref": "terriajs/schema/terriajs-view.json"
               },
               {
-                "$ref": "/terriajs/schema/remote-config-item.json"
+                "$ref": "terriajs/schema/remote-config-item.json"
               },
               {
-                "$ref": "/terriajs/schema/remote-config-group.json"
+                "$ref": "terriajs/schema/remote-config-group.json"
               },
               {
                 "$ref": "#/definitions/terriajs-group"

@@ -16,10 +16,10 @@
       ]
     },
     "id": {
-      "$ref":"/terriajs/schema/id.json"
+      "$ref":"terriajs/schema/id.json"
     },
     "description": {
-      "$ref":"/terriajs/schema/description.json"
+      "$ref":"terriajs/schema/description.json"
     },
     "rectangle": {
       "type": "array",

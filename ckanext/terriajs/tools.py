@@ -18,9 +18,10 @@ def resolve_mapping(type):
     try to resolve the url from the schema-mapping configuration.
     return an url
     '''
+    
     if type in constants.TYPE_MAPPING:
         if not h.is_url(constants.TYPE_MAPPING[type]):
-            return h.url_for(constants.MAPPING_PATH+str(type), _external=True)
+            return ''.join([h.url_for('/', _external=True),constants.MAPPING_PATH,str(type)])
         else:
             return constants.TYPE_MAPPING[type]
     else:
