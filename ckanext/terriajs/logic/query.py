@@ -43,6 +43,8 @@ def view_by_type():
                 .join(Resource, Package.id == Resource.package_id)\
                 .join(ResourceView, ResourceView.resource_id == Resource.id)\
                 .join(Group, Package.owner_org == Group.id)\
+                .filter(Package.status!='deleted')\
+                .filter(Resource.status!='deleted')\
                 .filter(ResourceView.view_type == constants.NAME)
                 # .join(PackageExtra, Package.id == PackageExtra.package_id, isouter=True)\
                 # .filter(PackageExtra.state == State.ACTIVE).group_by(Group.id,Package.id,Resource.id,ResourceView.id)\
