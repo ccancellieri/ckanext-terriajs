@@ -48,9 +48,8 @@
           "options": {
               "enable_array_copy": false
           },
-          "minItems": 1,
           "items":{
-            "headerTemplate": "{{ i1 }} - {{self.name}}",
+            "headerTemplate": "{{ i }} - {{self.name}}",
             "required": [
               "type"
             ],
@@ -66,6 +65,9 @@
               },
               {
                 "$ref": "#/definitions/terriajs-group"
+              },
+              {
+                "$ref": "terriajs/schema/base.json"
               }
             ]
           }

@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  "title": "terriajs base type item",
+  "options": {
+    "disable_properties": false
+  },
+  "required": [
+    "type",
+    "name",
+    "description",
+    "id"
+  ],
+  "properties":{
+    "type": {
+      "title": "type",
+      "type": "string"
+    },
+    "name": {
+      "title": "name",
+      "type": "string"
+    },
+    "id": {
+      "$ref":"terriajs/schema/id.json"
+    },
+    "description": {
+      "$ref":"terriajs/schema/description.json"
+    }
+  }
+}

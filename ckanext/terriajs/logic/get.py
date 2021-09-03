@@ -176,6 +176,7 @@ def _get_config(view_id):
         raise Exception(_('No view found for view_id: {}'.format(str(view_id))))
 
     view_config = view.get('config',None)
+    # TODO better check for 'config' structure (specialize query from view_by_id instead)
     if not view_config:
         raise Exception(_('Unable to find a valid configuration for view ID: {}'.format(str(view_id))))
     #view_config = json.dumps(view_config)
