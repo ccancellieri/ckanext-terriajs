@@ -211,6 +211,8 @@ def _get_config(view_id):
                 trim_blocks=False,
                 keep_trailing_newline=True)
     for f in _config.keys():
+        if constants.FIELDS_TO_SKIP.get(f,None):
+            continue;
         # TODO check python3 compatibility 'unicode' may disappear?
         if isinstance(_config[f],(str,unicode)):
             template = env.get_template(f)

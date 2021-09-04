@@ -1,3 +1,4 @@
+from sqlalchemy.sql.expression import true
 import ckan.plugins.toolkit as toolkit
 config = toolkit.config
 
@@ -62,6 +63,9 @@ import json
 TERRIAJS_CATALOG = json.loads(utils.json_load(PATH_TEMPLATE,''.join([DEFAULT_TYPE, '.json'])))
 if not TERRIAJS_CATALOG:
    raise Exception('Unable to locate {} template into the template folder ({})'.format(DEFAULT_TYPE,PATH_TEMPLATE))
+
+# fields to do not interpolate with jinja2 (f.e. they are a template of other type)
+FIELDS_TO_SKIP={'featureInfoTemplate':true}
 
 # REST paths
 REST_MAPPING_PATH='/terriajs/mapping/'

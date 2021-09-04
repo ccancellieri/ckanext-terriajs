@@ -36,7 +36,8 @@
       "type": "boolean"
     },
     "featureInfoTemplate": {
-      "type": "string"
+      "type": "string",
+      "format": "textarea"
     },
     "tableStyle": {
       "title": "Table Style",
