@@ -7,24 +7,53 @@ config = toolkit.config
 
 import json
 import copy
-
+import ckan.model as model
 import ckanext.terriajs.constants as constants
 import ckanext.terriajs.tools as tools
 import ckanext.terriajs.logic.get as get
+import ckanext.terriajs.logic.delete as delete
 import ckanext.terriajs.validators as v
 import logging
 log = logging.getLogger(__name__)
-
 
 class TerriajsPlugin(p.SingletonPlugin):
     p.implements(p.IConfigurer)
     p.implements(p.IConfigurable)
     p.implements(p.IResourceView)
-    p.implements(p.IResourceUrlChange)
     p.implements(p.IBlueprint)
+    #p.implements(p.IResourceUrlChange)
+    # p.implements(p.IDomainObjectModification, inherit=True)
+    p.implements(p.IActions)
+
+    #IActions
+    def get_actions(self):
+        actions = {
+            'resource_view_delete': delete.resource_view_delete
+        }
+        return actions
+
+
+    #IDomainObjectModification
+    def notify(self, entity, operation):
+        #TODO register view delete notification (not watched by this)
+        u'''
+        Send a notification on entity modification.
+        :param entity: instance of module.Package.
+        :param operation: 'new', 'changed' or 'deleted'.
+        '''
+        # if not isinstance(entity, model.Package):
+        #     return
+
+        # log.debug('Notified of package event: %s %s', entity.name, operation)
+        pass
+    
+    #IResourceUrlChange
+    # def notify(self, resource):
+    #     # Receives notification of changed URL on a resource.
+    #     # NOTE: this is not needed: Using templates and resolving at runtime the url.
+    #     pass
 
     # IBlueprint
-
     def get_blueprint(self):
         return get.terriajs
 
@@ -38,12 +67,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         with open(constants.SCHEMA_TYPE_MAPPING_FILE) as f:
             constants.TYPE_MAPPING = json.load(f)
         constants.FORMATS=constants.TYPE_MAPPING.keys()
-        
-    def notify(self, resource):
-        # Receives notification of changed URL on a resource.
-        #TODO update the view model with the new url
-        pass
-
+    
     def info(self):
         # log.warn("---------------->"+_(config.get(*constants.DEFAULT_TITLE)))
         return {

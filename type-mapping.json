@@ -10,5 +10,6 @@
     "wmts":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/WebMapTileServiceCatalogItem_type.json?&alt=media",
     "wmts-group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/WebMapTileServiceCatalogGroup_type.json?&alt=media",
     "terriajs":"https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json",
+    "terriajs-catalog":"https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json",
     "terriajs-group":"terriajs-group.json"
 }

@@ -15,6 +15,7 @@ ckanext/terriajs/fanstatic/customizations.css
 ckanext/terriajs/fanstatic/jsoneditor.js
 ckanext/terriajs/fanstatic/terriajs_ckan.js
 ckanext/terriajs/logic/__init__.py
+ckanext/terriajs/logic/delete.py
 ckanext/terriajs/logic/get.py
 ckanext/terriajs/logic/query.py
 ckanext/terriajs/templates/terriajs.html
