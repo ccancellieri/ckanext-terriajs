@@ -2,13 +2,11 @@
   "type": "object",
   "title": "MVT terriajs item",
   "required": [
+    "id",
+    "type",
+    "name",
     "url",
     "layer"
-  ],
-  "oneOf":[
-    {
-      "$ref": "terriajs/schema/base.json"
-    }
   ],
   "properties":{
     "type": {
@@ -17,6 +15,16 @@
       "enum": [
         "mvt"
       ]
+    },
+    "id": {
+      "$ref":"terriajs/schema/id.json"
+    },
+    "name": {
+      "title":"name",
+      "type":"string"
+    },
+    "description": {
+      "$ref":"terriajs/schema/description.json"
     },
     "layer": {
       "title": "name",
