@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "title": "MVT terriajs item",
+  "required": [
+    "url",
+    "layer"
+  ],
+  "oneOf":[
+    {
+      "$ref": "terriajs/schema/base.json"
+    }
+  ],
+  "properties":{
+    "type": {
+      "title": "type",
+      "type": "string",
+      "enum": [
+        "mvt"
+      ]
+    },
+    "layer": {
+      "title": "name",
+      "type": "string"
+    },
+    "url": {
+      "title": "url",
+      "type": "string"
+    }
+  }
+}

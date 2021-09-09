@@ -28,24 +28,25 @@ class TerriajsPlugin(p.SingletonPlugin):
     #IActions
     def get_actions(self):
         actions = {
-            'resource_view_delete': delete.resource_view_delete
+            'resource_view_delete': delete.resource_view_delete,
+            'resource_view_update': delete.resource_view_update
         }
         return actions
 
 
     #IDomainObjectModification
-    def notify(self, entity, operation):
-        #TODO register view delete notification (not watched by this)
-        u'''
-        Send a notification on entity modification.
-        :param entity: instance of module.Package.
-        :param operation: 'new', 'changed' or 'deleted'.
-        '''
-        # if not isinstance(entity, model.Package):
-        #     return
+    # def notify(self, entity, operation):
+    #     #TODO register view delete notification (not watched by this)
+    #     u'''
+    #     Send a notification on entity modification.
+    #     :param entity: instance of module.Package.
+    #     :param operation: 'new', 'changed' or 'deleted'.
+    #     '''
+    #     # if not isinstance(entity, model.Package):
+    #     #     return
 
-        # log.debug('Notified of package event: %s %s', entity.name, operation)
-        pass
+    #     # log.debug('Notified of package event: %s %s', entity.name, operation)
+    #     pass
     
     #IResourceUrlChange
     # def notify(self, resource):

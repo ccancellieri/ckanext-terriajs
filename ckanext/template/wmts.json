@@ -3,11 +3,13 @@
     "url": "{{resource.url}}",
     "description": "{{dataset.notes or resource.description}}",
     "id": "{{resource.id}}",
-    "type": "{{resource.format|lower}}",
+    "type": "wmts",
     "layer": "{{resource.name}}",
     "useResourceTemplate": false,
     "ignoreUnknownTileErrors": true,
     "treat403AsError": false,
     "treat404AsError": false,
-    "isLegendVisible": false
+    "isLegendVisible": false,
+    "tileMatrixSetID": "EPSG:900913",
+    "zoomOnEnable": true
 }

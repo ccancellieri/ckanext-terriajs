@@ -203,12 +203,14 @@ def getRelations():
     .filter(_sub_all_lazy_groups.c.package_id==_sub_all_lazy_items.c.package_id)\
     .filter(_sub_all_lazy_groups.c.resource_id==_sub_all_lazy_items.c.resource_id)\
     .filter(_sub_all_lazy_groups.c.view_id==_sub_all_lazy_items.c.view_id)
+
+    _sub_views = _views.subquery()
     
     #debug
     #print(str(_views))
     #raise Exception('')
     # return _views.all()
-    return _views
+    return _sub_views
 # SELECT anon_1.package_id AS anon_1_package_id, anon_1.resource_id AS anon_1_resource_id, anon_1.view_id AS anon_1_view_id, CAST(anon_2.item AS JSON) ->> %(param_1)s AS lazy_view_id, CAST(anon_2.item AS JSON) ->> %(param_2)s AS lazy_view_type 
 # FROM (SELECT package.id AS package_id, resource.id AS resource_id, resource_view.id AS view_id, CAST(resource_view.config AS JSON) ->> %(param_3)s AS terriajs_config, resource_view.view_type AS view_type 
 # FROM package JOIN resource ON package.id = resource.package_id JOIN resource_view ON resource.id = resource_view.resource_id 

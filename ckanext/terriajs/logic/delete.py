@@ -16,20 +16,77 @@ from sqlalchemy import func, Integer
 from sqlalchemy.sql import select
 
 
+import ckan.plugins.toolkit as toolkit
+_ = toolkit._
+h = toolkit.h
+
+import ckan.logic as logic
+_check_access = logic.check_access
+
+
 import ckanext.terriajs.logic.query as query
 
 #TODO: listen all the possible actions which are managing:
 # packages, resources, views...
+# resource_view_update')(context, data)
+# data = get_action('resource_view_create
+
+def _isOfTerriaType(data_dict):
+    return data_dict.get('terriajs_type',None)
+    
+
+@plugins.toolkit.chained_action
+def resource_view_update(next_action,context, data_dict):
+    if _isOfTerriaType(data_dict):
+        _check_access('resource_view_update', context, data_dict)
+        # TODO policy... do we need to freeze changes untill it's 'connected'?
+        # at the moment we just pass
+        pass
+    return next_action(context,data_dict)
+
+
+
 @plugins.toolkit.chained_action
 def resource_view_delete(next_action,context, data_dict):
-    isTerriaType=data_dict.get('terriajs_type',None)
-    if isTerriaType:
+    
+    if _isOfTerriaType(data_dict):
+        _check_access('resource_view_delete', context, data_dict)
         # TODO checks
         # ref to query.getRelations
         #raise Exception('')
-        # return query.getRelations().all()
-        pass
-    
+        view_id = data_dict.get('id', None)
+        sub_q = query.getRelations()
+        views = context['session'].query(
+                sub_q.c.package_id,
+                sub_q.c.resource_id,
+                sub_q.c.view_id,
+                sub_q.c.lazy_view_id
+            ).select_from(sub_q)\
+            .filter(sub_q.c.lazy_view_id==view_id).all()
+            # .filter((sub_q.c.lazy_view_id==view_id) | (sub_q.c.view_id==view_id)).all()
+        if views:
+            # header=None
+            # for c in sub_q.columns:
+            #     if header:
+            #         header='{},{}'.format(header,c.name)
+            #     else:
+            #         header='{}'.format(c.name)
+            # h.flash_error(header)
+            error_msg='<h2>Can\'t delete this view, it is referenced by:</h2><p><ol>'
+            for v in views:
+                # h.flash_error(str(v))
+                package_id=v[0]
+                resource_id=v[1]
+                view_id=v[2]
+                url=h.url_for('resource_view', id=package_id, resource_id=resource_id, view_id=view_id, qualified=True)
+                error_msg+='<li><a href=\"{}\">{}</a></li>'.format(url,url)   
+            error_msg+='</ol></p>'
+            h.flash_error(error_msg,allow_html=True)
+                # h.flash_error(h.url_for('resource_view', id=package_id, resource_id=resource_id, view_id=view_id, qualified=True))
+            # forbid deletion
+            return
+
+    # raise Exception('')
     return next_action(context,data_dict)
 
 # TODO chain this and define behaviours

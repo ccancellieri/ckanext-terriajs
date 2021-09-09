@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "title": "WMTS terriajs item",
+  "required": [
+    "url",
+    "layer"
+  ],
+  "oneOf":[
+    {
+      "$ref": "terriajs/schema/base.json"
+    }
+  ],
+  "properties":{
+    "type": {
+      "title": "type",
+      "type": "string",
+      "enum": [
+        "wmts"
+      ]
+    },
+    "layer": {
+      "title": "name",
+      "type": "string"
+    },
+    "url": {
+      "title": "url",
+      "type": "string"
+    },
+    "tileMatrixSetID": {
+      "title": "tileMatrixSetID",
+      "type": "string"
+    }
+  }
+}
