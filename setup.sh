@@ -18,3 +18,5 @@ paster --plugin=ckan config-tool /srv/app/production.ini \
     "ckanext.terriajs.schema.type_mapping=$APP_DIR/terriajs-type-mapping.json"
 
 cp ./type-mapping.json $APP_DIR/terriajs-type-mapping.json
+
+pip install -r requirements.txt
