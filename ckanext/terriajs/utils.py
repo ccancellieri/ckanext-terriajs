@@ -4,20 +4,6 @@ import json
 
 import constants
 
-def read_template(name):
-    '''
-    provides a reader for local template definitions
-    '''
-    # TODO increase security should be/ensure to be under schema_path folder
-    return _json_load(constants.PATH_TEMPLATE, name)
-
-def read_schema(name):
-    '''
-    provides a reader for local schema definitions
-    '''
-    # TODO increase security should be/ensure to be under schema_path folder
-    return _json_load(constants.PATH_SCHEMA, name)
-
 def _json_load(folder, name):
     '''
     Maight be used with caution, the 'folder' param is considered trusted (may never be exposed as parameter)

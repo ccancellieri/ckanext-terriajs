@@ -22,8 +22,8 @@ ValidationError = logic.ValidationError
 
 import ckanext.terriajs.constants as constants
 import ckanext.terriajs.logic.query as query
-# import ckanext.terriajs.tools as tools
-import ckanext.terriajs.utils as utils
+import ckanext.terriajs.tools as tools
+# import ckanext.terriajs.utils as utils
 import logging
 log = logging.getLogger(__name__)
 
@@ -116,7 +116,7 @@ def resolve_schema_mapping(type):
     # try:
     if type in constants.TYPE_MAPPING:
         if not h.is_url(constants.TYPE_MAPPING[type]):
-            return utils.read_schema(constants.TYPE_MAPPING[type])
+            return tools.read_schema(constants.TYPE_MAPPING[type])
         else:
             return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
     else:
@@ -125,7 +125,7 @@ def resolve_schema_mapping(type):
     #     logging.log(logging.ERROR,str(ex), exc_info=1)
     #     return jsonify(error=str(ex)), 404
 def read_schema(name):
-    return json.dumps(utils.read_schema(name))
+    return json.dumps(tools.read_schema(name))
 
 terriajs.add_url_rule(''.join([constants.REST_MAPPING_PATH,"<type>"]), view_func=resolve_schema_mapping, endpoint='mapping', methods=[u'GET'])
 

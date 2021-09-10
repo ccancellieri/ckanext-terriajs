@@ -27,6 +27,20 @@ log = logging.getLogger(__name__)
 #         logging.log(logging.ERROR,error)
 #         raise InvalidURL(_(error))
 
+def read_template(name):
+    '''
+    provides a reader for local template definitions
+    '''
+    # TODO increase security should be/ensure to be under schema_path folder
+    return utils._json_load(constants.PATH_TEMPLATE, name)
+
+def read_schema(name):
+    '''
+    provides a reader for local schema definitions
+    '''
+    # TODO increase security should be/ensure to be under schema_path folder
+    return utils._json_load(constants.PATH_SCHEMA, name)
+
 
 # TODO DOCUMENT (Default mapping)
 def get_view_type(resource):
@@ -45,7 +59,7 @@ def get_config(resource):
 
     # generate base configuration
     # TODO create and use template mapping
-    terriajs_config = utils.read_template('{}.json'.format(resource_type))
+    terriajs_config = read_template('{}.json'.format(resource_type))
     if terriajs_config:
         return terriajs_config
     else:
