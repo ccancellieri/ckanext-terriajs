@@ -58,6 +58,12 @@ PATH_TEMPLATE=path.realpath(config.get('ckanext.terriajs.path.template', path.jo
 # it may match one of the items into 
 DEFAULT_TYPE = 'terriajs-catalog'
 
+import json
+import ckanext.terriajs.utils as utils
+TERRIAJS_CATALOG = utils._json_load(PATH_TEMPLATE,'{}.json'.format(DEFAULT_TYPE))
+if not TERRIAJS_CATALOG:
+   raise Exception('Unable to locate {} template into the template folder ({})'.format(DEFAULT_TYPE,PATH_TEMPLATE))
+
 # type used to define a group of pointers (to a set of views). (resolved internally) 
 # TODO: filename is binded with the TYPE value!!!
 # LAZY_GROUP_SCHEMA = json.loads(utils.json_load(PATH_SCHEMA,''.join([LAZY_GROUP_TYPE, '.json'])))

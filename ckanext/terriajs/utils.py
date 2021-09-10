@@ -2,8 +2,6 @@
 import os
 import json
 
-import constants
-
 def _json_load(folder, name):
     '''
     Maight be used with caution, the 'folder' param is considered trusted (may never be exposed as parameter)
