@@ -9,6 +9,7 @@ export _ROOT=${CKAN_VENV}/src/ckanext-${PLUGIN}
 
 cd ${_ROOT}
 
-python setup.py develop
-
+pip install -r requirements.txt && \
+pip install -r dev-requirements.txt && \
+python setup.py develop && \
 ${CKAN_VENV}/bin/pytest --ckan-ini=./test.ini ckanext/${PLUGIN}/tests
