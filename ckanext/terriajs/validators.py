@@ -18,9 +18,9 @@ missing = df.missing
 StopOnError = df.StopOnError
 Invalid = df.Invalid
 
-# import ckanext.terriajs.constants as constants
 import ckanext.terriajs.tools as tools
-# import ckanext.terriajs.logic.get as get
+import ckanext.terriajs.constants as constants
+import ckanext.terriajs.logic.get as get
 # import ckanext.terriajs.validators as v
 import logging
 log = logging.getLogger(__name__)
@@ -96,9 +96,6 @@ def default_config(key, data, errors, context):
 import jsonschema
 from jsonschema import validate,RefResolver,Draft4Validator,Draft7Validator
 import json
-import utils
-import constants
-import logic.get as get
 
 _SCHEMA_RESOLVER = jsonschema.RefResolver(base_uri='file://{}/'.format(constants.PATH_SCHEMA), referrer=None)
 
