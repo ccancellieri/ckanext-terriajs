@@ -1,3 +1,4 @@
+from sqlalchemy.sql.expression import true
 import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
 _ = toolkit._
@@ -24,6 +25,7 @@ import ckanext.terriajs.tools as tools
 import logging
 log = logging.getLogger(__name__)
 
+#TODO... something more ckan oriented? (toolkit, etc) dict(?)
 def instance_to_dict(i):
     '''
     The Validator receive a resource instance, we need a dict...
@@ -32,7 +34,7 @@ def instance_to_dict(i):
     # context problems
     # import ckan.lib.dictization.model_dictize as model_dictize
     # res = model_dictize.package_dictize(i, toolkit.c)
-    
+    # TODO return dict(i)
     resource = {'name': i.name or '',
                 'url': i.url or '',
                 'description': i.description or '',
@@ -88,6 +90,54 @@ def default_config(key, data, errors, context):
             errors[key].append(_('Missing value'))
             raise StopOnError
         data[key] = config
+
+#############################################
+
+import jsonschema
+from jsonschema import validate,RefResolver,Draft4Validator,Draft7Validator
+import json
+import utils
+import constants
+import logic.get as get
+
+_SCHEMA_RESOLVER = jsonschema.RefResolver(base_uri='file://{}/'.format(constants.PATH_SCHEMA), referrer=None)
+
+def schema_check(key, data, errors, context):
+    '''
+    Validator providing schema check capabilities
+    '''
+    # TODO extension point (we may want to plug other schema checkers)
+    
+    #terriajs type
+    terriajs_type=data[('terriajs_type',)]
+    if not terriajs_type:
+        raise StopOnError(_('Unable to load a valid terriajs_type'))
+
+    config = json.loads(data[('terriajs_config',)])
+    if not config:
+        errors[key].append(_('Missing value terriajs_config'))
+        raise StopOnError
+    try:
+        # if constants.LAZY_GROUP_TYPE==terriajs_type:
+            
+        # if not Draft4Validator.check_schema(constants.LAZY_GROUP_SCHEMA):
+        #     raise Exception('schema not valid') #TODO do it once on startup (constants)
+        schema = get.resolve_schema_mapping(terriajs_type)
+        #validator = Draft4Validator(constants.LAZY_GROUP_SCHEMA, resolver=resolver, format_checker=None)
+        validator = Draft7Validator(schema, resolver=_SCHEMA_RESOLVER)
+
+        _ret = validator.validate(config)
+
+
+        #TODO: All 
+        
+    except Exception or jsonschema.exceptions.ValidationError as e:
+        #DEBUG
+        #import traceback
+        #traceback.print_exc()
+        #TODO better message
+        errors[key].append(_('Error validating:{}'.format(str(e))))
+        raise StopOnError(e)
 
 def default_lon_e(key, data, errors, context):
     '''

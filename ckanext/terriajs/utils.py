@@ -2,7 +2,23 @@
 import os
 import json
 
-def json_load(folder, name):
+import constants
+
+def read_template(name):
+    '''
+    provides a reader for local template definitions
+    '''
+    # TODO increase security should be/ensure to be under schema_path folder
+    return _json_load(constants.PATH_TEMPLATE, name)
+
+def read_schema(name):
+    '''
+    provides a reader for local schema definitions
+    '''
+    # TODO increase security should be/ensure to be under schema_path folder
+    return _json_load(constants.PATH_SCHEMA, name)
+
+def _json_load(folder, name):
     '''
     Maight be used with caution, the 'folder' param is considered trusted (may never be exposed as parameter)
     '''
@@ -14,7 +30,7 @@ def json_load(folder, name):
         issafe = os.path.commonprefix([file, folder]) == folder
         if isfile and issafe:
             with open(file) as s:
-                return json.dumps(json.load(s))
+                return json.load(s)
         else:
             return None
     except Exception as ex:

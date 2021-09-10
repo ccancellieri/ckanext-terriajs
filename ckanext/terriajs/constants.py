@@ -29,7 +29,7 @@ ALWAYS_AVAILABLE=config.get('ckanext.terriajs.always_available', True)
 # List of formats supported for view auto creation (create the view when create the resource)
 # TODO note may require extensions to support other formats at the b.e.
 # TODO wmts incoming...
-DEFAULT_FORMATS =config.get('ckanext.terriajs.default.formats', ['csv','wms'])
+DEFAULT_FORMATS =config.get('ckanext.terriajs.default.formats', ['csv','wms','mvt'])
 
 # use this type to define a group into terria hierarchy
 # type used to define a group of pointers (to a set of views). (resolved internally) 
@@ -54,15 +54,22 @@ PATH_SCHEMA=path.realpath(config.get('ckanext.terriajs.path.schema', path.join(P
 # same type may also be located under mapping
 PATH_TEMPLATE=path.realpath(config.get('ckanext.terriajs.path.template', path.join(PATH_ROOT,'template')))
 
-
 # type to use as ckan resource when you would like to be free to write the 'full view' not only an item
 # it may match one of the items into 
 DEFAULT_TYPE = 'terriajs-catalog'
-import ckanext.terriajs.utils as utils
-import json
-TERRIAJS_CATALOG = json.loads(utils.json_load(PATH_TEMPLATE,''.join([DEFAULT_TYPE, '.json'])))
-if not TERRIAJS_CATALOG:
-   raise Exception('Unable to locate {} template into the template folder ({})'.format(DEFAULT_TYPE,PATH_TEMPLATE))
+
+# type used to define a group of pointers (to a set of views). (resolved internally) 
+# TODO: filename is binded with the TYPE value!!!
+# LAZY_GROUP_SCHEMA = json.loads(utils.json_load(PATH_SCHEMA,''.join([LAZY_GROUP_TYPE, '.json'])))
+# if not LAZY_GROUP_SCHEMA:
+#    raise Exception('Unable to locate {} template into the template folder ({})'.format(LAZY_GROUP_TYPE,PATH_SCHEMA))
+
+# type used internally to define a pointer to a view. (resolved internally) 
+# TODO: filename is binded with the TYPE value!!!
+# LAZY_ITEM_SCHEMA = json.loads(utils.json_load(PATH_SCHEMA,''.join([LAZY_ITEM_TYPE, '.json'])))
+# if not LAZY_ITEM_SCHEMA:
+#    raise Exception('Unable to locate {} template into the template folder ({})'.format(LAZY_ITEM_TYPE,PATH_SCHEMA))
+
 
 # fields to do not interpolate with jinja2 (f.e. they are a template of other type)
 FIELDS_TO_SKIP={'featureInfoTemplate':true}

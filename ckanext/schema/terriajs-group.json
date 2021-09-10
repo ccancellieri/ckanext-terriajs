@@ -1,77 +1,68 @@
 {
-  "id": "terriajs-connector",
+  "$schema": "http://json-schema.org/draft-04/schema",
   "title": "Terria view connector",
-  "$ref": "#/definitions/terriajs-group",
-  "definitions": {
-    "terriajs-group": {
-      "title": "terriajs-group",
-      "type": "object",
-      "format": "categories",
-      "basicCategoryTitle": "Main",
-      "options": {
-        "disable_collapse": false,
-        "disable_edit_json": true,
-        "disable_properties": true
-      },
-      "required": [
-        "id","type","name","items"
+  "type": "object",
+  "format": "categories",
+  "basicCategoryTitle": "Main",
+  "options": {
+    "disable_collapse": false,
+    "disable_edit_json": true,
+    "disable_properties": true
+  },
+  "required": [
+    "id","type","name","items"
+  ],
+  "properties":{
+    "id":{
+      "$ref":"id.json"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "terriajs-group"
       ],
-      "properties":{
-        "id":{
-          "$ref":"terriajs/schema/id.json"
-        },
-        "type": {
-          "type": "string",
-          "enum": [
-            "terriajs-group"
-          ],
-          "options": {
-            "hidden": true
-          }
-        },
-        "name": {
-          "title": "Name",
-          "minLength": 1,
-          "type": "string"
-        },
-        "description": {
-          "$ref":"terriajs/schema/description.json"
-        },
-        "preserveOrder": {
-          "title": "Preserve order",
-          "type": "boolean",
-          "format": "checkbox",
-          "default": true
-        },
-        "items":{
-          "type":"array",
-          "options": {
-              "enable_array_copy": false
+      "options": {
+        "hidden": true
+      }
+    },
+    "name": {
+      "title": "Name",
+      "minLength": 1,
+      "type": "string"
+    },
+    "description": {
+      "$ref":"description.json"
+    },
+    "preserveOrder": {
+      "title": "Preserve order",
+      "type": "boolean",
+      "format": "checkbox",
+      "default": true
+    },
+    "items":{
+      "type":"array",
+      "options": {
+          "enable_array_copy": false
+      },
+      "items":{
+        "headerTemplate": "{{ i }} - {{self.name}}",
+        "required": [
+          "type"
+        ],
+        "oneOf":[
+          {
+            "$ref": "terriajs-view.json"
           },
-          "items":{
-            "headerTemplate": "{{ i }} - {{self.name}}",
-            "required": [
-              "type"
-            ],
-            "oneOf":[
-              {
-                "$ref": "terriajs/schema/terriajs-view.json"
-              },
-              {
-                "$ref": "terriajs/schema/remote-config-item.json"
-              },
-              {
-                "$ref": "terriajs/schema/remote-config-group.json"
-              },
-              {
-                "$ref": "#/definitions/terriajs-group"
-              },
-              {
-                "$ref": "terriajs/schema/base.json"
-              }
-            ]
+          {
+            "$ref": "remote-config-item.json"
+          },
+          {
+            "$ref": "remote-config-group.json"
+          },
+          {
+            "$ref": "base.json"
           }
-        }
+        ]
       }
     }
   }

@@ -37,13 +37,17 @@ def _isOfTerriaType(data_dict):
 
 @plugins.toolkit.chained_action
 def resource_view_update(next_action,context, data_dict):
-    if _isOfTerriaType(data_dict):
-        _check_access('resource_view_update', context, data_dict)
-        # TODO policy... do we need to freeze changes untill it's 'connected'?
-        # at the moment we just pass
-        pass
-    return next_action(context,data_dict)
+    #TODO:
+    # 1. move to logic.update.py
+    # 2. check the changes from what's over the db (with _get_view)
 
+    # if _isOfTerriaType(data_dict):
+    #     _check_access('resource_view_update', context, data_dict)
+    #     # TODO policy... do we need to freeze changes untill it's 'connected'?
+    #     # at the moment we just pass
+    #     pass
+
+    return next_action(context,data_dict)
 
 
 @plugins.toolkit.chained_action
@@ -52,7 +56,7 @@ def resource_view_delete(next_action,context, data_dict):
     if _isOfTerriaType(data_dict):
         _check_access('resource_view_delete', context, data_dict)
         # TODO checks
-        # ref to query.getRelations
+        # ref to query.getRelations (but we are checking input via schema validation)
         #raise Exception('')
         view_id = data_dict.get('id', None)
         sub_q = query.getRelations()

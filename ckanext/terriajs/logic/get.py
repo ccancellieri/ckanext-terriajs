@@ -109,32 +109,27 @@ def _base(resource_view_id, force=False, force_to=False, itemOnly=False):
 # TODO better manage error conditions with appropriate http code and message
 import requests
 
-def mapping(type):
+def resolve_schema_mapping(type):
     '''
     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
     '''
     # try:
     if type in constants.TYPE_MAPPING:
         if not h.is_url(constants.TYPE_MAPPING[type]):
-            return _schema(constants.TYPE_MAPPING[type])
+            return utils.read_schema(constants.TYPE_MAPPING[type])
         else:
-            return requests.get(constants.TYPE_MAPPING[type]).content
+            return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
     else:
         raise InvalidURL(_(("Type {} not found into available mappings, please check your configuration").format(type)))
     # except Exception as ex:
     #     logging.log(logging.ERROR,str(ex), exc_info=1)
     #     return jsonify(error=str(ex)), 404
+def read_schema(name):
+    return json.dumps(utils.read_schema(name))
 
-terriajs.add_url_rule(''.join([constants.REST_MAPPING_PATH,"<type>"]), view_func=mapping, endpoint='mapping', methods=[u'GET'])
+terriajs.add_url_rule(''.join([constants.REST_MAPPING_PATH,"<type>"]), view_func=resolve_schema_mapping, endpoint='mapping', methods=[u'GET'])
 
-def _schema(name):
-    '''
-    provides a proxy for local schema definitions
-    '''
-    # TODO increase security should be/ensure to be under schema_path folder
-    return utils.json_load(constants.PATH_SCHEMA, name)
-
-terriajs.add_url_rule(''.join([constants.REST_SCHEMA_PATH,'<name>']), view_func=_schema, endpoint='schema', methods=[u'GET'])
+terriajs.add_url_rule(''.join([constants.REST_SCHEMA_PATH,'<name>']), view_func=read_schema, endpoint='schema', methods=[u'GET'])
 
 def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\

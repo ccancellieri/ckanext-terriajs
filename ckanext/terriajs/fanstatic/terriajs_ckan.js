@@ -6,6 +6,35 @@ ckan.module('terriajs', function (jQuery, _) {
         const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
         return regexExp.test(str);
     };
+
+    loadSchema = function (uri) {
+        return new Promise((resolve, reject) => {
+            retry=3;
+            function get(retry, uri){
+                //resolve(require('./id.json')); // replace with http request for example
+                    $.ajaxSetup({timeout: 30000});
+                    $.get( uri, function(data) {
+                      //alert( "success: ");
+                      resolve(data);
+                      return data;
+                    })
+                  .fail(function() {
+                    //alert( "error" );
+                    if (retry>0){
+                        get(--retry, uri);
+                    } else {
+                        reject(new Error(`could not locate ${uri}`));
+                    }
+                  });
+              };
+          if (uri.startsWith('http')) {
+            get(3,uri);
+          } else {
+            //reject(new Error(`could not locate ${uri}`));
+            resolve(uri);
+          }
+        });
+  }
     
     terriajs = {
         
@@ -130,7 +159,7 @@ ckan.module('terriajs', function (jQuery, _) {
             this.editor = new JSONEditor(document.getElementById('editor-terriajs-config'),{
                 // Enable fetching schemas via ajax
                 ajax: true,
-                ajaxBase: terriajs.ckan_url,
+                ajaxBase: new URL('/terriajs/schema/', terriajs.ckan_url),
 //                ajaxCredentials: true
 
                 // The schema for the editor
@@ -138,6 +167,12 @@ ckan.module('terriajs', function (jQuery, _) {
 
                 // Seed the form with a starting value
                 startval: value,
+
+                // urn_resolver: (urn, callback) => {
+                //         loadSchema(urn)
+                //             .then(schema=>{callback(schema);})
+                //         return true;
+                // },
 
                 // https://github.com/json-editor/json-editor#css-integration
                 // barebones, html (the default), bootstrap4, spectre, tailwind
@@ -149,37 +184,9 @@ ckan.module('terriajs', function (jQuery, _) {
               fontFamily: "tahoma",
               fontSize: "12pt"
             };*/
-terriajs.ajv = new Ajv({
-coerceTypes: true,
-                      loadSchema: function (uri) {
-                            return new Promise((resolve, reject) => {
-                                retry=3;
-                                function get(retry, uri){
-                                    //resolve(require('./id.json')); // replace with http request for example
-                                        $.ajaxSetup({timeout: 30000});
-                                        $.get( uri, function(data) {
-                                          //alert( "success: ");
-                                          resolve(data);
-                                          return data;
-                                        })
-                                      .fail(function() {
-                                        //alert( "error" );
-                                        if (retry>0){
-                                            get(--retry, uri);
-                                        } else {
-                                            reject(new Error(`could not locate ${uri}`));
-                                        }
-                                      });
-                                  };
-                              if (uri.startsWith('http')) {
-                                get(3,uri);
-                              } else {
-                                //reject(new Error(`could not locate ${uri}`));
-                                resolve(uri);
-                              }
-                            });
-                      }
-                });
+            terriajs.ajv = new Ajv({
+                coerceTypes: true,
+                loadSchema:loadSchema });
 
             if (!terriajs.validate){
                 terriajs.ajv.compileAsync(terriajs.terriajs_schema).then(
@@ -388,7 +395,7 @@ coerceTypes: true,
             this.editor = new JSONEditor(document.getElementById('editor-terriajs-config'),{
                 // Enable fetching schemas via ajax
                 ajax: true,
-                ajaxBase: terriajs.ckan_url,
+                ajaxBase: new URL('/terriajs/schema/', terriajs.ckan_url),
 //                ajaxCredentials: true
 
                 // The schema for the editor
@@ -400,6 +407,12 @@ coerceTypes: true,
                 // https://github.com/json-editor/json-editor#css-integration
                 // barebones, html (the default), bootstrap4, spectre, tailwind
                 theme: 'bootstrap3',
+                
+                // urn_resolver: (urn, callback) => {
+                //         loadSchema(urn)
+                //             .then(schema=>{callback(schema);})
+                //         return true;
+                // },
                 //jqueryui, fontawesome3, fontawesome4, fontawesome5, openiconic, spectre
                 // iconlib: "spectre",
                 iconlib: "fontawesome4",

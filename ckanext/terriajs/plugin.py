@@ -33,7 +33,6 @@ class TerriajsPlugin(p.SingletonPlugin):
         }
         return actions
 
-
     #IDomainObjectModification
     # def notify(self, entity, operation):
     #     #TODO register view delete notification (not watched by this)
@@ -83,10 +82,10 @@ class TerriajsPlugin(p.SingletonPlugin):
             u'full_page_edit': True,
             u'schema': {
                 #'__extras': [ignore_empty]
-                #'terriajs_config': [not_empty, json_object]
                 'terriajs_type': [v.default_type, v.not_empty],
                 # 'terriajs_synch': [default_synch, not_empty],
-                'terriajs_config': [v.default_config, v.not_empty],
+                #'terriajs_config': [not_empty, json_object]
+                'terriajs_config': [v.default_config, v.not_empty,v.schema_check],
                 'west':[v.default_lon_w],
                 'east':[v.default_lon_e],
                 'north':[v.default_lat_n],
@@ -108,7 +107,7 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         resource_type = resource_view.get('terriajs_type',tools.get_view_type(resource))
 
-        terriajs_schema = resource_view.get('terriajs_schema', get.mapping(resource_type))
+        terriajs_schema = resource_view.get('terriajs_schema', get.resolve_schema_mapping(resource_type))
         if not terriajs_schema:
             raise Exception(resource_type+_(' not defined, check your config'))
         
@@ -118,7 +117,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
             'terriajs_url': constants.TERRIAJS_URL,
-            'terriajs_schema': json.loads(terriajs_schema),
+            'terriajs_schema': terriajs_schema,
             'terriajs_config': terriajs_config,
             'terriajs_type': resource_type,
             # 'terriajs_synch': _get_synch(resource_view),

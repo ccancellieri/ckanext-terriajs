@@ -16,10 +16,10 @@
       ]
     },
     "id": {
-      "$ref":"terriajs/schema/id.json"
+      "$ref":"id.json"
     },
     "description": {
-      "$ref":"terriajs/schema/description.json"
+      "$ref":"description.json"
     },
     "rectangle": {
       "type": "array",
@@ -117,7 +117,7 @@
                           "type": "string"
                         },
                         "color": {
-                          "$ref":"terriajs/schema/ColorPicker.json"
+                          "$ref":"ColorPicker.json"
                         }
                       }
                     }
@@ -197,7 +197,7 @@
                     "type": "number"
                   },
                   "color": {
-                    "$ref":"terriajs/schema/ColorPicker.json"
+                    "$ref":"ColorPicker.json"
                   }
                 }
               }
