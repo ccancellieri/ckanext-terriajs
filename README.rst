@@ -4,7 +4,9 @@ Plugin view ckanext-terriajs
 
 .. _plugin
 
-This plugin provide an extensible and highly configurable view for TerriaJS.
+The TerriaJS view plugin provide an extensible and highly configurable view for TerriaJS.
+
+
 
 It leverages over JSON schema to facilitate and speedup the configurations editing for each configured type (csv, wms, wmts, etc).
 
@@ -30,16 +32,21 @@ The plugin is heavily based on a JSON + JSON-SCHEMA approach.
 
 It ships also an ui form generator which is able to drive the user into the creation or modification of a new (or existing) view.
 
-The **frontend** js library used is **json-editor** (https://github.com/json-editor/json-editor) but there's also an **ACE** editor (https://ace.c9.io/) and **AJV** validation (https://ajv.js.org/) to simplify quick editing from experienced editors.
+The **frontend** js library used is `json-editor <https://github.com/json-editor/json-editor>`__ but there's also an `ACE editor <https://ace.c9.io/>`__ and `AJV validation <https://ajv.js.org/>`__ to simplify quick editing from experienced editors.
 
 Both UI js libraries are configured to provide UI validation based on JSON schema.
 
+|
 
 .. image:: docs/img/terriajs_group_frontend_validation.png
     :alt: frontend validation
 
-At the **backend** the plugin leverages over **jsonschema** (https://python-jsonschema.readthedocs.io/en/stable/ is the unique python dependency required to install) so also the rest API is covered with a validation providing to the user messages in case of error (json not compliant with the json-schema). 
+|
 
+At the **backend** the plugin leverages over `jsonschema <https://python-jsonschema.readthedocs.io/en/stable/>`__ which is the sole python dependency **required to install**) so also the rest API is covered with a validation providing to the user messages in case of error since not compliant with the json-schema (*draft4*).
+The sent json will be discarded and a notification with a detailed message is returned. 
+
+|
 
 Lazy models
 -----------
@@ -50,8 +57,9 @@ The terriajs view plugin defines a _special_ type which is resolved at request t
 
 The special resource type 'terriajs-group' infact is binded (configurable) to a schema which allows you to search (using ui) and connect existing terriajs views (csv, mvt, etc)
 
-With this approach an administrator is able to create dynamic collections which will be _resolved_ at each request, giving you a fresh copy shipping all the changes perfomed by editors to each connected view (the views can also be dynamically resolved thanks to jinja2 templating approach)
+With this approach an administrator is able to create dynamic collections which will be _resolved_ at each request, giving you a fresh copy shipping all the changes performed by editors to each connected view (the views can also be dynamically resolved thanks to jinja2 templating approach)
 
+|
 
 Reference Integrity
 -------------------
@@ -62,9 +70,13 @@ Having a lazy load root node 'terriajs-group' adds the challenge to keep referen
 
 The terriajs view plugin forbids the deletion of existing referenced views so a terriajs-group will always be consistent.
 
+|
+
 **Note** that this plugin leverages over postgres + json approach **NOT STORING OR CREATING ANY ADDITIONAL TABLE**, I consider this a plus for any migration (at the cost of a bit of complexity in terms of query and reference integrity).
 
 Reference integrity will check (on the backend) if the id of the target view (resolved dynamically) is not existent 
+
+|
 
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_1.png
@@ -73,19 +85,24 @@ Reference integrity will check (on the backend) if the id of the target view (re
 
 Reporting the error to the editor
 
+|
+
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_2.png
     :alt: ref integrity step 2
+
+|
 
 
 Referenced View deletion children side
 --------------------------------------
 
-
 The plugin warns the owner of the view providing the list (hrefs) of existing 'terriajs-group' pointing to his view.
 
 .. image:: docs/img/terriajs_item_reference_integrity_check_on_children_deletion.png
     :alt: Unable to delete a children
+
+|
 
 
 Tools
@@ -97,10 +114,13 @@ The UI is also providing a quite extensive set of buttons (copy to clipboard) to
 
 It also provides a set of buttons to test the resulting API endpoints (which will be used to connect an existing terriajs installation)
 
+|
+
 .. image:: docs/img/terriajs_frontend_tools.png
     :alt: Frontend tools
 
 
+|
 
 API
 ---
@@ -109,19 +129,29 @@ API
 
 In addition to the cksn standard action (create_view, etc)
 
-On the backend the plugin adds a set of blueprint endpoints to:
+|
+
+The plugin also provide a new set of blueprint endpoints:
+
+|
 
 /terriajs/describe
 
 describe an existing view by id, used by terriajs-group
 
+|
+
 /terriajs/search
 
 search an existing view by resource or dataset title/description, used by terriajs-group)
 
+|
+
 /terriajs/schema/<filename>
 
  a proxy to resolve relative schema references (ckan can work also as source of schemas in case you don't have a static repository)
+
+|
 
 /terriajs/config/[<enabled|disabled>/]<uuid>.json
 
@@ -129,44 +159,51 @@ search an existing view by resource or dataset title/description, used by terria
 
 You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling.
 
+|
+
 /terriajs/item/[<enabled|disabled>/]<uuid>.json
+
 
 While */config/* returns a fully functional configuration catalog, this endpoint to return the configured (unwrapped) **item** (dinamically resolved and interpolated)
 
 You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling.
 
-
-Extensibility
-=============
-
-You can define
-
-.. image:: docs/img/terriajs_load.png
-    :alt: Loaded view
-
-
 |
 
-**ckanext-terriajs** Adds a view to the resource and that will enable the creation of **ckanext-terriajs** views on the resource.
+Extensions
+----------
 
-**Image below**: Creating a **ckanext-terriajs** view.
+The full lost of terriajs plugin configuation parameters are documented under `constants.py <>`__
 
-|
+The terriajs configuration item type is defined into the configuration with a target json-schema.
 
-.. image:: docs/img/creating_terriajs_view.png
-    :alt: Creating a ckanext-terriajs view
+The configuration is shippend in a file called `type-mapping.json <>`__ which is a serialized dict (a map):
 
-|
+    {
+        'terria-js-type': 'URI'
+    }
 
-**Image below**: You can set the **name**, **description** and the **terriajs JSON configuration**.
-**ckanext-terriajs**
+**terria-js-type** is the terriajs item type ref `here <>`__ for a complete list.
 
-|
+**URI** can be:
+  
+  - relative to the PATH_SCHEMA folder (see constants.py)
 
-.. image:: docs/img/config.jpg
-    :alt: terriajs config
+  - http link to a target json schema
 
-|
+On startup the plugin check the list to understand which item is supported and add that format to the list.
+
+When you add a resource to a dataset the **type** is mapped over type-mapping configuration and the matching json-schema is loaded to provide validation (frontend and backend side)
+
+Based on the selected schema a different UI will be automatically provided and validated thanks to json-editor.
+
+The json-schma will define all the required fields and the minimum requirements to have a good and valid json (frontend interactive validation/creation).
+
+
+
+Appearance
+----------
+
 
 **Image below**: **ckanext-terriajs** loaded iframe on CKAN.
 |
