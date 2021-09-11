@@ -1,8 +1,8 @@
-from sqlalchemy.sql.expression import true
+# from sqlalchemy.sql.expression import true
 import ckan.plugins.toolkit as toolkit
 config = toolkit.config
 
-NAME='terriajs'
+TYPE='terriajs'
 PAGE_SIZE = 10
 # DEFAULT_NAME=config.get('ckanext.terriajs.default.name', 'Map')
 
@@ -24,12 +24,12 @@ TYPE_MAPPING = {}
 # Used internally: Will contain the types defined into the file type-mapping
 FORMATS = TYPE_MAPPING.keys()
 
-ALWAYS_AVAILABLE=config.get('ckanext.terriajs.always_available', True)
+ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', True)
 
 # List of formats supported for view auto creation (create the view when create the resource)
 # TODO note may require extensions to support other formats at the b.e.
 # TODO wmts incoming...
-DEFAULT_FORMATS =config.get('ckanext.terriajs.default.formats', ['csv','wms','mvt'])
+DEFAULT_FORMATS = config.get('ckanext.terriajs.default.formats', ['csv','wms','mvt'])
 
 # use this type to define a group into terria hierarchy
 # type used to define a group of pointers (to a set of views). (resolved internally) 
@@ -38,11 +38,8 @@ LAZY_GROUP_TYPE = 'terriajs-group'
 # type used internally to define a pointer to a view. (resolved internally) 
 LAZY_ITEM_TYPE = 'terriajs-view'
 
-# synchronize the item terria configuration (lazily) using:
-# none: Use the json configuration
-# resource: Use title and description of the resource (you are creating a view on top of that)
-# dataset: Use name and description of the parent dataset
-SYNCH_WITH=['none','resource','dataset']
+# fields to do not interpolate with jinja2 (f.e. they are a template of other type)
+FIELDS_TO_SKIP = config.get('ckanext.terriajs.skip.fields', ['featureInfoTemplate'])
 
 import os
 path = os.path
@@ -64,22 +61,14 @@ TERRIAJS_CATALOG = utils._json_load(PATH_TEMPLATE,'{}.json'.format(DEFAULT_TYPE)
 if not TERRIAJS_CATALOG:
    raise Exception('Unable to locate {} template into the template folder ({})'.format(DEFAULT_TYPE,PATH_TEMPLATE))
 
-# type used to define a group of pointers (to a set of views). (resolved internally) 
-# TODO: filename is binded with the TYPE value!!!
-# LAZY_GROUP_SCHEMA = json.loads(utils.json_load(PATH_SCHEMA,''.join([LAZY_GROUP_TYPE, '.json'])))
-# if not LAZY_GROUP_SCHEMA:
-#    raise Exception('Unable to locate {} template into the template folder ({})'.format(LAZY_GROUP_TYPE,PATH_SCHEMA))
-
-# type used internally to define a pointer to a view. (resolved internally) 
-# TODO: filename is binded with the TYPE value!!!
-# LAZY_ITEM_SCHEMA = json.loads(utils.json_load(PATH_SCHEMA,''.join([LAZY_ITEM_TYPE, '.json'])))
-# if not LAZY_ITEM_SCHEMA:
-#    raise Exception('Unable to locate {} template into the template folder ({})'.format(LAZY_ITEM_TYPE,PATH_SCHEMA))
-
-
-# fields to do not interpolate with jinja2 (f.e. they are a template of other type)
-FIELDS_TO_SKIP={'featureInfoTemplate':true}
-
 # REST paths
-REST_MAPPING_PATH='/terriajs/mapping/'
-REST_SCHEMA_PATH='/terriajs/schema/'
+REST_MAPPING_PATH='/{}/mapping'.format(TYPE)
+REST_SCHEMA_PATH='/{}/schema'.format(TYPE)
+
+# VIEW SCHEMA MODEL
+# NOTE the actual values below are also affecting
+# queries and js, think twice before you change them 
+TERRIAJS_CONFIG_KEY='terriajs_config'
+TERRIAJS_TYPE_KEY='terriajs_type'
+TERRIAJS_SCHEMA_KEY='terriajs_schema'
+TERRIAJS_URL_KEY='terriajs_url'

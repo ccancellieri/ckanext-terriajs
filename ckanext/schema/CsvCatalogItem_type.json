@@ -5,6 +5,7 @@
     "type",
     "name",
     "description",
+    "url",
     "id"
   ],
   "properties": {
@@ -20,6 +21,9 @@
     },
     "description": {
       "$ref":"description.json"
+    },
+    "url": {
+      "type":"string"
     },
     "rectangle": {
       "type": "array",

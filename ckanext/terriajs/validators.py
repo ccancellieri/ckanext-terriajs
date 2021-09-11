@@ -113,18 +113,18 @@ def schema_check(key, data, errors, context):
     # TODO extension point (we may want to plug other schema checkers)
     
     #terriajs type
-    terriajs_type=data[('terriajs_type',)]
+    terriajs_type=data[(constants.TERRIAJS_TYPE_KEY,)]
     if not terriajs_type:
         _stop_on_error(errors,key,'Unable to load a valid terriajs_type')
 
-    config = json.loads(data[('terriajs_config',)])
+    config = json.loads(data[(constants.TERRIAJS_CONFIG_KEY,)])
     if not config:
         _stop_on_error(errors,key,'Missing value terriajs_config')
     try:
 
         # if not Draft4Validator.check_schema(constants.LAZY_GROUP_SCHEMA):
         #     raise Exception('schema not valid') #TODO do it once on startup (constants)
-        schema = get.resolve_schema_mapping(terriajs_type)
+        schema = tools.resolve_schema_mapping(terriajs_type)
         #validator = Draft4Validator(constants.LAZY_GROUP_SCHEMA, resolver=resolver, format_checker=None)
         validator = Draft7Validator(schema, resolver=_SCHEMA_RESOLVER)
         # VALIDATE JSON SCHEMA
@@ -162,9 +162,9 @@ def _lazy_group_check_references(terriajs_type, config):
                 if not view:
                     # looks like it's not found, reject
                     raise Exception(_('Unable to find view with ID: {}'.format(terria_view_id)))
-                elif view.view_type != constants.NAME:
+                elif view.view_type != constants.TYPE:
                     # should be a terriajs view actually
-                    raise Exception(_('Target view with ID: {} is not of type: {}'.format(terria_view_id,constants.NAME)))
+                    raise Exception(_('Target view with ID: {} is not of type: {}'.format(terria_view_id,constants.TYPE)))
 
 
 def default_lon_e(key, data, errors, context):

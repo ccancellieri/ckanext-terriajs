@@ -45,7 +45,7 @@ def view_by_type():
                 .join(Group, Package.owner_org == Group.id)\
                 .filter(Package.state == State.ACTIVE)\
                 .filter(Resource.state == State.ACTIVE)\
-                .filter(ResourceView.view_type == constants.NAME)
+                .filter(ResourceView.view_type == constants.TYPE)
 
                 # .join(PackageExtra, Package.id == PackageExtra.package_id, isouter=True)\
                 # .filter(PackageExtra.state == State.ACTIVE).group_by(Group.id,Package.id,Resource.id,ResourceView.id)\
@@ -153,9 +153,9 @@ def getRelations():
         Resource.id.label('resource_id'),
         ResourceView.id.label('view_id'),
         # config['items'],
-        #func.lateral(func.json_array_elements(config['terriajs_config'].cast(JSON)['items'])),
-        config['terriajs_config'].astext.label('terriajs_config'),
-        # select(func.json_array_elements(config['terriajs_config'].cast(JSON)['items'])).column_valued('item'),
+        #func.lateral(func.json_array_elements(config[constants.TERRIAJS_CONFIG].cast(JSON)['items'])),
+        config[constants.TERRIAJS_CONFIG_KEY].astext.label(constants.TERRIAJS_CONFIG_KEY),
+        # select(func.json_array_elements(config[constants.TERRIAJS_CONFIG].cast(JSON)['items'])).column_valued('item'),
         ResourceView.view_type
     )\
     .select_from(Package)\
@@ -163,12 +163,12 @@ def getRelations():
     .join(ResourceView, Resource.id == ResourceView.resource_id)\
     .filter(Package.state == State.ACTIVE)\
     .filter(Resource.state == State.ACTIVE)\
-    .filter(ResourceView.view_type == constants.NAME)\
-    .filter(config['terriajs_type'].astext == constants.LAZY_GROUP_TYPE)
+    .filter(ResourceView.view_type == constants.TYPE)\
+    .filter(config[constants.TERRIAJS_TYPE_KEY].astext == constants.LAZY_GROUP_TYPE)
     
     _sub_all_lazy_groups = all_lazy_groups.subquery()
     
-    terriajs_config=_sub_all_lazy_groups.c.terriajs_config.cast(JSON).label('terriajs_config')
+    terriajs_config=_sub_all_lazy_groups.c.terriajs_config.cast(JSON).label(constants.TERRIAJS_CONFIG_KEY)
     
     # item is an array next query will explode all the items in the lazy_group
     item = func.json_array_elements(terriajs_config['items']).label('item')

@@ -32,7 +32,7 @@ import ckanext.terriajs.logic.query as query
 # data = get_action('resource_view_create
 
 def _isOfTerriaType(data_dict):
-    return data_dict.get('terriajs_type',None)
+    return data_dict.get(constants.TERRIAJS_TYPE_KEY,None)
     
 
 @plugins.toolkit.chained_action
@@ -83,7 +83,9 @@ def resource_view_delete(next_action,context, data_dict):
                 resource_id=v[1]
                 view_id=v[2]
                 url=h.url_for('resource_view', id=package_id, resource_id=resource_id, view_id=view_id, qualified=True)
-                error_msg+='<li><a href=\"{}\">{}</a></li>'.format(url,url)   
+                error_msg+='<li><a class="btn btn-info" data-toggle="tooltip" data-placement="top"\
+                            title="Click to open the view referencing preventing deletion"\
+                            href=\"{}\" target="_blank">Resource id: {}</a></li>'.format(url,resource_id)   
             error_msg+='</ol></p>'
             h.flash_error(error_msg,allow_html=True)
                 # h.flash_error(h.url_for('resource_view', id=package_id, resource_id=resource_id, view_id=view_id, qualified=True))

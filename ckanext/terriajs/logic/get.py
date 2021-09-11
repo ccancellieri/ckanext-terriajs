@@ -1,12 +1,8 @@
 # encoding: utf-8
 
-from jinja2.environment import Environment
-from jinja2.loaders import FunctionLoader
-# from jinja2.utils import select_autoescape
 from ckan.common import json
 from ckan.plugins.toolkit import get_action, request, h, get_or_bust
 import json
-from requests.models import InvalidURL
 
 # import ckan.common as converters
 # from paste.deploy.converters import asbool
@@ -29,7 +25,7 @@ log = logging.getLogger(__name__)
 
 from jinja2 import Template,Markup
 from flask import Blueprint, abort, jsonify
-terriajs = Blueprint(constants.NAME, __name__)
+terriajs = Blueprint(constants.TYPE, __name__)
 
 def item_disabled(resource_view_id):
     try:
@@ -52,11 +48,11 @@ def item(resource_view_id):
         logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
-terriajs.add_url_rule(u'/terriajs/item/<resource_view_id>.json', view_func=item, methods=[u'GET'])
+terriajs.add_url_rule('/{}/item/<resource_view_id>.json'.format(constants.TYPE), view_func=item, methods=[u'GET'])
 
-terriajs.add_url_rule(u'/terriajs/item/disabled/<resource_view_id>.json', view_func=item_disabled, methods=[u'GET'])
+terriajs.add_url_rule('/{}/item/disabled/<resource_view_id>.json'.format(constants.TYPE), view_func=item_disabled, methods=[u'GET'])
 
-terriajs.add_url_rule(u'/terriajs/item/enabled/<resource_view_id>.json', view_func=item_enabled, methods=[u'GET'])
+terriajs.add_url_rule('/{}/item/enabled/<resource_view_id>.json'.format(constants.TYPE), view_func=item_enabled, methods=[u'GET'])
 
 def config_disabled(resource_view_id):
     try:
@@ -79,11 +75,11 @@ def _config(resource_view_id):
         logging.log(logging.ERROR,str(ex), exc_info=1)
         return jsonify(error=str(ex)), 500
 
-terriajs.add_url_rule(u'/terriajs/config/enabled/<resource_view_id>.json', view_func=config_enabled, methods=[u'GET'])
+# TODO unify/parametrize
+terriajs.add_url_rule('/{}/config/enabled/<resource_view_id>.json'.format(constants.TYPE), view_func=config_enabled, methods=[u'GET'])
+terriajs.add_url_rule('/{}/config/disabled/<resource_view_id>.json'.format(constants.TYPE), view_func=config_disabled, methods=[u'GET'])
 
-terriajs.add_url_rule(u'/terriajs/config/disabled/<resource_view_id>.json', view_func=config_disabled, methods=[u'GET'])
-
-terriajs.add_url_rule(u'/terriajs/config/<resource_view_id>.json', endpoint='config', view_func=_config, methods=[u'GET'])
+terriajs.add_url_rule('/{}/config/<resource_view_id>.json'.format(constants.TYPE), endpoint='config', view_func=_config, methods=[u'GET'])
 
 ### 
 import copy
@@ -105,31 +101,6 @@ def _base(resource_view_id, force=False, force_to=False, itemOnly=False):
 
     return _config
 
-
-# TODO better manage error conditions with appropriate http code and message
-import requests
-
-def resolve_schema_mapping(type):
-    '''
-    provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
-    '''
-    # try:
-    if type in constants.TYPE_MAPPING:
-        if not h.is_url(constants.TYPE_MAPPING[type]):
-            return tools.read_schema(constants.TYPE_MAPPING[type])
-        else:
-            return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
-    else:
-        raise InvalidURL(_(("Type {} not found into available mappings, please check your configuration").format(type)))
-    # except Exception as ex:
-    #     logging.log(logging.ERROR,str(ex), exc_info=1)
-    #     return jsonify(error=str(ex)), 404
-def read_schema(name):
-    return json.dumps(tools.read_schema(name))
-
-terriajs.add_url_rule(''.join([constants.REST_MAPPING_PATH,"<type>"]), view_func=resolve_schema_mapping, endpoint='mapping', methods=[u'GET'])
-
-terriajs.add_url_rule(''.join([constants.REST_SCHEMA_PATH,'<name>']), view_func=read_schema, endpoint='schema', methods=[u'GET'])
 
 def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -171,53 +142,19 @@ def _get_config(view_id):
         raise Exception(_('No view found for view_id: {}'.format(str(view_id))))
 
     view_config = view.get('config',None)
-    # TODO better check for 'config' structure (specialize query from view_by_id instead)
     if not view_config:
         raise Exception(_('Unable to find a valid configuration for view ID: {}'.format(str(view_id))))
-    #view_config = json.dumps(view_config)
 
-    ###########################################################################
-    # Jinja2 template
-    ###########################################################################
-    
-    model = _get_model(dataset_id=get_or_bust(view,'package_id'),resource_id=get_or_bust(view,'resource_id'))
-
-    # template = view_config and Template(Markup(get_or_bust(view_config,'terriajs_config').decode('string_escape')))
-    # config = template and template.render(model)
-    # try:
-    #     # decode needed for python2.7
-    #     config = view_config and json.loads(config)
-    #     if not config:
-    #         raise Exception(_('No config found for view: {}'.format(str(view_id))
-    # except Exception as ex:
-    #     raise Exception(_('Unable to parse resulting object should be a valid json:\n {}'.format(str(config),
-    #     '\nException: '+str(ex)+
-    #     '\nPlease check your template.'))
-
-    _config = json.loads(get_or_bust(view_config,'terriajs_config'))
-
-    def functionLoader(name):
-        return _config[name]
-    env = Environment(
-                loader=FunctionLoader(functionLoader),
-                # autoescape=select_autoescape(['html', 'xml']),
-                autoescape=True,
-                #newline_sequence='\r\n',
-                trim_blocks=False,
-                keep_trailing_newline=True)
-    for f in _config.keys():
-        if constants.FIELDS_TO_SKIP.get(f,None):
-            continue;
-        # TODO check python3 compatibility 'unicode' may disappear?
-        if isinstance(_config[f],(str,unicode)):
-            template = env.get_template(f)
-            _config[f] = template.render(model)
-    ###########################################################################
-
-    type = view_config and view_config.get('terriajs_type',None)
+    type = view_config and view_config.get(constants.TERRIAJS_TYPE_KEY,None)
     if not type:
         raise Exception(_('No type found for view: {}'.format(str(view_id))))
-    
+
+    model = _get_model(dataset_id=get_or_bust(view,'package_id'),resource_id=get_or_bust(view,'resource_id'))
+    _config = json.loads(get_or_bust(view_config,constants.TERRIAJS_CONFIG_KEY))
+
+    # Interpolation
+    tools.interpolate_fields(model,_config)
+
     camera={
         'east':view_config.get('east',180),
         'west':view_config.get('west',-180),
@@ -253,18 +190,36 @@ def _get_model(dataset_id, resource_id):
         'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
     
-def _model(dataset_id, resource_id):
-    try:    
-        # args = request.args
-        # dataset_id = args.get('dataset_id', None, type=str)
-        # resource_id = args.get('resource_id', None, type=str)
-        return json.dumps(_get_model(dataset_id,resource_id))
-    except Exception as ex:
-        error=_("Unable to get model: {}".format(str(ex)))
-        logging.log(logging.ERROR,error)
-        return jsonify(error), 404
+########################################
+## Schema proxy
 
-terriajs.add_url_rule(u'/terriajs/model/<dataset_id>/<resource_id>', endpoint='model', view_func=_model, methods=[u'GET'])
+def read_schema(name):
+    '''
+    Dumps the content of a local schema file.
+    The file resolution is based on the configured schema folder and the (argument) json file name
+    '''
+    return json.dumps(tools.read_schema(name))
+
+terriajs.add_url_rule('{}/<name>'.format(constants.REST_SCHEMA_PATH), view_func=read_schema, endpoint='schema', methods=[u'GET'])
+
+# terriajs.add_url_rule('{}/<type>'.format(constants.REST_MAPPING_PATH), view_func=tools.resolve_schema_mapping, endpoint='mapping', methods=[u'GET'])
+
+########################################
+
+# def _model(dataset_id, resource_id):
+#     try:    
+#         # args = request.args
+#         # dataset_id = args.get('dataset_id', None, type=str)
+#         # resource_id = args.get('resource_id', None, type=str)
+#         return json.dumps(_get_model(dataset_id,resource_id))
+#     except Exception as ex:
+#         error=_("Unable to get model: {}".format(str(ex)))
+#         logging.log(logging.ERROR,error)
+#         return jsonify(error), 404
+
+# terriajs.add_url_rule('{}/<dataset_id>/<resource_id>'.format(constants.REST_MAPPING_PATH), endpoint='model', view_func=_model, methods=[u'GET'])
+
+########################################
 
 def _get_list_of_views():
     try:
@@ -291,7 +246,9 @@ def _get_list_of_views():
         return jsonify(error=str(ex)), 404
         #abort(404)
 
-terriajs.add_url_rule(u'/terriajs/search', view_func=_get_list_of_views, methods=[u'GET'])
+terriajs.add_url_rule('/{}/search'.format(constants.TYPE), view_func=_get_list_of_views, methods=[u'GET'])
+
+########################################
 
 def _get_view_details():
     try:    
@@ -304,6 +261,4 @@ def _get_view_details():
         logging.log(logging.ERROR,error)
         return jsonify(error), 404
         #abort(404)
-
-
-terriajs.add_url_rule(u'/terriajs/describe', view_func=_get_view_details, methods=[u'GET'])
+terriajs.add_url_rule('/{}/describe'.format(constants.TYPE), view_func=_get_view_details, methods=[u'GET'])

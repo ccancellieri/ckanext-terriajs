@@ -48,11 +48,11 @@ class TestTerria(object):
         cls.resource = factories.Resource()
         cls.params = {
             'resource_id': cls.resource['id'],
-            'view_type': constants.NAME,
+            'view_type': constants.TYPE,
             'title': 'TerriajsView',
             'description': 'A nice view',
-            'terriajs_type': constants.DEFAULT_TYPE,
-            'terriajs_config': json.dumps(constants.TERRIAJS_CATALOG)
+            constants.TERRIAJS_TYPE_KEY: constants.DEFAULT_TYPE,
+            constants.TERRIAJS_CONFIG_KEY: json.dumps(constants.TERRIAJS_CATALOG)
         }
 
     def test_can_create_a_terriajs_view(self):
@@ -80,7 +80,7 @@ class TestTerria(object):
     def _test_can_load_json_config(self, app):
         new_view = helpers.call_action('resource_view_create', **self.params)
         # Check if file is generated
-        url = self.url_fetch_json.format(host_url=self.host_url, plugin_name=constants.NAME,
+        url = self.url_fetch_json.format(host_url=self.host_url, plugin_name=constants.TYPE,
                                     resource_view_id=new_view['id'])
         response = requests.get(url, extra_environ=self.env)
         assert (constants.TERRIAJS_CATALOG, response.body)
@@ -91,7 +91,7 @@ class TestTerria(object):
     def _test_type_of_not_group_is_enabled_return_true(self, app):
         new_view = helpers.call_action('resource_view_create', **self.params)
         # Enable groups
-        url = self.url_group_force_is_enabled.format(host_url=self.host_url, plugin_name=constants.NAME,
+        url = self.url_group_force_is_enabled.format(host_url=self.host_url, plugin_name=constants.TYPE,
                                          resource_view_id=new_view['id'])
         response = requests.get(url, extra_environ=self.env)
         data = json.loads(response.body)
@@ -102,7 +102,7 @@ class TestTerria(object):
     def _test_check_if_group_returns_an_array(self, app):
         new_view = helpers.call_action('resource_view_create', **self.params)
         # Enable groups
-        url = self.url_group.format(host_url=self.host_url, plugin_name=constants.NAME,
+        url = self.url_group.format(host_url=self.host_url, plugin_name=constants.TYPE,
                                                      resource_view_id=new_view['id'])
 
         response = requests.get(url, extra_environ=self.env)

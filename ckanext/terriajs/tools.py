@@ -71,3 +71,65 @@ def get_config(resource):
             'id': resource.get('id',''),
             'type': resource_type or ''
         }
+
+
+import requests
+InvalidURL = requests.models.InvalidURL
+
+def resolve_schema_mapping(type):
+    '''
+    provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
+    '''
+    # try:
+    if type in constants.TYPE_MAPPING:
+        if not h.is_url(constants.TYPE_MAPPING[type]):
+            return read_schema(constants.TYPE_MAPPING[type])
+        else:
+            # TODO better manage error conditions with appropriate http code and message
+            return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
+    else:
+        raise InvalidURL(_(("Type {} not found into available mappings, please check your configuration").format(type)))
+    # except Exception as ex:
+    #     logging.log(logging.ERROR,str(ex), exc_info=1)
+    #     return jsonify(error=str(ex)), 404
+
+
+from jinja2.environment import Environment
+from jinja2.loaders import FunctionLoader
+# from jinja2.utils import select_autoescape
+def interpolate_fields(model, template):
+
+    ###########################################################################
+    # Jinja2 template
+    ###########################################################################
+    
+
+    # template = view_config and Template(Markup(get_or_bust(view_config,constants.TERRIAJS_CONFIG).decode('string_escape')))
+    # config = template and template.render(model)
+    # try:
+    #     # decode needed for python2.7
+    #     config = view_config and json.loads(config)
+    #     if not config:
+    #         raise Exception(_('No config found for view: {}'.format(str(view_id))
+    # except Exception as ex:
+    #     raise Exception(_('Unable to parse resulting object should be a valid json:\n {}'.format(str(config),
+    #     '\nException: '+str(ex)+
+    #     '\nPlease check your template.'))
+
+    def functionLoader(name):
+        return template[name]
+    env = Environment(
+                loader=FunctionLoader(functionLoader),
+                # autoescape=select_autoescape(['html', 'xml']),
+                autoescape=True,
+                #newline_sequence='\r\n',
+                trim_blocks=False,
+                keep_trailing_newline=True)
+    for f in template.keys():
+        if f in constants.FIELDS_TO_SKIP:
+            continue
+        # TODO check python3 compatibility 'unicode' may disappear?
+        if isinstance(template[f],(str,unicode)):
+            _template = env.get_template(f)
+            template[f] = _template.render(model)
+    ###########################################################################

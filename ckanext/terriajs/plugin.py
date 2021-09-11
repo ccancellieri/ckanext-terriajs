@@ -69,10 +69,9 @@ class TerriajsPlugin(p.SingletonPlugin):
         constants.FORMATS=constants.TYPE_MAPPING.keys()
     
     def info(self):
-        # log.warn("---------------->"+_(config.get(*constants.DEFAULT_TITLE)))
         return {
             u'icon': constants.ICON,
-            u'name': constants.NAME,
+            u'name': constants.TYPE,
             u'title': _(constants.DEFAULT_TITLE),
             u'default_title': _(constants.DEFAULT_TITLE),
             u'always_available': constants.ALWAYS_AVAILABLE,
@@ -82,10 +81,8 @@ class TerriajsPlugin(p.SingletonPlugin):
             u'full_page_edit': True,
             u'schema': {
                 #'__extras': [ignore_empty]
-                'terriajs_type': [v.default_type, v.not_empty],
-                # 'terriajs_synch': [default_synch, not_empty],
-                #'terriajs_config': [not_empty, json_object]
-                'terriajs_config': [v.default_config, v.not_empty,v.schema_check],
+                constants.TERRIAJS_TYPE_KEY: [v.default_type, v.not_empty],
+                constants.TERRIAJS_CONFIG_KEY: [v.default_config, v.not_empty,v.schema_check],
                 'west':[v.default_lon_w],
                 'east':[v.default_lon_e],
                 'north':[v.default_lat_n],
@@ -105,21 +102,21 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         resource = _dict.get('resource',None)
 
-        resource_type = resource_view.get('terriajs_type',tools.get_view_type(resource))
+        resource_type = resource_view.get(constants.TERRIAJS_TYPE_KEY,tools.get_view_type(resource))
 
-        terriajs_schema = resource_view.get('terriajs_schema', get.resolve_schema_mapping(resource_type))
+        terriajs_schema = resource_view.get(constants.TERRIAJS_SCHEMA_KEY, tools.resolve_schema_mapping(resource_type))
         if not terriajs_schema:
             raise Exception(resource_type+_(' not defined, check your config'))
         
-        terriajs_config=resource_view.get('terriajs_config', tools.get_config(resource))
+        terriajs_config=resource_view.get(constants.TERRIAJS_CONFIG_KEY, tools.get_config(resource))
         
         config_view = {}
         config_view['config_view'] = {
             # TODO remove 'terriajs_' prefix (also js and html)
-            'terriajs_url': constants.TERRIAJS_URL,
-            'terriajs_schema': terriajs_schema,
-            'terriajs_config': terriajs_config,
-            'terriajs_type': resource_type,
+            constants.TERRIAJS_URL_KEY: constants.TERRIAJS_URL,
+            constants.TERRIAJS_SCHEMA_KEY: terriajs_schema,
+            constants.TERRIAJS_CONFIG_KEY: terriajs_config,
+            constants.TERRIAJS_TYPE_KEY: resource_type,
             # 'terriajs_synch': _get_synch(resource_view),
             'west': -180,
             'east': 180,
