@@ -1,6 +1,8 @@
 from sqlalchemy.sql.expression import true
 import ckan.lib.helpers as h
 import ckan.plugins.toolkit as toolkit
+
+_get_or_bust= toolkit.get_or_bust
 _ = toolkit._
 # import ckan.logic.validators as v
 
@@ -96,8 +98,13 @@ def default_config(key, data, errors, context):
 import jsonschema
 from jsonschema import validate,RefResolver,Draft4Validator,Draft7Validator
 import json
+import ckan.model as model
 
 _SCHEMA_RESOLVER = jsonschema.RefResolver(base_uri='file://{}/'.format(constants.PATH_SCHEMA), referrer=None)
+
+def _stop_on_error(errors,key,message):
+    errors[key].append(_(message))
+    raise StopOnError(_(message))
 
 def schema_check(key, data, errors, context):
     '''
@@ -108,33 +115,57 @@ def schema_check(key, data, errors, context):
     #terriajs type
     terriajs_type=data[('terriajs_type',)]
     if not terriajs_type:
-        raise StopOnError(_('Unable to load a valid terriajs_type'))
+        _stop_on_error(errors,key,'Unable to load a valid terriajs_type')
 
     config = json.loads(data[('terriajs_config',)])
     if not config:
-        errors[key].append(_('Missing value terriajs_config'))
-        raise StopOnError
+        _stop_on_error(errors,key,'Missing value terriajs_config')
     try:
-        # if constants.LAZY_GROUP_TYPE==terriajs_type:
-            
+
         # if not Draft4Validator.check_schema(constants.LAZY_GROUP_SCHEMA):
         #     raise Exception('schema not valid') #TODO do it once on startup (constants)
         schema = get.resolve_schema_mapping(terriajs_type)
         #validator = Draft4Validator(constants.LAZY_GROUP_SCHEMA, resolver=resolver, format_checker=None)
         validator = Draft7Validator(schema, resolver=_SCHEMA_RESOLVER)
-
+        # VALIDATE JSON SCHEMA
         _ret = validator.validate(config)
 
+        # check references in case of lazy group
+        _lazy_group_check_references(terriajs_type, config)
 
-        #TODO: All 
-        
-    except Exception or jsonschema.exceptions.ValidationError as e:
+    except jsonschema.exceptions.ValidationError as e:
         #DEBUG
         #import traceback
         #traceback.print_exc()
         #TODO better message
-        errors[key].append(_('Error validating:{}'.format(str(e))))
-        raise StopOnError(e)
+        _stop_on_error(errors,key,'Error validating:{}'.format(str(e)))
+    except Exception as e:
+        #DEBUG
+        #import traceback
+        #traceback.print_exc()
+        #TODO better message
+        _stop_on_error(errors,key,'Error validating:{}'.format(str(e)))
+
+def _lazy_group_check_references(terriajs_type, config):
+    if constants.LAZY_GROUP_TYPE==terriajs_type:
+            # VALIDATE REFERENCES
+            items = config.get('items',None)
+            for terria_view in items:
+                # check if it's a lazy item
+                if _get_or_bust(terria_view,'type')!=constants.LAZY_ITEM_TYPE:
+                    # TODO do we need to check also remote items?
+                    continue
+
+                # if leazy item then check if target view id exists
+                terria_view_id=_get_or_bust(terria_view,'id')
+                view=model.ResourceView.get(terria_view_id)
+                if not view:
+                    # looks like it's not found, reject
+                    raise Exception(_('Unable to find view with ID: {}'.format(terria_view_id)))
+                elif view.view_type != constants.NAME:
+                    # should be a terriajs view actually
+                    raise Exception(_('Target view with ID: {} is not of type: {}'.format(terria_view_id,constants.NAME)))
+
 
 def default_lon_e(key, data, errors, context):
     '''
