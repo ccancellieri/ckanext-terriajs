@@ -1,16 +1,30 @@
+.. contents:: Table of Contents
+   :depth: 2
 
-Plugin view ckanext-terriajs
+
+Description
 ============================
 
 .. _plugin
 
-The TerriaJS view plugin provide an extensible and highly configurable view for TerriaJS.
-
-
+The TerriaJS view plugin provide an extensible and highly configurable set of views ready for TerriaJS.
 
 It leverages over JSON schema to facilitate and speedup the configurations editing for each configured type (csv, wms, wmts, etc).
 
-The plugin also presents an embedded overview of the result showing the layer into an Iframe and a set of API to fetch the created configuration and more.
+The plugin also presents an embedded overview of the result showing the layer into an Iframe.
+
+
+**Image below**: **ckanext-terriajs** loaded iframe on CKAN.
+|
+
+.. image:: docs/img/terriajs_load.png
+   :class: with-shadow
+   :scale: 50 %
+   :alt: Loaded view
+
+|
+|
+
 
 The dynamic approach to the configurations (jinja2 template) allows you to create views which are always in synch with the changes made over the metadata and the resource to show.
 
@@ -39,9 +53,9 @@ Both UI js libraries are configured to provide UI validation based on JSON schem
 |
 
 .. image:: docs/img/terriajs_group_frontend_validation.png
-    :width: 800 px
-    :scale: 50 %
-    :alt: frontend validation
+   :width: 800 px
+   :scale: 50 %
+   :alt: frontend validation
 
 |
 
@@ -82,9 +96,9 @@ Reference integrity will check (on the backend) if the id of the target view (re
 
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_1.png
-    :width: 800 px
-    :scale: 50 %
-    :alt: ref integrity step 1
+   :width: 800 px
+   :scale: 50 %
+   :alt: ref integrity step 1
 
 
 Reporting the error to the editor
@@ -93,9 +107,9 @@ Reporting the error to the editor
 
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_2.png
-    :width: 800 px
-    :scale: 50 %
-    :alt: ref integrity step 2
+   :width: 800 px
+   :scale: 50 %
+   :alt: ref integrity step 2
 
 |
 
@@ -106,9 +120,9 @@ Referenced View deletion children side
 The plugin warns the owner of the view providing the list (hrefs) of existing 'terriajs-group' pointing to his view.
 
 .. image:: docs/img/terriajs_item_reference_integrity_check_on_children_deletion.png
-    :width: 800 px
-    :scale: 50 %
-    :alt: Unable to delete a children
+   :width: 800 px
+   :scale: 50 %
+   :alt: Unable to delete a children
 
 |
 
@@ -125,9 +139,9 @@ It also provides a set of buttons to test the resulting API endpoints (which wil
 |
 
 .. image:: docs/img/terriajs_frontend_tools.png
-    :width: 800 px
-    :scale: 50 %
-    :alt: Frontend tools
+   :width: 800 px
+   :scale: 50 %
+   :alt: Frontend tools
 
 
 |
@@ -211,20 +225,6 @@ The json-schma will define all the required fields and the minimum requirements 
 
 
 
-Appearance
-----------
-
-
-**Image below**: **ckanext-terriajs** loaded iframe on CKAN.
-|
-
-.. image:: docs/img/terriajs_load.png
-    :width: 800 px
-    :scale: 50 %
-    :alt: Loaded view
-
-|
-|
 
 Requirements
 ------------
@@ -232,7 +232,8 @@ Requirements
 Before installing ckanext-terriajs, make sure that you have installed the following:
 
 * CKAN 2.8 and above
-
+* terriajs 7
+* 
 |
 |
 
