@@ -15,11 +15,12 @@ The plugin also presents an embedded overview of the result showing the layer in
 
 
 **Image below**: **ckanext-terriajs** loaded iframe on CKAN.
+
 |
 
 .. image:: docs/img/terriajs_load.png
    :class: with-shadow
-   :scale: 50 %
+   :width: 600 px
    :alt: Loaded view
 
 |
@@ -54,7 +55,6 @@ Both UI js libraries are configured to provide UI validation based on JSON schem
 
 .. image:: docs/img/terriajs_group_frontend_validation.png
    :width: 800 px
-   :scale: 50 %
    :alt: frontend validation
 
 |
@@ -140,7 +140,6 @@ It also provides a set of buttons to test the resulting API endpoints (which wil
 
 .. image:: docs/img/terriajs_frontend_tools.png
    :width: 800 px
-   :scale: 50 %
    :alt: Frontend tools
 
 
@@ -197,17 +196,17 @@ You can set **enabled** to have all the items (recursively) enabled and displaye
 Extensions
 ----------
 
-The full lost of terriajs plugin configuation parameters are documented under `constants.py <>`__
+The full lost of terriajs plugin configuation parameters are documented under `constants.py <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/ckanext/terriajs/constants.py>`__
 
 The terriajs configuration item type is defined into the configuration with a target json-schema.
 
-The configuration is shippend in a file called `type-mapping.json <>`__ which is a serialized dict (a map):
+The configuration is shippend in a file called `type-mapping.json <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/type-mapping.json>`__ which is a serialized dict (a map):
 
     {
         'terria-js-type': 'URI'
     }
 
-**terria-js-type** is the terriajs item type ref `here <>`__ for a complete list.
+**terria-js-type** is the terriajs item type ref `here <https://docs.terria.io/guide/connecting-to-data/catalog-items/>`__ for a complete list.
 
 **URI** can be:
   

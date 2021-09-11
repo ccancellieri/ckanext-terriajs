@@ -14,9 +14,6 @@ ICON=config.get('ckanext.terriajs.icon', 'globe')
 TERRIAJS_URL=config.get('ckanext.terriajs.url', 'https://localhost/terriajs')
 
 # MANDATORY
-#TERRIAJS_SCHEMA_URL=config.get('ckanext.terriajs.schema.url', 'https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json')
-
-# MANDATORY
 # (ref to type-mapping.json)
 SCHEMA_TYPE_MAPPING_FILE=config.get('ckanext.terriajs.schema.type_mapping','./type-mapping.json')
 # Used internally: to hold the type-mapping file content as a dict
