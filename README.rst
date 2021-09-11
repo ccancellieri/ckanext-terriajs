@@ -27,7 +27,6 @@ The plugin also presents an embedded overview of the result showing the layer in
    :alt: Loaded view
 
 |
-|
 
 
 The terriajs view plugin can link existing views and group them into virtual (lazy loaded) groups of configurations.
@@ -40,6 +39,7 @@ The plugin is also able to automatically create a configurable sets ove views (y
 
 Out of the box it is already capable to automatically create views over wms, mvt, csv formats. 
 
+|
 
 
 Validation
@@ -69,6 +69,9 @@ The sent json will be discarded and a notification with a detailed message is re
 |
 
 All the schema supported by terriajs v7 are provided into a folder in the source tree.
+
+|
+
 
 
 Dynamic models (lazy-loaded)
@@ -107,6 +110,8 @@ Reference integrity will check (on the backend) if the id of the target view (re
 Trying to send a not valid id
 -----------------------------
 
+|
+
 .. image:: docs/img/terriajs_group_reference_integrity_check_1.png
    :width: 800 px
    :scale: 50 %
@@ -117,6 +122,7 @@ Trying to send a not valid id
 Reporting the error to the editor
 ---------------------------------
 
+|
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_2.png
    :width: 800 px
@@ -126,10 +132,13 @@ Reporting the error to the editor
 |
 
 
-Referenced View deletion children side
---------------------------------------
+Referenced View deletion
+------------------------
+
 
 The plugin warns the owner of the view providing the list (hrefs) of existing 'terriajs-group' pointing to his view.
+
+|
 
 .. image:: docs/img/terriajs_item_reference_integrity_check_on_children_deletion.png
    :width: 800 px
