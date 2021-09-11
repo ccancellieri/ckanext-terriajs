@@ -39,7 +39,8 @@ Both UI js libraries are configured to provide UI validation based on JSON schem
 |
 
 .. image:: docs/img/terriajs_group_frontend_validation.png
-    :width: 800
+    :width: 800 px
+    :scale: 50 %
     :alt: frontend validation
 
 |
@@ -81,7 +82,8 @@ Reference integrity will check (on the backend) if the id of the target view (re
 
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_1.png
-    :width: 800
+    :width: 800 px
+    :scale: 50 %
     :alt: ref integrity step 1
 
 
@@ -91,7 +93,8 @@ Reporting the error to the editor
 
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_2.png
-    :width: 800
+    :width: 800 px
+    :scale: 50 %
     :alt: ref integrity step 2
 
 |
@@ -103,7 +106,8 @@ Referenced View deletion children side
 The plugin warns the owner of the view providing the list (hrefs) of existing 'terriajs-group' pointing to his view.
 
 .. image:: docs/img/terriajs_item_reference_integrity_check_on_children_deletion.png
-    :width: 800
+    :width: 800 px
+    :scale: 50 %
     :alt: Unable to delete a children
 
 |
@@ -121,7 +125,8 @@ It also provides a set of buttons to test the resulting API endpoints (which wil
 |
 
 .. image:: docs/img/terriajs_frontend_tools.png
-    :width: 800
+    :width: 800 px
+    :scale: 50 %
     :alt: Frontend tools
 
 
@@ -214,7 +219,8 @@ Appearance
 |
 
 .. image:: docs/img/terriajs_load.png
-    :width: 800
+    :width: 800 px
+    :scale: 50 %
     :alt: Loaded view
 
 |
