@@ -63,12 +63,13 @@ Both UI js libraries are configured to provide UI validation based on JSON schem
 
 |
 
-At the **backend** the plugin leverages over `jsonschema <https://python-jsonschema.readthedocs.io/en/stable/>`__ which is the sole python dependency **required to install**) so also the rest API is covered with a validation providing to the user messages in case of error since not compliant with the json-schema (*draft4*).
-The sent json will be discarded and a notification with a detailed message is returned. 
+At the **backend** side the plugin leverages over `jsonschema <https://python-jsonschema.readthedocs.io/en/stable/>`__.
+This is the sole python dependency **required to install**.
+Thanks to this additional validation the rest API is covered with validation.
 
 |
 
-All the schema supported by terriajs v7 are provided into a folder in the source tree.
+All the json-schema (draft4) supported by terriajs v7 are provided into a folder in the source tree (tbt).
 
 |
 
