@@ -52,7 +52,7 @@ class TestTerria(object):
             'title': 'TerriajsView',
             'description': 'A nice view',
             'terriajs_type': constants.DEFAULT_TYPE,
-            'terriajs_config': constants.TERRIAJS_CATALOG
+            'terriajs_config': json.dumps(constants.TERRIAJS_CATALOG)
         }
 
     def test_can_create_a_terriajs_view(self):
