@@ -27,15 +27,16 @@ The plugin also presents an embedded overview of the result showing the layer in
 |
 
 
-The dynamic approach to the configurations (jinja2 template) allows you to create views which are always in synch with the changes made over the metadata and the resource to show.
+The terriajs view plugin can link existing views and group them into virtual (lazy loaded) groups of configurations.
 
-The terriajs view plugin infact allows you to dinamically link existing images and group them into virtual (lazy loaded) groups of configurations.
+It also allows you to use jinja2 template to fill in informations into terriajs views cherry picking the title, description and more directly from the dataset or the target resource.
 
-It also allows you to use jinja2 template to fill in informations into the views cherry picking the title, description and more directly from the dataset or the target resource.
+The dynamic approach (lazy-load + jinja2) allows you to create views which are always in synch with the changes made over the metadata and the resource to show.
 
 The plugin is also able to automatically create a configurable sets ove views (you define what you want to have automatically and how).
 
-Without any configuration it is shipping wms, mvt, csv automatic view creation out of the box. 
+Out of the box it is already capable to automatically create views over wms, mvt, csv formats. 
+
 
 
 Validation
@@ -64,8 +65,11 @@ The sent json will be discarded and a notification with a detailed message is re
 
 |
 
+All the schema supported by terriajs v7 are provided into a folder in the source tree.
+
+
 Dynamic models (lazy-loaded)
-===========
+============================
 
 .. _lazy_models
 
