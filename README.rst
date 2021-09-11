@@ -1,7 +1,8 @@
-ckanext-terriajs
-=====================================
 
-|
+Plugin view ckanext-terriajs
+============================
+
+.. _plugin
 
 This plugin provide an extensible and highly configurable view for TerriaJS.
 
@@ -19,8 +20,11 @@ The plugin is also able to automatically create a configurable sets ove views (y
 
 Without any configuration it is shipping wms, mvt, csv automatic view creation out of the box. 
 
+
 Validation
-==========
+----------
+
+.. _validation
 
 The plugin is heavily based on a JSON + JSON-SCHEMA approach.
 
@@ -36,8 +40,11 @@ Both UI js libraries are configured to provide UI validation based on JSON schem
 
 At the **backend** the plugin leverages over **jsonschema** (https://python-jsonschema.readthedocs.io/en/stable/ is the unique python dependency required to install) so also the rest API is covered with a validation providing to the user messages in case of error (json not compliant with the json-schema). 
 
+
 Lazy models
-===========
+-----------
+
+.. _lazy_models
 
 The terriajs view plugin defines a _special_ type which is resolved at request time so you can easily keep connected existing views into dynamic groups by view id.
 
@@ -47,7 +54,9 @@ With this approach an administrator is able to create dynamic collections which 
 
 
 Reference Integrity
-===================
+-------------------
+
+.. _reference integrity
 
 Having a lazy load root node 'terriajs-group' adds the challenge to keep reference integrity (1-to-many) from the terriajs-group to the target childrens (existing views).
 
@@ -57,24 +66,32 @@ The terriajs view plugin forbids the deletion of existing referenced views so a 
 
 Reference integrity will check (on the backend) if the id of the target view (resolved dynamically) is not existent 
 
+
 .. image:: docs/img/terriajs_group_reference_integrity_check_1.png
     :alt: ref integrity step 1
 
+
 Reporting the error to the editor
+
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_2.png
     :alt: ref integrity step 2
 
 
 Referenced View deletion children side
-======================================
+--------------------------------------
+
+
 The plugin warns the owner of the view providing the list (hrefs) of existing 'terriajs-group' pointing to his view.
 
 .. image:: docs/img/terriajs_item_reference_integrity_check_on_children_deletion.png
     :alt: Unable to delete a children
 
+
 Tools
-=====
+-----
+
+.. _tools
 
 The UI is also providing a quite extensive set of buttons (copy to clipboard) to easily customize (in case of need) the view with static details.
 
@@ -83,8 +100,12 @@ It also provides a set of buttons to test the resulting API endpoints (which wil
 .. image:: docs/img/terriajs_frontend_tools.png
     :alt: Frontend tools
 
+
+
 API
-===
+---
+
+.. _api
 
 In addition to the cksn standard action (create_view, etc)
 
