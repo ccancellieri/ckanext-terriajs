@@ -3,7 +3,7 @@
 
 
 Description
-============================
+===========
 
 .. _plugin
 
@@ -39,7 +39,7 @@ Without any configuration it is shipping wms, mvt, csv automatic view creation o
 
 
 Validation
-----------
+==========
 
 .. _validation
 
@@ -64,8 +64,8 @@ The sent json will be discarded and a notification with a detailed message is re
 
 |
 
-Lazy models
------------
+Dynamic models (lazy-loaded)
+===========
 
 .. _lazy_models
 
@@ -78,7 +78,7 @@ With this approach an administrator is able to create dynamic collections which 
 |
 
 Reference Integrity
--------------------
+===================
 
 .. _reference integrity
 
@@ -88,22 +88,27 @@ The terriajs view plugin forbids the deletion of existing referenced views so a 
 
 |
 
-**Note** that this plugin leverages over postgres + json approach **NOT STORING OR CREATING ANY ADDITIONAL TABLE**, I consider this a plus for any migration (at the cost of a bit of complexity in terms of query and reference integrity).
+Note
+----
+
+This plugin leverages over postgres + json approach **NOT STORING OR CREATING ANY ADDITIONAL TABLE**, I consider this a plus for any migration (at the cost of a bit of complexity in terms of query and reference integrity).
 
 Reference integrity will check (on the backend) if the id of the target view (resolved dynamically) is not existent 
 
 |
 
+Trying to send a not valid id
+-----------------------------
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_1.png
    :width: 800 px
    :scale: 50 %
    :alt: ref integrity step 1
 
+|
 
 Reporting the error to the editor
-
-|
+---------------------------------
 
 
 .. image:: docs/img/terriajs_group_reference_integrity_check_2.png
@@ -128,7 +133,7 @@ The plugin warns the owner of the view providing the list (hrefs) of existing 't
 
 
 Tools
------
+=====
 
 .. _tools
 
@@ -146,7 +151,7 @@ It also provides a set of buttons to test the resulting API endpoints (which wil
 |
 
 API
----
+===
 
 .. _api
 
@@ -158,33 +163,33 @@ The plugin also provide a new set of blueprint endpoints:
 
 |
 
-/terriajs/describe
+    /terriajs/describe
 
 describe an existing view by id, used by terriajs-group
 
 |
 
-/terriajs/search
+    /terriajs/search
 
 search an existing view by resource or dataset title/description, used by terriajs-group)
 
 |
 
-/terriajs/schema/<filename>
+    /terriajs/schema/<filename>
 
  a proxy to resolve relative schema references (ckan can work also as source of schemas in case you don't have a static repository)
 
 |
 
-/terriajs/config/[<enabled|disabled>/]<uuid>.json
+    /terriajs/config/[<enabled|disabled>/]<uuid>.json
 
- an endpoint to return a valid and dinamically resolved and interpolated full terriajs configuration (used by the **preview**).
+an endpoint to return a valid and dinamically resolved and interpolated full terriajs configuration (used by the **preview**).
 
 You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling.
 
 |
 
-/terriajs/item/[<enabled|disabled>/]<uuid>.json
+    /terriajs/item/[<enabled|disabled>/]<uuid>.json
 
 
 While */config/* returns a fully functional configuration catalog, this endpoint to return the configured (unwrapped) **item** (dinamically resolved and interpolated)
@@ -194,7 +199,7 @@ You can set **enabled** to have all the items (recursively) enabled and displaye
 |
 
 Extensions
-----------
+==========
 
 The full lost of terriajs plugin configuation parameters are documented under `constants.py <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/ckanext/terriajs/constants.py>`__
 
@@ -226,18 +231,18 @@ The json-schma will define all the required fields and the minimum requirements 
 
 
 Requirements
-------------
+============
 
 Before installing ckanext-terriajs, make sure that you have installed the following:
 
 * CKAN 2.8 and above
 * terriajs 7
-* 
-|
+
+
 |
 
 Installation
-------------
+============
 
 We are not providing pip package to install please use:
 
@@ -246,26 +251,27 @@ We are not providing pip package to install please use:
     python setup.py install
 
 |
-|
+
 
 Configuration
--------------
+=============
 
-You must make sure that the following is set in your CKAN config::
+Please ref to constants.py for a full updated list
 
-    ckanext.terriajs.default.name=TerriaJS
+    ckanext.terriajs.default.name=TerriaJS Map
     ckanext.terriajs.always_available=True
     ckanext.terriajs.default.title=TerriaJS view
     ckanext.terriajs.icon=globe
     ckanext.terriajs.url=http://localhost:8080
-    ckanext.terriajs.default.formats=['csv']
-  
+    ckanext.terriajs.default.formats=['csv','mvt']
+
 
 |
-|
+
 
 Development
------------
+===========
+
 To install ckanext-terriajs for development, activate your CKAN virtualenv and do::
 
     git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
@@ -273,12 +279,14 @@ To install ckanext-terriajs for development, activate your CKAN virtualenv and d
     python setup.py develop
     
 |
-|
+
 
 Tests
------
+=====
+
 
 To run the tests:
+
 
 1. Activate your CKAN virtual environment, for example::
 
@@ -286,6 +294,7 @@ To run the tests:
 
 
 2. From the CKAN root directory (not the extension root) do::
+
 
     pytest --ckan-ini=test.ini ckanext/terriajs/tests
 
