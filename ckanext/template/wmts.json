@@ -1,6 +1,9 @@
 {
     "name": "{{dataset.title or dataset.name}}",
     "url": "{{resource.url}}",
+    "description": "{% if dataset.type == 'dataset' %}\n# Dataset:\n\n\n**Type:** {{dataset.type}}\n\n**Title:** {{dataset.title or organization.name}}\n\n**Description:** {{dataset.notes or resource.description}}\n\n**Author:** {{dataset.author}}\n\n**Author email:** {{dataset.author_email}}\n\n**created on:** {{dataset.metadata_created}}\n\n**changed on:** {{dataset.metadata_modified}}\n\n**Version:** {{dataset.version}}\n\n{% if dataset.extras %}\n**Extras:**\n\t{% for e in dataset.extras %}\n\t\t- **{{e.key}}**: _{{e.value}}_\n\t{% endfor %}\n{% endif %}\n\n{% if organization.image_url %}\n**Logo:** ![dataset Image]({{organization.image_url}})\n{% endif %}\n\n**Page:** [dataset page]({{ckan.base_url}}/{{dataset.type}}/{{dataset.name}})\n\n**License:** {{dataset.license_title}}\n\n**License url:** {{dataset.license_url}}\n\n**Maintainer:** {{dataset.maintainer}}\n\n**Maintainer email:** {{dataset.maintainer_email}}\n\n**Status:** {{dataset.private}}\n\n\n\n# Resource:\n\n**Format:** {{resource.format|lower}}\n\n**Title:** {{resource.title or organization.name}}\n\n**Description:** {{resource.description}}\n\n{% if resource.url %}\n**URL:** [Resource url]({{resource.url}})\n{% endif %}\n\n\n# **Organization:**\n\n\n**Description:** {{organization.description}}\n\n**Title:** {{organization.title or organization.name}}\n\n{% if organization.image_url %}\n**Logo:** ![Organization Image]({{organization.image_url}})\n{% endif %}\n\n**Page:** [Organization page]({{ckan.base_url}}/organization/{{organization.name}})\n\n**License url:** {{organization.license_url}}\n\n{% else %}\n\n**THIS TEMPLATE IS NOT READY FOR DATASET TYPE:** \n\n{{dataset.type}}\n\n\n{% endif %}",
+    "id": "{{resource.id}}",
+    "type": "wmts",
     "layer": "{{resource.name}}",
     "useResourceTemplate": false,
     "ignoreUnknownTileErrors": true,

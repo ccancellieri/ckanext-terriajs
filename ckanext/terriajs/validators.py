@@ -27,7 +27,8 @@ import ckanext.terriajs.logic.get as get
 import logging
 log = logging.getLogger(__name__)
 
-#TODO... something more ckan oriented? (toolkit, etc) dict(?)
+#TODO... something more ckan oriented? 
+#https://github.com/ckan/ckan/blob/c5c529d10ebe63d8573515483fdd46e0839477f0/ckan/lib/dictization/model_dictize.py
 def instance_to_dict(i):
     '''
     The Validator receive a resource instance, we need a dict...
