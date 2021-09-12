@@ -43,34 +43,44 @@ def read_schema(name):
 
 
 # TODO DOCUMENT (Default mapping)
-def get_view_type(resource):
-    resource_type = resource.get('format','').lower()
-    # type has been configured, is it matching into the config?
+
+def map_resource_to_terriajs_type(resource):
+    '''
+    if not found fallbacks to DEFAULT_TYPE
+    '''
+    resource_type = resource.get('format')
+    return map_resource_format_to_terriajs_type(resource_type)
+    
+def map_resource_format_to_terriajs_type(resource_type):
+    '''
+    if not found fallbacks to DEFAULT_TYPE
+    '''
+    if not resource_type:
+        # TODO log
+        return constants.DEFAULT_TYPE
+
+    # TODO Document why lower()
+    resource_type = resource_type.lower()
+
+    # type has been properly configured only if it is matching the type-mapping
     if resource_type not in constants.TYPE_MAPPING.keys():
         resource_type = constants.DEFAULT_TYPE
-    
-    return resource_type
-    
     return resource_type
 
-def get_config(resource):
+def default_template(terriajs_type):
     
-    resource_type = get_view_type(resource)
-
     # generate base configuration
     # TODO create and use template mapping
-    terriajs_config = read_template('{}.json'.format(resource_type))
+    terriajs_config = read_template('{}.json'.format(terriajs_type))
+
     if terriajs_config:
         return terriajs_config
     else:
         # fallback, no template has been found
-        return {
-            'name': resource.get('name',''),
-            'url': resource.get('url',''),
-            'description': resource.get('description',''),
-            'id': resource.get('id',''),
-            'type': resource_type or ''
-        }
+        #TODO LOG
+        # return constants.TERRIAJS_CATALOG
+        #FAIL FAST
+        raise Exception(_('No valid template found for type: {}'.format(terriajs_type)))
 
 
 import requests
@@ -94,8 +104,11 @@ def resolve_schema_mapping(type):
     #     return jsonify(error=str(ex)), 404
 
 
-from jinja2.environment import Environment
-from jinja2.loaders import FunctionLoader
+import jinja2
+Environment = jinja2.environment.Environment
+FunctionLoader = jinja2.loaders.FunctionLoader 
+TemplateSyntaxError = jinja2.TemplateSyntaxError
+
 # from jinja2.utils import select_autoescape
 def interpolate_fields(model, template):
 
@@ -130,6 +143,11 @@ def interpolate_fields(model, template):
             continue
         # TODO check python3 compatibility 'unicode' may disappear?
         if isinstance(template[f],(str,unicode)):
-            _template = env.get_template(f)
-            template[f] = _template.render(model)
+            try:
+                _template = env.get_template(f)
+                template[f] = _template.render(model)
+            except TemplateSyntaxError as e:
+                raise Exception(_('Unable to interpolate field \'{}\' line \'{}\''.format(f,str(e.lineno))))
+            except Exception as e:
+                raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
     ###########################################################################

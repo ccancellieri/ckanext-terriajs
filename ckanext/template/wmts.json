@@ -1,9 +1,6 @@
 {
     "name": "{{dataset.title or dataset.name}}",
     "url": "{{resource.url}}",
-    "description": "{{dataset.notes or resource.description}}",
-    "id": "{{resource.id}}",
-    "type": "wmts",
     "layer": "{{resource.name}}",
     "useResourceTemplate": false,
     "ignoreUnknownTileErrors": true,

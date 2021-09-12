@@ -42,7 +42,7 @@ def instance_to_dict(i):
                 'description': i.description or '',
                 'id': i.id or '',
                 'package_id': i.package_id or '',
-                'format': (i.format or '').lower()
+                'format': (i.format or '')
     }
     if i.url_type == 'upload':
         resource['url'] = h.url_for(
@@ -60,13 +60,13 @@ def default_type(key, data, errors, context):
     '''
     type = data.get(key)
     if not type or type is missing:
-        resource = instance_to_dict(context['resource'])
-        type = tools.get_view_type(resource)
+        _resource = instance_to_dict(context.get('resource'))
+        type = tools.map_resource_to_terriajs_type(_resource)
         if not type:
-            errors[key].append(_('Missing value'))
+            errors[key].append(_('Missing default type value, please check available json-mapping formats'))
             raise StopOnError
 
-        data[key] = type.lower()
+        data[key] = type
 
 
 # def default_synch(key, data, errors, context):
@@ -83,13 +83,12 @@ def default_config(key, data, errors, context):
     '''
     config = data.get(key)
     if not config or config is missing:
-        resource = context['resource']
-        _resource = instance_to_dict(resource)
-        # _resource.update({ 'type': _get_view_type(resource)})
-        
-        config = tools.get_config(_resource)
+        _resource = instance_to_dict(context.get('resource'))
+        # _resource.update({ 'type': _map_resource_format_to_terriajs_type(resource)})
+        terriajs_type = tools.map_resource_to_terriajs_type(_resource)
+        config = tools.default_template(terriajs_type)
         if not config:
-            errors[key].append(_('Missing value'))
+            errors[key].append(_('Missing config value (json body)'))
             raise StopOnError
         data[key] = config
 
@@ -106,20 +105,35 @@ def _stop_on_error(errors,key,message):
     errors[key].append(_(message))
     raise StopOnError(_(message))
 
-def schema_check(key, data, errors, context):
+def config_schema_check(key, data, errors, context):
     '''
     Validator providing schema check capabilities
     '''
+   # config = json.loads(data[(constants.TERRIAJS_CONFIG_KEY,)])
+    config = data.get(key)
+    if not config:
+        _stop_on_error(errors,key,_('Can\'t validate empty Missing value {}'.format(constants.TERRIAJS_CONFIG_KEY)))
+
+    ##############SIDE EFFECT#################
+    # if configuration comes as string:
+    # convert incoming string to a dict
+    try:
+        if not isinstance(config, dict):
+            config = data[key] = json.loads(config)
+    except Exception as e:
+        _stop_on_error(errors,key,'Not a valid json dict :{}'.format(str(e)))
+    ##############SIDE EFFECT#################
+
+    terriajs_type = data.get((constants.TERRIAJS_TYPE_KEY,))
+    if not terriajs_type or terriajs_type is missing:
+        _resource = instance_to_dict(context.get('resource'))
+        terriajs_type = tools.map_resource_to_terriajs_type(_resource)
+        # terriajs_type=data[(constants.TERRIAJS_TYPE_KEY,)]
+        
     # TODO extension point (we may want to plug other schema checkers)
-    
-    #terriajs type
-    terriajs_type=data[(constants.TERRIAJS_TYPE_KEY,)]
     if not terriajs_type:
         _stop_on_error(errors,key,'Unable to load a valid terriajs_type')
 
-    config = json.loads(data[(constants.TERRIAJS_CONFIG_KEY,)])
-    if not config:
-        _stop_on_error(errors,key,'Missing value terriajs_config')
     try:
 
         # if not Draft4Validator.check_schema(constants.LAZY_GROUP_SCHEMA):

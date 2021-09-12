@@ -5,6 +5,7 @@
     "id",
     "type",
     "name",
+    "description",
     "url",
     "layer"
   ],
@@ -17,14 +18,14 @@
       ]
     },
     "id": {
-      "$ref":"terriajs/schema/id.json"
+      "$ref":"id.json"
     },
     "name": {
       "title":"name",
       "type":"string"
     },
     "description": {
-      "$ref":"terriajs/schema/description.json"
+      "$ref":"description.json"
     },
     "layer": {
       "title": "name",

@@ -10,7 +10,7 @@
     "disable_properties": true
   },
   "required": [
-    "id","type","name","items"
+    "id","type","name","description","items"
   ],
   "properties":{
     "id":{

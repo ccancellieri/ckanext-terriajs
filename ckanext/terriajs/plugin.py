@@ -82,7 +82,7 @@ class TerriajsPlugin(p.SingletonPlugin):
             u'schema': {
                 #'__extras': [ignore_empty]
                 constants.TERRIAJS_TYPE_KEY: [v.default_type, v.not_empty],
-                constants.TERRIAJS_CONFIG_KEY: [v.default_config, v.not_empty,v.schema_check],
+                constants.TERRIAJS_CONFIG_KEY: [v.default_config, v.not_empty,v.config_schema_check],
                 'west':[v.default_lon_w],
                 'east':[v.default_lon_e],
                 'north':[v.default_lat_n],
@@ -92,7 +92,7 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def can_view(self, data_dict):
         resource = data_dict.get('resource',None)
-        return tools.get_view_type(resource) in constants.DEFAULT_FORMATS
+        return tools.map_resource_to_terriajs_type(resource) in constants.DEFAULT_FORMATS
 
     def setup_template_variables(self, context, data_dict):
 
@@ -102,13 +102,13 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         resource = _dict.get('resource',None)
 
-        resource_type = resource_view.get(constants.TERRIAJS_TYPE_KEY,tools.get_view_type(resource))
+        resource_type = resource_view.get(constants.TERRIAJS_TYPE_KEY,tools.map_resource_to_terriajs_type(resource))
 
         terriajs_schema = resource_view.get(constants.TERRIAJS_SCHEMA_KEY, tools.resolve_schema_mapping(resource_type))
         if not terriajs_schema:
             raise Exception(resource_type+_(' not defined, check your config'))
         
-        terriajs_config=resource_view.get(constants.TERRIAJS_CONFIG_KEY, tools.get_config(resource))
+        terriajs_config=resource_view.get(constants.TERRIAJS_CONFIG_KEY, tools.default_template(resource_type))
         
         config_view = {}
         config_view['config_view'] = {

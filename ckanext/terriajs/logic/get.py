@@ -106,17 +106,17 @@ def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
         cherry picking the view by ID from all the available metadata views'''
     
-    type = item and item.get('type',None)
+    type = item and item.get('type')
     if not type:
         #TODO LOG WARN
         return item
     
     elif type== constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
-        view_config = _get_config(item.get('id',None))
+        view_config = _get_config(item.get('id'))
         
         if not view_config:
-            raise Exception(_('Unable to resolve view id: {}'.format(item.get('id',None))))
+            raise Exception(_('Unable to resolve view id: {}'.format(item.get('id'))))
 
         # is it a nested lazy load item, let's try to resolve again
         item.update(_resolve(view_config['config'], force, force_to))
@@ -125,10 +125,10 @@ def _resolve(item, force=False, force_to=False):
         item.update({u'type':u'group'})
 
 
-    if force and item.get('type', None) != 'group':
+    if force and item.get('type') != 'group':
         item['isEnabled'] = force_to
     else:
-        items = item.get('items',None)
+        items = item.get('items')
         if items:
             for _item in items:
                 _resolve(_item, force, force_to)
@@ -150,10 +150,14 @@ def _get_config(view_id):
         raise Exception(_('No type found for view: {}'.format(str(view_id))))
 
     model = _get_model(dataset_id=get_or_bust(view,'package_id'),resource_id=get_or_bust(view,'resource_id'))
-    _config = json.loads(get_or_bust(view_config,constants.TERRIAJS_CONFIG_KEY))
+    terriajs_config = get_or_bust(view_config,constants.TERRIAJS_CONFIG_KEY)
+    
+    # backward compatibility (the string is now stored as dict)
+    if not isinstance(terriajs_config,dict):
+        terriajs_config = json.loads(terriajs_config)
 
     # Interpolation
-    tools.interpolate_fields(model,_config)
+    tools.interpolate_fields(model,terriajs_config)
 
     camera={
         'east':view_config.get('east',180),
@@ -161,7 +165,7 @@ def _get_config(view_id):
         'north':view_config.get('north',90),
         'south':view_config.get('south',-90)
     }
-    return { 'config':_config, 'type':type, 'camera':camera }
+    return { 'config':terriajs_config, 'type':type, 'camera':camera }
 
 def _get_model(dataset_id, resource_id):
     '''

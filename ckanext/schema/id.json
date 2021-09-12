@@ -2,11 +2,13 @@
   "id":"id",
   "title": "id",
   "type":"string",
+  "default":"{{resource.id}}",
+  "description":"Note: this is very important to terriajs stories and may never change. The default is to bind it to the resource id (dynamically).",
   "links": [
     {
       "href": "https://www.uuidgenerator.net/version4",
       "mediaType": "text/html",
-      "rel": "generator..."
+      "rel": "In case you whant to generate a static one, click heare..."
     }
   ]
 }
