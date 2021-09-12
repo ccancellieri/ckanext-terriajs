@@ -159,7 +159,7 @@ ckan.module('terriajs', function (jQuery, _) {
             this.editor = new JSONEditor(document.getElementById('editor-terriajs-config'),{
                 // Enable fetching schemas via ajax
                 ajax: true,
-                ajaxBase: new URL('/terriajs/schema/', terriajs.ckan_url),
+                ajaxBase: new URL('terriajs/schema/', terriajs.ckan_url),
 //                ajaxCredentials: true
 
                 // The schema for the editor
@@ -395,7 +395,7 @@ ckan.module('terriajs', function (jQuery, _) {
             this.editor = new JSONEditor(document.getElementById('editor-terriajs-config'),{
                 // Enable fetching schemas via ajax
                 ajax: true,
-                ajaxBase: new URL('/terriajs/schema/', terriajs.ckan_url),
+                ajaxBase: new URL('terriajs/schema/', terriajs.ckan_url),
 //                ajaxCredentials: true
 
                 // The schema for the editor
