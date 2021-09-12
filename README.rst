@@ -224,9 +224,12 @@ The terriajs configuration item type is defined into the configuration with a ta
 
 The configuration is shippend in a file called `type-mapping.json <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/type-mapping.json>`__ which is a serialized dict (a map):
 
+
     {
         'terria-js-type': 'URI'
     }
+
+
 
 **terria-js-type** is the terriajs item type ref `here <https://docs.terria.io/guide/connecting-to-data/catalog-items/>`__ for a complete list.
 
@@ -235,6 +238,7 @@ The configuration is shippend in a file called `type-mapping.json <https://bitbu
   - relative to the PATH_SCHEMA folder (see constants.py)
 
   - http link to a target json schema
+
 
 On startup the plugin check the list to understand which item is supported and add that format to the list.
 
@@ -246,6 +250,7 @@ The json-schma will define all the required fields and the minimum requirements 
 
 
 
+|
 
 Requirements
 ============

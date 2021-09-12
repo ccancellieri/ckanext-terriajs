@@ -26,6 +26,10 @@ SCHEMA_TYPE_MAPPING_FILE=config.get('ckanext.terriajs.schema.type_mapping','./ty
 FIELDS_TO_SKIP = config.get('ckanext.terriajs.skip.fields', ['featureInfoTemplate'])
 
 # (Optional)
+# this flag will prevent resource_view_clear action if enabled. (True by Default)
+PREVENT_CLEAR_ALL=config.get('ckanext.terriajs.prevent_clear_all', True)
+
+# (Optional)
 # List of formats supported for view auto creation (create the view when create the resource)
 # TODO note may require extensions to support other formats at the b.e.
 # TODO wmts incoming...
@@ -44,7 +48,7 @@ PATH_TEMPLATE=path.realpath(config.get('ckanext.terriajs.path.template', path.jo
 # use this type to define a group into terria hierarchy
 # type used to define a group of pointers (to a set of views). (resolved internally)
 LAZY_GROUP_TYPE = 'terriajs-group'
-
+\
 # (Internal)
 # type used internally to define a pointer to a view. (resolved internally)
 LAZY_ITEM_TYPE = 'terriajs-view'

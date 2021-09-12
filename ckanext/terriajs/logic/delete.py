@@ -97,11 +97,14 @@ def resource_view_delete(next_action,context, data_dict):
 
 # TODO chain this and define behaviours
 def resource_view_clear(context, data_dict):
-    # '''Delete all resource views, or all of a particular type.
+    # '''
+    # Delete all resource views, or all of a particular type.
     # :param view_types: specific types to delete (optional)
     # :type view_types: list
     # '''
-    # model = context['model']
+    if constants.PREVENT_CLEAR_ALL:
+        h.flash_error('Prevent resource_view_clear is enabled',allow_html=True)
+        return
 
     # _check_access('resource_view_clear', context, data_dict)
 
