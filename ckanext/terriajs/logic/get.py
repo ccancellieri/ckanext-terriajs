@@ -210,18 +210,21 @@ terriajs.add_url_rule('{}/<name>'.format(constants.REST_SCHEMA_PATH), view_func=
 
 ########################################
 
-# def _model(dataset_id, resource_id):
-#     try:    
-#         # args = request.args
-#         # dataset_id = args.get('dataset_id', None, type=str)
-#         # resource_id = args.get('resource_id', None, type=str)
-#         return json.dumps(_get_model(dataset_id,resource_id))
-#     except Exception as ex:
-#         error=_("Unable to get model: {}".format(str(ex)))
-#         logging.log(logging.ERROR,error)
-#         return jsonify(error), 404
+def _model(dataset_id, resource_id):
+    '''
+    Useful to the UI to serialize the model to understand and better write jinja2 templates
+    '''
+    try:    
+        # args = request.args
+        # dataset_id = args.get('dataset_id', None, type=str)
+        # resource_id = args.get('resource_id', None, type=str)
+        return json.dumps(_get_model(dataset_id,resource_id))
+    except Exception as ex:
+        error=_("Unable to get model: {}".format(str(ex)))
+        logging.log(logging.ERROR,error)
+        return jsonify(error), 404
 
-# terriajs.add_url_rule('{}/<dataset_id>/<resource_id>'.format(constants.REST_MAPPING_PATH), endpoint='model', view_func=_model, methods=[u'GET'])
+terriajs.add_url_rule('{}/<dataset_id>/<resource_id>'.format(constants.REST_MAPPING_PATH), endpoint='model', view_func=_model, methods=[u'GET'])
 
 ########################################
 
