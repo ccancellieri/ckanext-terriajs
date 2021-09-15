@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "title": "csw-resource terriajs custom item",
+  "required": [
+    "id",
+    "type",
+    "name",
+    "url",
+    "containerId",
+    "itemProperties"
+  ],
+  "oneOf":[
+    {
+      "$ref": "base.json"
+    }
+  ],
+  "properties":{
+    "type": {
+      "title": "type",
+      "type": "string",
+      "enum": [
+        "csw-resource"
+      ]
+    },
+    "id": {
+      "$ref":"id.json"
+    },
+    "name": {
+      "title":"name",
+      "type":"string"
+    },
+    "description": {
+      "$ref":"description.json"
+    },
+    "layer": {
+      "title": "name",
+      "type": "string"
+    },
+    "url": {
+      "title": "url",
+      "type": "string"
+    },
+    "containerId": {
+      "title": "url",
+      "type": "string"
+    },
+    "itemProperties":{
+      "type":"object",
+      "required": [
+        "layers"
+      ],
+      "featureInfoTemplate": {
+        "title": "feature info template",
+        "type": "string"
+      },
+      "layers": "{{resource.name}}",
+
+
+      "customProperties": {
+        "type":"object",
+
+        "dimensionLabelsConfig": {
+          "type":"object",
+          "dimensionsJsonStatUrl": {
+            "type":"string"
+          },
+          "showDimensionsOnPanel": {
+            "type":"string",
+            "enum":["false","true"]
+          }
+        }
+      },
+      "ignoreUnknownTileErrors": {
+        "type":"string",
+        "enum":["false","true"]
+      }
+    }
+  }
+}
