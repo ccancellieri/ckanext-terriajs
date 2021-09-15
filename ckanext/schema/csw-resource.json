@@ -37,8 +37,9 @@
       "type": "string"
     },
     "containerId": {
-      "title": "url",
-      "type": "string"
+      "title": "containerId",
+      "type": "string",
+      "description": "metadata target UUID"
     },
     "itemProperties":{
       "type":"object",
@@ -58,7 +59,7 @@
 
         "dimensionLabelsConfig": {
           "type":"object",
-          
+
           "dimensionsJsonStatUrl": {
             "type":"string"
           },

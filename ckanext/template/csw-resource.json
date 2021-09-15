@@ -4,7 +4,7 @@
     "name": "{{dataset.title or dataset.name}}",
     "url": "{{resource.url}}",
     "containerId": "{TARGET_METADATA_UUID}",
-    "baseLink": "{CSW_SERVER_BASE}",
+    "baseLink": "{{resource.url}}",
     "itemProperties": {
       "layers": "{{resource.name}}",
       "featureInfoTemplate": "",
