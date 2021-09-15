@@ -2,9 +2,9 @@
     "type": "csw-resource",
     "id": "{{resource.id}}",
     "name": "{{dataset.title or dataset.name}}",
-    "url": "https://data.apps.fao.org/map/catalog/srv/eng/csw",
-    "containerId": "",
-    "baseLink": "https://data.apps.fao.org/map/catalog/srv/eng/catalog.search#/metadata/",
+    "url": "{{resource.url}}",
+    "containerId": "{TARGET_METADATA_UUID}",
+    "baseLink": "{CSW_SERVER_BASE}",
     "itemProperties": {
       "layers": "{{resource.name}}",
       "featureInfoTemplate": "",
