@@ -335,6 +335,8 @@ To install ckanext-terriajs for development, activate your CKAN virtualenv and d
 
     git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
     cd ckanext-terriajs
+    pip install -r requirements.txt
+    pip install -r dev-requirements.txt
     python setup.py develop
     
 |
