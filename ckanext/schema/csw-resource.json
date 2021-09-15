@@ -32,10 +32,6 @@
     "description": {
       "$ref":"description.json"
     },
-    "layer": {
-      "title": "name",
-      "type": "string"
-    },
     "url": {
       "title": "url",
       "type": "string"
@@ -53,14 +49,16 @@
         "title": "feature info template",
         "type": "string"
       },
-      "layers": "{{resource.name}}",
-
-
+      "layers": {
+        "title": "name",
+        "type": "string"
+      },
       "customProperties": {
         "type":"object",
 
         "dimensionLabelsConfig": {
           "type":"object",
+          
           "dimensionsJsonStatUrl": {
             "type":"string"
           },

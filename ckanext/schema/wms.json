@@ -6,7 +6,7 @@
     "type",
     "name",
     "url",
-    "layer"
+    "layers"
   ],
   "oneOf":[
     {
@@ -31,7 +31,7 @@
     "description": {
       "$ref":"description.json"
     },
-    "layer": {
+    "layers": {
       "title": "name",
       "type": "string"
     },
