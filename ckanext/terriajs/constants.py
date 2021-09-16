@@ -1,6 +1,7 @@
 # from sqlalchemy.sql.expression import true
 import ckan.plugins.toolkit as toolkit
 config = toolkit.config
+import json
 import os
 path = os.path
 PATH_ROOT=path.realpath(path.join(path.dirname(__file__),'..'))
@@ -31,9 +32,15 @@ PREVENT_CLEAR_ALL=config.get('ckanext.terriajs.prevent_clear_all', True)
 
 # (Optional)
 # List of formats supported for view auto creation (create the view when create the resource)
-# TODO note may require extensions to support other formats at the b.e.
-# TODO wmts incoming...
+# NOTE may require extensions to support other formats at the b.e.
+# in case you want to override/customize it should be a json array like:
+# ckanext.terriajs.default.formats=["csv","wms","mvt","test"]
 DEFAULT_FORMATS = config.get('ckanext.terriajs.default.formats', ['csv','wms','mvt'])
+if isinstance(DEFAULT_FORMATS,str):
+   # log.debug("DEFAULT_FORMATS is still a string: {}".format(PATH_SCHEMA))
+   DEFAULT_FORMATS = json.loads(DEFAULT_FORMATS)
+if not isinstance(DEFAULT_FORMATS,list):
+   raise Exception('DEFAULT_FORMATS should be an array of valid format strings')
 
 # (Optional)
 # SERVER LOCAL PATH FOLDER WHERE JSON-SCHEMA are located.

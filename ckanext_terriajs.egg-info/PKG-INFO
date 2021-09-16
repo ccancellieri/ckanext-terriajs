@@ -88,11 +88,28 @@ Description: .. contents:: Table of Contents
         
         .. _lazy_models
         
-        The terriajs view plugin defines a _special_ type which is resolved at request time so you can easily keep connected existing views into dynamic groups by view id.
+        The terriajs view plugin defines a small set of __special__ types which are used to resolve at request time existing views, so you can easily keep connected them into dynamic groups by view id.
         
-        The special resource type 'terriajs-group' infact is binded (configurable) to a schema which allows you to search (using ui) and connect existing terriajs views (csv, mvt, etc)
+        The special resource type 'terriajs-group' infact defined by a schema which allows you to search (using ui) and connect existing terriajs views (csv, mvt, etc).
         
-        With this approach an administrator is able to create dynamic collections which will be _resolved_ at each request, giving you a fresh copy shipping all the changes performed by editors to each connected view (the views can also be dynamically resolved thanks to jinja2 templating approach)
+        The item pointing to an existing terriajs view is called terriajs-view (ref. image below), but an editor might not be informed about these internal details unless he wants to use the free form json editor.
+        
+        With this approach an administrator/editor is able to create dynamic collections which will be __resolved__ at each request, giving you a fresh copy shipping all the changes performed by editors to each connected view (the views can also be dynamically resolved thanks to jinja2 templating approach)
+        
+        
+        |
+        
+        .. image:: docs/img/terriajs_terriajs_group.png
+           :width: 800 px
+           :scale: 50 %
+           :alt: terriajs-group
+        
+        |
+        
+        Note:
+        -----
+        
+        This functionnality stress a lot the database and can be cpu intensive, so try to limit the amount of nodes resolved at runtime or cache them.
         
         |
         
@@ -232,9 +249,12 @@ Description: .. contents:: Table of Contents
         
         The configuration is shippend in a file called `type-mapping.json <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/type-mapping.json>`__ which is a serialized dict (a map):
         
+        
             {
                 'terria-js-type': 'URI'
             }
+        
+        
         
         **terria-js-type** is the terriajs item type ref `here <https://docs.terria.io/guide/connecting-to-data/catalog-items/>`__ for a complete list.
         
@@ -243,6 +263,7 @@ Description: .. contents:: Table of Contents
           - relative to the PATH_SCHEMA folder (see constants.py)
         
           - http link to a target json schema
+        
         
         On startup the plugin check the list to understand which item is supported and add that format to the list.
         
@@ -254,6 +275,7 @@ Description: .. contents:: Table of Contents
         
         
         
+        |
         
         Requirements
         ============
@@ -262,7 +284,7 @@ Description: .. contents:: Table of Contents
         
         * CKAN 2.8 and above
         * terriajs 7
-        
+        * Postgresql > 9.4
         
         |
         
@@ -273,7 +295,10 @@ Description: .. contents:: Table of Contents
         
             git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
             cd ckanext-terriajs
+            pip install -r requirements.txt
             python setup.py install
+        
+        Be sure to configure at least the mandatory settings into your production.ini file
         
         |
         
@@ -281,18 +306,35 @@ Description: .. contents:: Table of Contents
         Configuration
         =============
         
-        Please ref to constants.py for a full updated list
+        Copy and edit the type-mapping.json to the config folder:
         
-            ckanext.terriajs.default.name=TerriaJS Map
-            ckanext.terriajs.always_available=True
-            ckanext.terriajs.default.title=TerriaJS view
-            ckanext.terriajs.icon=globe
-            ckanext.terriajs.url=http://localhost:8080
-            ckanext.terriajs.default.formats=['csv','mvt']
+            cp ./type-mapping.json /etc/ckan/default/terriajs-type-mapping.json
         
+        Enable the plugin into production.ini
+        
+        If you desire to make it enabled by default (recommended):
+        
+            my_default_view = ...  terriajs
+        
+            # Define which views should be created by default
+            # (plugins must be loaded in ckan.plugins)
+        
+            ckan.views.default_views =  %(my_default_view)s
+        
+            ckan.plugins = %(my_default_view)s ...
+        
+        If you just want to have the plug loaded:
+        
+        
+            ckan.plugins = terriajs ...
+        
+        
+        Please ref to constants.py for an updated list of available parameters:
+        
+            ckanext.terriajs.url = http://localhost:8080
+            ckanext.terriajs.schema.type_mapping = /etc/ckan/default/terriajs-type-mapping.json
         
         |
-        
         
         Development
         ===========
@@ -301,6 +343,8 @@ Description: .. contents:: Table of Contents
         
             git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
             cd ckanext-terriajs
+            pip install -r requirements.txt
+            pip install -r dev-requirements.txt
             python setup.py develop
             
         |
