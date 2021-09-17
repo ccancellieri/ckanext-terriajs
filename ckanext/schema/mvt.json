@@ -8,6 +8,11 @@
     "url",
     "layer"
   ],
+  "oneOf":[
+    {
+      "$ref": "base.json"
+    }
+  ],
   "properties":{
     "type": {
       "type": "string",
@@ -18,13 +23,7 @@
     "id": {
       "$ref":"id.json"
     },
-    "name": {
-      "title":"name",
-      "type":"string"
-    },
-    "description": {
-      "$ref":"description.json"
-    },
+    
     "layer": {
       "type": "string"
     },

@@ -55,7 +55,7 @@ PATH_TEMPLATE=path.realpath(config.get('ckanext.terriajs.path.template', path.jo
 # use this type to define a group into terria hierarchy
 # type used to define a group of pointers (to a set of views). (resolved internally)
 LAZY_GROUP_TYPE = 'terriajs-group'
-\
+
 # (Internal)
 # type used internally to define a pointer to a view. (resolved internally)
 LAZY_ITEM_TYPE = 'terriajs-view'

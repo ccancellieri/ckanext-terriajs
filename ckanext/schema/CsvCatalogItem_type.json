@@ -7,18 +7,17 @@
     "url",
     "id"
   ],
+  "oneOf":[
+    {
+      "$ref": "base.json"
+    }
+  ],
   "properties": {
     "type": {
       "type": "string",
       "enum": [
         "csv"
       ]
-    },
-    "id": {
-      "$ref":"id.json"
-    },
-    "description": {
-      "$ref":"description.json"
     },
     "url": {
       "type":"string"
@@ -29,12 +28,6 @@
       "items": {
         "type": "number"
       }
-    },
-    "zoomOnEnable": {
-      "type": "boolean"
-    },
-    "isEnabled": {
-      "type": "boolean"
     },
     "featureInfoTemplate": {
       "type": "string",

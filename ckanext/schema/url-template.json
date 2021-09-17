@@ -1,9 +1,6 @@
 {
   "type": "object",
   "required": [
-    "id",
-    "type",
-    "name",
     "url"
   ],
   "oneOf":[
@@ -17,15 +14,6 @@
       "enum": [
         "url-template"
       ]
-    },
-    "id": {
-      "$ref":"id.json"
-    },
-    "name": {
-      "type":"string"
-    },
-    "description": {
-      "$ref":"description.json"
     },
     "url": {
       "type": "string"

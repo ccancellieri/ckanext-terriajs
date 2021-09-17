@@ -1,9 +1,6 @@
 {
   "type": "object",
   "required": [
-    "id",
-    "type",
-    "name",
     "url",
     "containerId",
     "itemProperties"
@@ -19,16 +16,6 @@
       "enum": [
         "csw-resource"
       ]
-    },
-    "id": {
-      "$ref":"id.json"
-    },
-    "name": {
-      "title":"name",
-      "type":"string"
-    },
-    "description": {
-      "$ref":"description.json"
     },
     "url": {
       "type": "string"
@@ -58,14 +45,12 @@
             "type":"string"
           },
           "showDimensionsOnPanel": {
-            "type":"string",
-            "enum":["false","true"]
+            "type":"boolean"
           }
         }
       },
       "ignoreUnknownTileErrors": {
-        "type":"string",
-        "enum":["false","true"]
+        "type":"boolean"
       }
     }
   }
