@@ -13,5 +13,7 @@
     "wms":"wms.json",
     "wmts":"wmts.json",    
     "csw-resource":"csw-resource.json",
-    "mvt": "mvt.json"
+    "mvt": "mvt.json",
+    "geojson": "geojson.json",
+    "url-template": "url-template"
 }

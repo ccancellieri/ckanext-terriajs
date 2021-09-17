@@ -1,7 +1,6 @@
 {
   "description": "This catalog item can be used to load a single catalog item from a remote source.",
   "type": "object",
-  "title": "remote-config-item",
   "format": "grid-strict",
   "required": [
     "type","url","name"
@@ -21,7 +20,6 @@
       }
     },
     "name":{
-      "title": "name",
       "type": "string",
       "minLength": 1,
       "options": {
@@ -29,7 +27,6 @@
       }
     },
     "url":{
-      "title": "url",
       "type": "string",
       "format": "url",
       "description": "The url to a Terriajs to lazily load (loaded on click)",

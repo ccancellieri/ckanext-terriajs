@@ -1,6 +1,5 @@
 {
   "id":"id",
-  "title": "id",
   "type":"string",
   "default":"{{resource.id}}",
   "description":"Note: this is very important to terriajs stories and may never change. The default is to bind it to the resource id (dynamically).",

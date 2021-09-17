@@ -2,51 +2,41 @@
   "type": "object",
   "defaultProperties": ["name", "type", "url"],
   "description": "A Catalog Item representing a smart csv.",
-  "title": "Smart CSV (SmartCSV)",
   "properties": {
     "schemaUrl": {
       "type": "string",
-      "title": "Jsonstat URL ",
       "description": "The URL of the Jsonstat schema"
     },
     "url": {
       "type": "string",
-      "title": "URL of api endpoint",
       "description": "The URL of the api endpoint that return csv content to queries"
     },
     "opacity": {
       "type": "number",
-      "title": "Opacity",
       "description": "The opacity (alpha) of the data item, where 0.0 is fully transparent and 1.0 is\nfully opaque."
     },
     "keepOnTop": {
       "type": "boolean",
-      "title": "Keep on top",
       "description": "Keeps the layer on top of all other imagery layers."
     },
     "showWarnings": {
       "type": "boolean",
-      "title": "Show warnings",
       "description": "Should any warnings like failures in region mapping be displayed to the user?"
     },
     "disableUserChanges": {
       "type": "boolean",
-      "title": "Disable user changes",
       "description": "Disable the ability to change the display of the dataset via displayVariablesConcept."
     },
     "isSampled": {
       "type": "boolean",
-      "title": "Is sampled",
       "description": "A value indicating whether the rows correspond to \"sampled\" data.\rThis only makes a difference if there is a time column and idColumns.\rIn this case, if isSampled is true, then feature position, color and size are interpolated\rto produce smooth animation of the features over time.\rIf isSampled is false, then times are treated as the start of periods, so that\rfeature positions, color and size are kept constant from one time until the next,\rthen change suddenly.\rColor and size are never interpolated when they are drawn from a text column."
     },
     "data": {
       "type": "string",
-      "title": "Data",
       "description": "The CSV data, represented as a binary Blob, a string, or a Promise for one of those things.\nIf this property is set, CatalogItem's url is ignored."
     },
     "dataSourceUrl": {
       "type": "string",
-      "title": "Data source URL",
       "description": "The URL from which the CsvCatalogItem's data was obtained.  This is informational; it is not\nused.  This propery is observable."
     },
     "type": {

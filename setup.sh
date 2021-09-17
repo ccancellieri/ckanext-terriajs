@@ -8,6 +8,8 @@
 #     "ckan.redis.url = $TEST_CKAN_REDIS_URL"
 
 # paster --plugin=ckan config-tool $SRC_DIR/ckan/test-core.ini \
+
+pip install -r requirements.txt &&\
 paster --plugin=ckan config-tool /srv/app/production.ini \
     "ckanext.terriajs.default.name=TerriaJS Map" \
     "ckanext.terriajs.always_available=True" \
@@ -15,8 +17,7 @@ paster --plugin=ckan config-tool /srv/app/production.ini \
     "ckanext.terriajs.icon=globe" \
     "ckanext.terriajs.url=http://localhost:8080" \
     "ckanext.terriajs.schema.default_type=terriajs" \
-    "ckanext.terriajs.schema.type_mapping=$APP_DIR/terriajs-type-mapping.json"
-
+    "ckanext.terriajs.schema.type_mapping=$APP_DIR/terriajs-type-mapping.json" &&\
 cp ./type-mapping.json $APP_DIR/terriajs-type-mapping.json
 
-pip install -r requirements.txt
+

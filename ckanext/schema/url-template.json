@@ -4,8 +4,7 @@
     "id",
     "type",
     "name",
-    "url",
-    "layers"
+    "url"
   ],
   "oneOf":[
     {
@@ -16,26 +15,19 @@
     "type": {
       "type": "string",
       "enum": [
-        "wms"
+        "url-template"
       ]
     },
     "id": {
       "$ref":"id.json"
     },
     "name": {
-      "title":"name",
       "type":"string"
     },
     "description": {
       "$ref":"description.json"
     },
-    "layers": {
-      "type": "string"
-    },
     "url": {
-      "type": "string"
-    },
-    "featureInfoTemplate": {
       "type": "string"
     }
   }

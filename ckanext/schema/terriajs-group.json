@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft-04/schema",
-  "title": "Terria view connector",
   "type": "object",
   "format": "categories",
   "basicCategoryTitle": "Main",
@@ -26,7 +25,6 @@
       }
     },
     "name": {
-      "title": "Name",
       "minLength": 1,
       "type": "string"
     },
@@ -34,7 +32,6 @@
       "$ref":"description.json"
     },
     "preserveOrder": {
-      "title": "Preserve order",
       "type": "boolean",
       "format": "checkbox",
       "default": true

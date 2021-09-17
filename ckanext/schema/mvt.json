@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "title": "MVT terriajs item",
   "required": [
     "id",
     "type",
@@ -11,7 +10,6 @@
   ],
   "properties":{
     "type": {
-      "title": "type",
       "type": "string",
       "enum": [
         "mvt"
@@ -28,11 +26,9 @@
       "$ref":"description.json"
     },
     "layer": {
-      "title": "name",
       "type": "string"
     },
     "url": {
-      "title": "url",
       "type": "string"
     }
   }

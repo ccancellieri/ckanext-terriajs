@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "title": "Comma-Separated Values (CSV)",
   "required": [
     "type",
     "name",
@@ -10,7 +9,6 @@
   ],
   "properties": {
     "type": {
-      "title": "Type of Resource",
       "type": "string",
       "enum": [
         "csv"
@@ -27,7 +25,6 @@
     },
     "rectangle": {
       "type": "array",
-      "title": "Rectangle",
       "format": "table",
       "items": {
         "type": "number"
@@ -44,54 +41,45 @@
       "format": "textarea"
     },
     "tableStyle": {
-      "title": "Table Style",
       "type": "object",
       "defaultProperties": [],
       "properties": {
         "columns": {
-          "title": "Columns",
           "type": "object",
           "additionalProperties": {
             "type": "object",
             "defaultProperties": [],
             "properties": {
               "type": {
-                "title": "Type of Column",
                 "type": "string",
+                "enum": [ "LON","LAT","ALT","TIME","SCALAR","ENUM","REGION","TAG","HIDDEN","ADDR" ],
                 "description": "The variable type of this column. Converts strings, which are case-insensitive keys of VarType, to numbers. The types include LON: 0, LAT: 1, ALT: 2, TIME: 3, SCALAR: 4, ENUM: 5, REGION: 6, TAG: 7, HIDDEN: 8, ADDR: 9"
               },
               "name": {
-                "title": "Name",
                 "type": "string",
                 "description": "New column name to replace the original column name"
               },
               "format": {
-                "title": "Format",
                 "format": "json",
                 "type": "string"
               },
               "units": {
-                "title": "Units",
                 "description": "The units of this column",
                 "type": "string"
               },
               "legendName": {
-                "title": "Name of Legend",
                 "description": "Display name for the legend for this column (defaults to the column name).",
                 "type": "string"
               },
               "legendTicks": {
-                "title": "Legend Ticks",
                 "description": "How many horizontal ticks to draw on the generated color ramp legend, not counting the top or bottom.",
                 "type": "string"
               },
               "active": {
-                "title": "Active",
                 "description": "Is this column active?",
                 "type": "boolean"
               },
               "colorBins": {
-                "title": "Color Bins for Column",
                 "description": "Either the number of discrete colours that a color gradient should be quantised into (ie. an integer), or an array of values specifying the boundaries between the color bins.",
                 "oneOf": [
                   {
@@ -100,7 +88,6 @@
                   },
                   {
                     "type": "array",
-                    "title": "Value Interval",
                     "format": "table",
                     "items": {
                       "type": "number"
@@ -109,7 +96,6 @@
                   {
                     "type": "array",
                     "format": "table",
-                    "title": "Value and Colors",
                     "items": {
                       "type": "object",
                       "required": [
@@ -129,12 +115,10 @@
                 ]
               },
               "scale": {
-                "title": "Scale",
                 "description": "The size of each point or billboard.",
                 "type": "number"
               },
               "scaleByValue": {
-                "title": "Scale By Value",
                 "description": "Should points and billboards representing each feature be scaled by the size of their data variable?",
                 "type": "boolean"
               }
@@ -142,12 +126,10 @@
           }
         },
         "dataVariable": {
-          "title": "Data Variable",
           "type": "string",
           "description": "The name of the default variable (column) containing data to be used for scaling and coloring."
         },
         "colorPalette": {
-          "title": "Color Palette",
           "type": "string",
           "links": [
             {
@@ -158,12 +140,10 @@
           ]
         },
         "colorBins": {
-          "title": "Color Bins for Resource",
           "type": "integer",
           "format": "select"
         },
         "colorBinMethod": {
-          "title": "Color Bin Method",
           "description":"For numeric columns: 'auto' (default), 'ckmeans', 'quantile' or 'none' (equivalent to colorBins: 0). For enumerated columns: 'auto' (default), 'top', or 'cycle'",
           "type": "string",
           "enum": [
@@ -176,7 +156,6 @@
           ]
         },
         "colorMap": {
-          "title": "Color Map",
           "oneOf": [
             {
               "type": "string",
@@ -186,7 +165,6 @@
             {
               "type": "array",
               "format": "table",
-              "title": "List of Color and Offset",
               "options": {       
                 "disable_collapse": true
               },
@@ -209,12 +187,10 @@
           ]
         },
         "featureInfoFields": {
-          "title": "Feature Information Fields",
           "description": "An object of { 'myCol': 'My column'} properties or a list of ['col1','col2'] properties, defining which columns get displayed in feature info boxes (when clicked on), and what label is used instead of the column's actual name.",
           "oneOf": [
             {
               "type": "object",
-              "title": "Object List",
               "additionalProperties": {
                 "type": "string"
               }
@@ -222,7 +198,6 @@
             {
               "type": "array",
               "format": "table",
-              "title": "Column List",
               "items": {
                 "type": "string"
               }
@@ -230,12 +205,10 @@
           ]
         },
         "imageUrl": {
-          "title": "Image URL",
           "type": "string",
           "description": "imageUrl - A string representing an image to display at each point, for lat-long datasets."
         },
         "timeColumn": {
-          "title": "Time Column",
           "description": "The column name or index to use as the time column. Defaults to the first one found. Pass null for none.",
           "type": "string"
         }

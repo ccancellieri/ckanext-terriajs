@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "title": "csw-resource terriajs custom item",
   "required": [
     "id",
     "type",
@@ -16,7 +15,6 @@
   ],
   "properties":{
     "type": {
-      "title": "type",
       "type": "string",
       "enum": [
         "csw-resource"
@@ -33,11 +31,9 @@
       "$ref":"description.json"
     },
     "url": {
-      "title": "url",
       "type": "string"
     },
     "containerId": {
-      "title": "containerId",
       "type": "string",
       "description": "metadata target UUID"
     },
@@ -47,11 +43,9 @@
         "layers"
       ],
       "featureInfoTemplate": {
-        "title": "feature info template",
         "type": "string"
       },
       "layers": {
-        "title": "name",
         "type": "string"
       },
       "customProperties": {

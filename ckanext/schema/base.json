@@ -1,6 +1,6 @@
 {
   "type": "object",
-  "title": "terriajs base type item",
+  
   "options": {
     "disable_properties": false
   },
@@ -12,11 +12,9 @@
   ],
   "properties":{
     "type": {
-      "title": "type",
       "type": "string"
     },
     "name": {
-      "title": "name",
       "type": "string"
     },
     "id": {
@@ -24,6 +22,14 @@
     },
     "description": {
       "$ref":"description.json"
+    },
+    "isEnabled":{
+      "type": "boolean",
+      "format": "checkbox"
+    },
+    "zoomOnEnable": {
+      "type": "boolean",
+      "format": "checkbox"
     }
   }
 }

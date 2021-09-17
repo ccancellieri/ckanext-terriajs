@@ -1,5 +1,4 @@
 {
-    "title": "terriajs-view",
     "id": "terriajs-view",
     "type": "object",
     "format": "grid-strict",
@@ -24,7 +23,6 @@
             }
         },
         "id": {
-            "title": "Id",
             "type": "string",
             "description": "Target Ckan terriajs view ID (autocomplete)",
             "format": "autocomplete",
@@ -47,7 +45,6 @@
             ]
         },
         "name": {
-            "title": "Name",
             "type": "string",
             "format": "string",
             "description": "Auto generated descriptive name",

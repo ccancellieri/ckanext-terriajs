@@ -1,6 +1,5 @@
 {
   "type": "object",
-  "title": "remote-config-group",
   "format": "grid-strict",
   "required": [
     "type","url","name"
@@ -20,7 +19,6 @@
       }
     },
     "name":{
-      "title": "name",
       "type": "string",
       "minLength": 1,
       "options": {
@@ -28,7 +26,6 @@
       }
     },
     "url":{
-      "title": "url",
       "type": "string",
       "format": "url",
       "description": "The URL from where the system fetches the configuration from. The url should return a valid terriajs configuration that contains either items or catalog in the JSON structure returned at the top level. Camera definition is not required (and has no effect) by this implementation.",
