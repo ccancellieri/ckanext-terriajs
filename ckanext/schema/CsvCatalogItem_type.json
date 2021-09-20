@@ -52,6 +52,14 @@
                 "type": "string",
                 "description": "New column name to replace the original column name"
               },
+              "nullColor":{
+                "type": "string",
+                "description": "The color with which to display null values."
+              },
+              "nullLabel": {
+                "type":"string",
+                "description":"The legend label for null values."
+              },
               "format": {
                 "format": "json",
                 "type": "string"
@@ -84,11 +92,13 @@
                     "format": "table",
                     "items": {
                       "type": "number"
-                    }
+                    },
+                    "title": "Value interval"
                   },
                   {
                     "type": "array",
                     "format": "table",
+                    "title": "Value and colors",
                     "items": {
                       "type": "object",
                       "required": [
@@ -97,7 +107,14 @@
                       ],
                       "properties": {
                         "value": {
-                          "type": "string"
+                          "oneOf": [
+                            {
+                              "type": "number"
+                            },
+                            { 
+                              "type": "string"
+                            }
+                          ]
                         },
                         "color": {
                           "$ref":"ColorPicker.json"
