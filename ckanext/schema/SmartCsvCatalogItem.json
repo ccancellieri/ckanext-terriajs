@@ -2,9 +2,9 @@
   "type": "object",
   "required": ["type","schemaUrl"],
   "description": "A Catalog Item representing a smart csv.",
-  "allOf":[
+  "oneOf":[
     {
-      "$ref": "CsvCatalogItem_type.json"
+      "$ref": "CsvCatalogItem_def.json"
     }
   ],
   "properties": {

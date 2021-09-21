@@ -1,19 +1,13 @@
 {
-    "smart-csv":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/SmartCsvCatalogItem.json?&alt=media",
-    "csv":"CsvCatalogItem_type.json",
-    "group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogGroup_type.json?&alt=media",
-    "ckan-group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CkanCatalogGroup_type.json?&alt=media",
-    "ckan":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CkanCatalogItem_type.json?&alt=media",
-    "csw-group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CswCatalogGroup_type.json?&alt=media",
-    "wms-group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/WebMapServiceCatalogGroup_type.json?&alt=media",
-    "wmts-group":"https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/WebMapTileServiceCatalogGroup_type.json?&alt=media",
-    "terriajs":"https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json",
-    "terriajs-catalog":"https://storage.googleapis.com/fao-maps-terriajs-schema/Catalog.json",
     "terriajs-group":"terriajs-group.json",
+    "terriajs-view":"terriajs-view.json",
+    "terriajs-catalog":"Catalog.json",
+    "csv":"CsvCatalogItem_type.json",
     "wms":"wms.json",
-    "wmts":"wmts.json",    
-    "csw-resource":"csw-resource.json",
+    "wmts":"wmts.json",
     "mvt": "mvt.json",
     "geojson": "geojson.json",
-    "url-template": "url-template"
+    "url-template": "url-template.json",
+    "csw-resource":"csw-resource.json",
+    "smart-csv":"SmartCsvCatalogItem.json"
 }
