@@ -113,6 +113,60 @@ Description: .. contents:: Table of Contents
         
         |
         
+        Terriajs item creation and the jinja2 interpolation
+        ---------------------------------------------------
+        
+        During the creation of a resource the Terriajs plugin view can provide on the fly configurations to provide a default view based on the _format_ of the resource (linked or uploaded).
+        
+        Thanks to the json-schema mapping (provided by the configuration) and to the PATH_SCHEMA and PATH_TEMPLATE folders ckan can undestand which json schema file should be used with that specific type.
+        
+        In addition to that to create on the fly also the view that type needs an initializer to specify all the item fields.
+        
+        f.e.: an CSV item has:
+        
+          {
+            "id":...
+            "name":...
+            "description":..
+            "url":...
+            "type":"csv"
+            [optionals]
+          }
+        
+        Most parts of the snippet above are provided by a predefined _template_ which must be present into the _template_ folder (PATH_TEMPLATE).
+        
+        There are some special templates like _Catalog_ which are used to provide cofigurations wrapped by the Catalog (ref to the template for details) or directly the item (in that case the Catalog template wont be used).
+        
+        Once the terriajs view or the view editor page is filled in with the _template_ the user can start customizing it.
+        
+        But what if we want to name the item in the same way of the resource, or the dataset or apply some logic to it?
+        
+        Well all the above mechanism is also usable with jinja2.
+        
+        In the image below you may see a resolver which will gather information from the schema mapping, the templates (but only during the first time creation/edit) and a data model.
+        
+        So for each view, the _template_ or the configuration itself can leverage over a template and the full model of the package + resource + organization to provide good and standardized descriptions, names, etc.
+        
+        The _resolver_ will take care of interpolate each first level value of each terriajs view requested.
+        
+        If some fields like _featureInfoTemplate_ contains special charachters incompatible with jinja2 (like Mustache syntax) you have to configure the FIELDS_TO_SKIP parameter.
+        
+        |
+        
+        .. image:: docs/img/terriajs_resolve_items.png
+           :width: 800 px
+           :scale: 50 %
+           :alt: terriajs-resolve-items
+        
+        |
+        
+        Note:
+        -----
+        
+        All of the above is also applicable to the terriajs-groups mechanism which will resolve the target view, iterpolate with jinja2+model and then return it.
+        
+        
+        
         Reference Integrity
         ===================
         

@@ -1,15 +1,14 @@
 {
   "type": "object",
   "required": [
-    "type",
-    "name",
-    "description",
-    "url",
-    "id"
+    "type"
   ],
-  "oneOf":[
+  "allOf":[
     {
-      "$ref": "base.json"
+      "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
   "properties": {
@@ -19,19 +18,13 @@
         "csv"
       ]
     },
-    "url": {
-      "type":"string"
-    },
-    "rectangle": {
-      "type": "array",
+    "idColumns": {
+      "type":"array",
       "format": "table",
-      "items": {
-        "type": "number"
+      "description": "The columns that identify an entity as it changes over time.",
+      "items":{
+        "type":"string"
       }
-    },
-    "featureInfoTemplate": {
-      "type": "string",
-      "format": "textarea"
     },
     "tableStyle": {
       "type": "object",
@@ -124,6 +117,16 @@
                   }
                 ]
               },
+              "colorPalette": {
+                "type": "string",
+                "links": [
+                  {
+                    "href": "https://colorbrewer2.org",
+                    "mediaType": "application/html",
+                    "rel": "go to palette helper"
+                  }
+                ]
+              },
               "scale": {
                 "description": "The size of each point or billboard.",
                 "type": "number"
@@ -139,16 +142,7 @@
           "type": "string",
           "description": "The name of the default variable (column) containing data to be used for scaling and coloring."
         },
-        "colorPalette": {
-          "type": "string",
-          "links": [
-            {
-              "href": "https://colorbrewer2.org",
-              "mediaType": "application/html",
-              "rel": "go to palette helper"
-            }
-          ]
-        },
+        
         "colorBins": {
           "type": "integer",
           "format": "select"

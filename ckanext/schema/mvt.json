@@ -1,16 +1,15 @@
 {
   "type": "object",
   "required": [
-    "id",
     "type",
-    "name",
-    "description",
-    "url",
     "layer"
   ],
-  "oneOf":[
+  "allOf":[
     {
-      "$ref": "base.json"
+      "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
   "properties":{
@@ -20,14 +19,7 @@
         "mvt"
       ]
     },
-    "id": {
-      "$ref":"id.json"
-    },
-    
     "layer": {
-      "type": "string"
-    },
-    "url": {
       "type": "string"
     }
   }

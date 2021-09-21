@@ -1,0 +1,132 @@
+{
+  "type": "object",
+  
+  "options": {
+    "disable_properties": false
+  },
+  "required": [
+    "url"
+  ],
+  "allOf": [
+    {
+      "$ref": "CatalogMember.json"
+    }
+  ],
+  "properties":{
+    "url": {
+      "type": "string",
+      "description": "The URL of this data."
+    },
+    
+    "rectangle": {
+      "type": "array",
+      "description": "The geographic rectangle (extent or bounding box) containing this data item.",
+      "format": "table",
+      "items": {
+        "type": ["number","string"]
+      },
+      "options": {
+        "collapsed": true,
+        "disable_array_reorder": true
+      },
+      "maxItems": 4,
+      "minItems": 2
+    },
+
+
+    "legendUrl": {
+      "type": "string",
+      "description": "The URL of the legend for this data item, or undefined if this data item does not have a legend."
+    },
+    "dataSourceUrl":{
+      "type":"string"
+    },
+    "nameInCatalog": {
+      "type":"string"
+    },
+    "dataCustodian": {
+      "type": "string",
+      "description": "A description of the custodian of this data item.\nThis property is an HTML string that must be sanitized before display to the user."
+    },
+    "metadataUrl": {
+      "type": "string",
+      "description": "The URL from which this data item's metadata description can be retrieved, or undefined if\nmetadata is not available for this data item.  The format of the metadata depends on the type of data item.\nFor example, Web Map Service (WMS) data items provide their metadata via their GetCapabilities document."
+    },
+    "isEnabled":{
+      "type": "boolean",
+      "format": "checkbox"
+    },
+    "isShown": {
+      "type": "boolean",
+      "description": "A value indicating whether this data item is currently shown on the map.  In order to be shown,\nthe item must also be enabled.",
+      "format": "checkbox"
+    },
+    "isLegendVisible": {
+      "type": "boolean",
+      "description": "A value indicating whether the legend for this data item is currently visible.",
+      "format": "checkbox"
+    },
+    "isMappable": {
+      "type": "boolean",
+      "description": "A value indicating whether this data source is mappable and should therefore show a checkbox.",
+      "format": "checkbox"
+    },
+    "showsInfo": {
+      "type": "boolean",
+      "description": "A value indicating whether this data source should show an info icon.",
+      "format": "checkbox"
+    },
+    "nowViewingMessage": {
+      "type": "string",
+      "description": "A message to show when this item is enabled for the first time in order to call attention to the Now Viewing panel."
+    },
+    "featureInfoTemplate": {
+      "type": "string",
+      "format": "jodit",
+      "description": "A template to display message in a info box."
+    },
+    "maximumShownFeatureInfos": {
+      "type": "number",
+      "description": "The maximum number of features whose information can be shown at one time in the FeatureInfoPanelViewModel, from this item.\nDefaults to terria.configParameters.defaultMaximumShownFeatureInfos"
+    },
+
+
+
+    "hideSource": {
+      "type":"boolean",
+      "format": "checkbox",
+      "description": "Indicates that the source of this data should be hidden from the UI (obviously this isn't super-secure as you can just look at the network requests)."
+    },
+    "zoomOnEnable": {
+      "type": "boolean",
+      "format": "checkbox",
+      "description": "A value indicating whether the map will automatically zoom to this catalog item when it is enabled."
+    },
+    
+    "showWarnings": {
+      "type": "boolean",
+      "format": "checkbox",
+      "description": "Should any warnings like failures in region mapping be displayed to the user?"
+    },
+    "initialTimeSource":{
+      "anyOf":[
+        {
+          "title":"start-present-end",
+          "type":"string",
+          "enum":["start", "present", "end"],
+          "description":"Property that can be used to control what the default state of the timeline should be in, start, present, end"
+        },
+        {
+          "title":"Date",
+          "type":"string",
+          "format": "date"
+        },
+        {
+          "title":"year",
+          "type":"string"
+        }
+      ]
+    }
+
+  }
+}

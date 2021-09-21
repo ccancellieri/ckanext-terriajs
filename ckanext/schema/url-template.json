@@ -1,11 +1,13 @@
 {
   "type": "object",
   "required": [
-    "url"
   ],
-  "oneOf":[
+  "allOf":[
     {
-      "$ref": "base.json"
+      "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
   "properties":{
@@ -14,9 +16,6 @@
       "enum": [
         "url-template"
       ]
-    },
-    "url": {
-      "type": "string"
     }
   }
 }

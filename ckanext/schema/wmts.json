@@ -2,12 +2,14 @@
   "type": "object",
   "required": [
     "type",
-    "url",
     "layer"
   ],
-  "oneOf":[
+  "allOf":[
     {
-      "$ref": "base.json"
+      "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
   "properties":{
@@ -17,14 +19,15 @@
         "wmts"
       ]
     },
-    "url": {
-      "type": "string"
-    },
     "layer": {
       "type": "string"
     },
     "tileMatrixSetID": {
       "type": "string"
+    },
+    "useResourceTemplate": {
+      "type": "boolean",
+      "format": "checkbox"
     }
   }
 }

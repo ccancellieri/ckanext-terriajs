@@ -1,0 +1,29 @@
+{
+  "type": "object",
+  
+  "options": {
+    "disable_properties": false
+  },
+  "required": [
+    "url"
+  ],
+  "allOf": [
+    {
+      "$ref": "CatalogMember.json"
+    }
+  ],
+  "properties":{
+    "url": {
+      "type": "string",
+      "description": "The URL of this data."
+    },
+    "itemProperties":{
+      "type":"object",
+      "allOf":[
+        {
+          "$ref": "ImageryLayerCatalogItem.json"
+        }
+      ]
+    }
+  }
+}

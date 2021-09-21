@@ -1,41 +1,25 @@
 {
   "type": "object",
   "required": [
-    "id",
     "type",
-    "name",
-    "url",
-    "dataUrl",
-    "dataSourceUrl"
+    "dataUrl"
   ],
-  "oneOf":[
+  "allOf":[
     {
-      "$ref": "base.json"
+      "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
   "properties":{
     "type": {
       "type": "string",
       "enum": [
-        "url-template"
+        "geojson"
       ]
     },
-    "id": {
-      "$ref":"id.json"
-    },
-    "name": {
-      "type":"string"
-    },
-    "description": {
-      "$ref":"description.json"
-    },
-    "url": {
-      "type": "string"
-    },
     "dataUrl": {
-      "type": "string"
-    },
-    "dataSourceUrl": {
       "type": "string"
     }
   }

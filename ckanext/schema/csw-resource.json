@@ -1,13 +1,12 @@
 {
   "type": "object",
   "required": [
-    "url",
     "containerId",
     "itemProperties"
   ],
   "oneOf":[
     {
-      "$ref": "base.json"
+      "$ref": "CatalogProxyGroup.json"
     }
   ],
   "properties":{
@@ -17,38 +16,20 @@
         "csw-resource"
       ]
     },
-    "url": {
-      "type": "string"
-    },
     "containerId": {
       "type": "string",
       "description": "metadata target UUID"
     },
     "itemProperties":{
       "type":"object",
-      "required": [
-        "layers"
-      ],
-      "featureInfoTemplate": {
-        "type": "string"
-      },
-      "layers": {
-        "type": "string"
-      },
-      "customProperties": {
-        "type":"object",
-
-        "dimensionLabelsConfig": {
-          "type":"object",
-
-          "dimensionsJsonStatUrl": {
-            "type":"string"
-          },
-          "showDimensionsOnPanel": {
-            "type":"boolean"
-          }
+      "oneOf":[
+        {
+          "$ref": "wms_def.json"
+        },
+        {
+          "$ref": "csv_def.json"
         }
-      },
+      ],
       "ignoreUnknownTileErrors": {
         "type":"boolean"
       }
