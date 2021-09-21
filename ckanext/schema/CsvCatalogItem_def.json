@@ -1,0 +1,213 @@
+{
+  "type": "object",
+  "allOf":[
+    {
+      "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "ImageryLayerCatalogItem.json"
+    }
+  ],
+  "properties": {
+    "idColumns": {
+      "type":"array",
+      "format": "table",
+      "description": "The columns that identify an entity as it changes over time.",
+      "items":{
+        "type":"string"
+      }
+    },
+    "tableStyle": {
+      "type": "object",
+      "defaultProperties": [],
+      "properties": {
+        "columns": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "defaultProperties": [],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [ "LON","LAT","ALT","TIME","SCALAR","ENUM","REGION","TAG","HIDDEN","ADDR" ],
+                "description": "The variable type of this column. Converts strings, which are case-insensitive keys of VarType, to numbers. The types include LON: 0, LAT: 1, ALT: 2, TIME: 3, SCALAR: 4, ENUM: 5, REGION: 6, TAG: 7, HIDDEN: 8, ADDR: 9"
+              },
+              "name": {
+                "type": "string",
+                "description": "New column name to replace the original column name"
+              },
+              "nullColor":{
+                "type": "string",
+                "description": "The color with which to display null values."
+              },
+              "nullLabel": {
+                "type":"string",
+                "description":"The legend label for null values."
+              },
+              "format": {
+                "format": "json",
+                "type": "string"
+              },
+              "units": {
+                "description": "The units of this column",
+                "type": "string"
+              },
+              "legendName": {
+                "description": "Display name for the legend for this column (defaults to the column name).",
+                "type": "string"
+              },
+              "legendTicks": {
+                "description": "How many horizontal ticks to draw on the generated color ramp legend, not counting the top or bottom.",
+                "type": "string"
+              },
+              "active": {
+                "description": "Is this column active?",
+                "type": "boolean"
+              },
+              "colorBins": {
+                "description": "Either the number of discrete colours that a color gradient should be quantised into (ie. an integer), or an array of values specifying the boundaries between the color bins.",
+                "oneOf": [
+                  {
+                    "type": "number",
+                    "title": "Number"
+                  },
+                  {
+                    "type": "array",
+                    "format": "table",
+                    "items": {
+                      "type": "number"
+                    },
+                    "title": "Value interval"
+                  },
+                  {
+                    "type": "array",
+                    "format": "table",
+                    "title": "Value and colors",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "color",
+                        "value"
+                      ],
+                      "properties": {
+                        "value": {
+                          "oneOf": [
+                            {
+                              "type": "number"
+                            },
+                            { 
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "color": {
+                          "$ref":"ColorPicker.json"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "colorPalette": {
+                "type": "string",
+                "links": [
+                  {
+                    "href": "https://colorbrewer2.org",
+                    "mediaType": "application/html",
+                    "rel": "go to palette helper"
+                  }
+                ]
+              },
+              "scale": {
+                "description": "The size of each point or billboard.",
+                "type": "number"
+              },
+              "scaleByValue": {
+                "description": "Should points and billboards representing each feature be scaled by the size of their data variable?",
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "dataVariable": {
+          "type": "string",
+          "description": "The name of the default variable (column) containing data to be used for scaling and coloring."
+        },
+        
+        "colorBins": {
+          "type": "integer",
+          "format": "select"
+        },
+        "colorBinMethod": {
+          "description":"For numeric columns: 'auto' (default), 'ckmeans', 'quantile' or 'none' (equivalent to colorBins: 0). For enumerated columns: 'auto' (default), 'top', or 'cycle'",
+          "type": "string",
+          "enum": [
+            "auto",
+            "ckmeans",
+            "cycle",
+            "none",
+            "quantile",
+            "top"
+          ]
+        },
+        "colorMap": {
+          "oneOf": [
+            {
+              "type": "string",
+              "description": "red-white-hsl(240,50%,50%)",
+              "title": "Name of Color Map"
+            },
+            {
+              "type": "array",
+              "format": "table",
+              "options": {       
+                "disable_collapse": true
+              },
+              "items": {
+                "type": "object",
+                "required": [
+                  "color",
+                  "offset"
+                ],
+                "properties": {
+                  "offset": {
+                    "type": "number"
+                  },
+                  "color": {
+                    "$ref":"ColorPicker.json"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "featureInfoFields": {
+          "description": "An object of { 'myCol': 'My column'} properties or a list of ['col1','col2'] properties, defining which columns get displayed in feature info boxes (when clicked on), and what label is used instead of the column's actual name.",
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "array",
+              "format": "table",
+              "items": {
+                "type": "string"
+              }
+            }
+          ]
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "imageUrl - A string representing an image to display at each point, for lat-long datasets."
+        },
+        "timeColumn": {
+          "description": "The column name or index to use as the time column. Defaults to the first one found. Pass null for none.",
+          "type": "string"
+        }
+      }
+    }
+  }
+}
