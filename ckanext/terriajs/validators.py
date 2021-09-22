@@ -127,7 +127,7 @@ def config_schema_check(key, data, errors, context):
 
     terriajs_type = data.get((constants.TERRIAJS_TYPE_KEY,))
     if not terriajs_type or terriajs_type is missing:
-        _resource = instance_to_dict(context.get('resource'))
+        _resource = instance_to_dict(data)
         terriajs_type = tools.map_resource_to_terriajs_type(_resource)
         # terriajs_type=data[(constants.TERRIAJS_TYPE_KEY,)]
         

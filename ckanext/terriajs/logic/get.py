@@ -87,10 +87,10 @@ def _base(resource_view_id, force=False, force_to=False, itemOnly=False):
 
     view_config = _get_config(resource_view_id)
 
-    if type == constants.DEFAULT_TYPE:
-        # it's default type, let's leave it as it is (raw)
-        _config = view_config['config']
-    elif itemOnly:
+    # if type == constants.DEFAULT_TYPE:
+    #     # it's default type, let's leave it as it is (raw)
+    #     _config = view_config['config']
+    if itemOnly:
         # do not wrap the item with a valid terria configuration
         _config = _resolve(view_config['config'], force, force_to)
     else:

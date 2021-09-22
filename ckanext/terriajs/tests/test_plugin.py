@@ -22,9 +22,9 @@ class TestTerria(object):
     url_fetch_json = '''{host_url}{plugin_name}/terriajs_config/{resource_view_id}.json'''
     url_group_force_is_enabled = '''{host_url}{plugin_name}/terriajs_config/force_enabled/{resource_view_id}.json'''
     url_group = '''{host_url}{plugin_name}/terriajs_config/groups/{resource_view_id}'''
+    
 
-
-
+    
     @classmethod
     def setup_class(cls):
         helpers.reset_db()
@@ -42,17 +42,27 @@ class TestTerria(object):
             users=[{'name': cls.admin['id'], 'capacity': 'admin'}]
         )
         cls.env =  {'REMOTE_USER': cls.admin['name'].encode('ascii')}
-
+        
+        cls.resource = factories.Resource()
+        
         # Create view
         # cls.package = factories.Dataset(owner_org=cls.owner_org['id'])
-        cls.resource = factories.Resource()
+        import ckanext.terriajs.tools as tools
+        resource_type = tools.map_resource_to_terriajs_type(cls.resource)
+
+        terriajs_schema = tools.resolve_schema_mapping(resource_type)
+        if not terriajs_schema:
+            raise Exception(resource_type+_(' not defined, check your config'))
+        
+        terriajs_config=tools.default_template(resource_type)
+        
         cls.params = {
             'resource_id': cls.resource['id'],
             'view_type': constants.TYPE,
             'title': 'TerriajsView',
             'description': 'A nice view',
-            constants.TERRIAJS_TYPE_KEY: constants.DEFAULT_TYPE,
-            constants.TERRIAJS_CONFIG_KEY: json.dumps(constants.TERRIAJS_CATALOG)
+            constants.TERRIAJS_TYPE_KEY: 'csv',
+            constants.TERRIAJS_CONFIG_KEY: tools._json_load()
         }
 
     def test_can_create_a_terriajs_view(self):

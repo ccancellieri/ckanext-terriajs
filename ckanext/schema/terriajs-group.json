@@ -57,7 +57,7 @@
             "$ref": "remote-config-group.json"
           },
           {
-            "$ref": "base.json"
+            "$ref": "CatalogMember.json"
           }
         ]
       }
