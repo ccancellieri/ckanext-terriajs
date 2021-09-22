@@ -46,17 +46,21 @@
         "required": [
           "type"
         ],
-        "oneOf":[
+        "anyOf":[
           {
+            "title": "Existing view",
             "$ref": "terriajs-view.json"
           },
           {
+            "title": "Remote Item",
             "$ref": "remote-config-item.json"
           },
           {
+            "title": "Remote Group",
             "$ref": "remote-config-group.json"
           },
           {
+            "title": "Terriajs Catalog Member",
             "$ref": "CatalogMember.json"
           }
         ]

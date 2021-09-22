@@ -78,7 +78,6 @@ def _config(resource_view_id):
 # TODO unify/parametrize
 terriajs.add_url_rule('/{}/config/enabled/<resource_view_id>.json'.format(constants.TYPE), view_func=config_enabled, methods=[u'GET'])
 terriajs.add_url_rule('/{}/config/disabled/<resource_view_id>.json'.format(constants.TYPE), view_func=config_disabled, methods=[u'GET'])
-
 terriajs.add_url_rule('/{}/config/<resource_view_id>.json'.format(constants.TYPE), endpoint='config', view_func=_config, methods=[u'GET'])
 
 ### 
