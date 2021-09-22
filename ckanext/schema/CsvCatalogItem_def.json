@@ -27,6 +27,16 @@
             "type": "object",
             "defaultProperties": [],
             "properties": {
+              "minDisplayValue":{
+                "type":"number"
+              },
+              "maxDisplayValue":{
+                "type":"number"
+              },
+              "clampDisplayValue":{
+                "type":"boolean",
+                "format":"checkbox"
+              },
               "type": {
                 "type": "string",
                 "enum": [ "LON","LAT","ALT","TIME","SCALAR","ENUM","REGION","TAG","HIDDEN","ADDR" ],
@@ -129,6 +139,19 @@
             }
           }
         },
+        "legendTicks":{
+          "type":"number"
+        },
+        "minDisplayValue":{
+          "type":"number"
+        },
+        "maxDisplayValue":{
+          "type":"number"
+        },
+        "clampDisplayValue":{
+          "type":"boolean",
+          "format":"checkbox"
+        },
         "dataVariable": {
           "type": "string",
           "description": "The name of the default variable (column) containing data to be used for scaling and coloring."
@@ -154,8 +177,14 @@
           "oneOf": [
             {
               "type": "string",
-              "description": "red-white-hsl(240,50%,50%)",
-              "title": "Name of Color Map"
+              "title": "Name of Color Map",
+              "links": [
+                {
+                  "href": "https://colorbrewer2.org",
+                  "mediaType": "application/html",
+                  "rel": "go to palette helper"
+                }
+              ]
             },
             {
               "type": "array",
