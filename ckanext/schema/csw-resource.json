@@ -24,10 +24,10 @@
       "type":"object",
       "oneOf":[
         {
-          "$ref": "wms_def.json"
+          "$ref": "wms.json"
         },
         {
-          "$ref": "csv_def.json"
+          "$ref": "CsvCatalogItem_type.json"
         }
       ],
       "ignoreUnknownTileErrors": {
