@@ -4,10 +4,13 @@ from ckan.plugins import toolkit
 import ckan.tests.factories as factories
 import ckan.tests.helpers as helpers
 import ckanext.terriajs.constants as constants
+import ckanext.terriajs.tools as tools
 from ckan.lib.helpers import get_site_protocol_and_host
 import json
 import requests
+
 ckan_29_or_higher = toolkit.check_ckan_version(u'2.9')
+
 
 class TestTerria(object):
     admin = None
@@ -22,9 +25,7 @@ class TestTerria(object):
     url_fetch_json = '''{host_url}{plugin_name}/terriajs_config/{resource_view_id}.json'''
     url_group_force_is_enabled = '''{host_url}{plugin_name}/terriajs_config/force_enabled/{resource_view_id}.json'''
     url_group = '''{host_url}{plugin_name}/terriajs_config/groups/{resource_view_id}'''
-    
 
-    
     @classmethod
     def setup_class(cls):
         helpers.reset_db()
@@ -41,13 +42,14 @@ class TestTerria(object):
         cls.owner_org = factories.Organization(
             users=[{'name': cls.admin['id'], 'capacity': 'admin'}]
         )
-        cls.env =  {'REMOTE_USER': cls.admin['name'].encode('ascii')}
-        
-        cls.resource = factories.Resource()
-        
+        cls.env = {'REMOTE_USER': cls.admin['name'].encode('ascii')}
+
+        cls.package = factories.Dataset(owner_org=cls.owner_org['id'])
+
+        cls.resource = factories.Resource(package_id=cls.package['id'], format='csv')
+
         # Create view
         # cls.package = factories.Dataset(owner_org=cls.owner_org['id'])
-        import ckanext.terriajs.tools as tools
         try:
             resource_type = tools.map_resource_to_terriajs_type(cls.resource)
         except Exception as e:
@@ -56,39 +58,34 @@ class TestTerria(object):
 
         terriajs_schema = tools.get_schema(resource_type)
         if not terriajs_schema:
-            raise Exception(resource_type+_(' not defined, check your config'))
-        
-        terriajs_config=tools.get_config(resource_type)
-        
+            raise Exception(resource_type + (' not defined, check your config'))
+
+        terriajs_config = tools.get_config(resource_type)
+
         cls.params = {
             'resource_id': cls.resource['id'],
-            'view_type': resource_type,
+            'view_type': constants.TYPE,
             'description': 'A nice view',
             constants.TERRIAJS_TYPE_KEY: resource_type,
             constants.TERRIAJS_CONFIG_KEY: terriajs_config
         }
 
     def test_can_create_a_terriajs_view(self):
-        result = helpers.call_action('resource_view_create', self.context, **self.params)
-        self.resource_view_id = result['id']
-        id = result.pop('id')
-        package_id = result.pop('package_id')
-        assert (self.params, result)
-        # Delete view
-        result['id'] = id
-        result['package_id'] = package_id
-        helpers.call_action("resource_view_delete", context={}, **result)
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _resource = factories.Resource(package_id=_package['id'])
+        _resource_view = factories.ResourceView(**self.params)
+        assert constants.TYPE == _resource_view['view_type']
+
 
     def test_can_show_resource_view(self, app):
-        new_view = helpers.call_action('resource_view_create', **self.params)
-        result = helpers.call_action('resource_view_show', id=new_view['id'])
-        id = result.pop('id')
-        package_id = result.pop('package_id')
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _resource = factories.Resource(package_id=_package['id'])
+        _resource_view = factories.ResourceView(**self.params)
+
+        result = helpers.call_action('resource_view_show', id=_resource_view['id'])
+        result.pop('id')
+        result.pop('package_id')
         assert (self.params, result)
-        # Delete view
-        result['id'] = id
-        result['package_id'] = package_id
-        helpers.call_action("resource_view_delete", context={}, **result)
 
     # def _test_can_load_json_config(self, app):
     #     new_view = helpers.call_action('resource_view_create', **self.params)
@@ -105,7 +102,7 @@ class TestTerria(object):
         new_view = helpers.call_action('resource_view_create', **self.params)
         # Enable groups
         url = self.url_group_force_is_enabled.format(host_url=self.host_url, plugin_name=constants.TYPE,
-                                         resource_view_id=new_view['id'])
+                                                     resource_view_id=new_view['id'])
         response = requests.get(url, extra_environ=self.env)
         data = json.loads(response.body)
         for item in data['catalog'][0]['items']:
@@ -116,8 +113,8 @@ class TestTerria(object):
         new_view = helpers.call_action('resource_view_create', **self.params)
         # Enable groups
         url = self.url_group.format(host_url=self.host_url, plugin_name=constants.TYPE,
-                                                     resource_view_id=new_view['id'])
+                                    resource_view_id=new_view['id'])
 
         response = requests.get(url, extra_environ=self.env)
         data = json.loads(response.body)
-        assert(True, isinstance(data, list))
+        assert (True, isinstance(data, list))
