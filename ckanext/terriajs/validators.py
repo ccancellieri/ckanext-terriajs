@@ -62,11 +62,13 @@ def default_type(key, data, errors, context):
     type = data.get(key)
     if not type or type is missing:
         _resource = instance_to_dict(context.get('resource'))
-        type = tools.map_resource_to_terriajs_type(_resource)
-        if not type:
-            errors[key].append(_('Missing default type value, please check available json-mapping formats'))
-            raise StopOnError
 
+        try:
+            type = tools.map_resource_to_terriajs_type(_resource)
+        except Exception as e:
+            _stop_on_error(errors,key,_('Missing default type value, please check available json-mapping formats {}'.format(str(e))))
+            
+            
         data[key] = type
 
 
@@ -86,11 +88,15 @@ def default_config(key, data, errors, context):
     if not config or config is missing:
         _resource = instance_to_dict(context.get('resource'))
         # _resource.update({ 'type': _map_resource_format_to_terriajs_type(resource)})
-        terriajs_type = tools.map_resource_to_terriajs_type(_resource)
-        config = tools.default_template(terriajs_type)
+        try:
+            terriajs_type = tools.map_resource_to_terriajs_type(_resource)
+        except Exception as e:
+            _stop_on_error(errors,key,_('Missing default type value, please check available json-mapping formats {}'.format(str(e))))
+
+        config = tools.get_config(terriajs_type)
         if not config:
-            errors[key].append(_('Missing config value (json body)'))
-            raise StopOnError
+            _stop_on_error(errors,key,_('Missing config value (json body)'))
+
         data[key] = config
 
 #############################################
@@ -128,7 +134,11 @@ def config_schema_check(key, data, errors, context):
     terriajs_type = data.get((constants.TERRIAJS_TYPE_KEY,))
     if not terriajs_type or terriajs_type is missing:
         _resource = instance_to_dict(data)
-        terriajs_type = tools.map_resource_to_terriajs_type(_resource)
+
+        try:
+            type = tools.map_resource_to_terriajs_type(_resource)
+        except Exception as e:
+            _stop_on_error(errors,key,_('Missing default type value, please check available json-mapping formats {}'.format(str(e))))
         # terriajs_type=data[(constants.TERRIAJS_TYPE_KEY,)]
         
     # TODO extension point (we may want to plug other schema checkers)
@@ -139,7 +149,7 @@ def config_schema_check(key, data, errors, context):
 
         # if not Draft4Validator.check_schema(constants.LAZY_GROUP_SCHEMA):
         #     raise Exception('schema not valid') #TODO do it once on startup (constants)
-        schema = tools.resolve_schema_mapping(terriajs_type)
+        schema = tools.get_schema(terriajs_type)
         #validator = Draft4Validator(constants.LAZY_GROUP_SCHEMA, resolver=resolver, format_checker=None)
         validator = Draft7Validator(schema, resolver=_SCHEMA_RESOLVER)
         # VALIDATE JSON SCHEMA

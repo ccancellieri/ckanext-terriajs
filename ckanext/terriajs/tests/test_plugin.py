@@ -48,21 +48,24 @@ class TestTerria(object):
         # Create view
         # cls.package = factories.Dataset(owner_org=cls.owner_org['id'])
         import ckanext.terriajs.tools as tools
-        resource_type = tools.map_resource_to_terriajs_type(cls.resource)
+        try:
+            resource_type = tools.map_resource_to_terriajs_type(cls.resource)
+        except Exception as e:
+            raise e
+        resource_type = 'csv'
 
-        terriajs_schema = tools.resolve_schema_mapping(resource_type)
+        terriajs_schema = tools.get_schema(resource_type)
         if not terriajs_schema:
             raise Exception(resource_type+_(' not defined, check your config'))
         
-        terriajs_config=tools.default_template(resource_type)
+        terriajs_config=tools.get_config(resource_type)
         
         cls.params = {
             'resource_id': cls.resource['id'],
-            'view_type': constants.TYPE,
-            'title': 'TerriajsView',
+            'view_type': resource_type,
             'description': 'A nice view',
-            constants.TERRIAJS_TYPE_KEY: 'csv',
-            constants.TERRIAJS_CONFIG_KEY: tools._json_load()
+            constants.TERRIAJS_TYPE_KEY: resource_type,
+            constants.TERRIAJS_CONFIG_KEY: terriajs_config
         }
 
     def test_can_create_a_terriajs_view(self):
@@ -87,16 +90,16 @@ class TestTerria(object):
         result['package_id'] = package_id
         helpers.call_action("resource_view_delete", context={}, **result)
 
-    def _test_can_load_json_config(self, app):
-        new_view = helpers.call_action('resource_view_create', **self.params)
-        # Check if file is generated
-        url = self.url_fetch_json.format(host_url=self.host_url, plugin_name=constants.TYPE,
-                                    resource_view_id=new_view['id'])
-        response = requests.get(url, extra_environ=self.env)
-        assert (constants.TERRIAJS_CATALOG, response.body)
+    # def _test_can_load_json_config(self, app):
+    #     new_view = helpers.call_action('resource_view_create', **self.params)
+    #     # Check if file is generated
+    #     url = self.url_fetch_json.format(host_url=self.host_url, plugin_name=constants.TYPE,
+    #                                 resource_view_id=new_view['id'])
+    #     response = requests.get(url, extra_environ=self.env)
+    #     assert (constants.TERRIAJS_CATALOG, response.body)
 
-        # Delete view
-        helpers.call_action("resource_view_delete", context={}, **new_view)
+    #     # Delete view
+    #     helpers.call_action("resource_view_delete", context={}, **new_view)
 
     def _test_type_of_not_group_is_enabled_return_true(self, app):
         new_view = helpers.call_action('resource_view_create', **self.params)

@@ -27,51 +27,70 @@ log = logging.getLogger(__name__)
 #         logging.log(logging.ERROR,error)
 #         raise InvalidURL(_(error))
 
-def read_template(name):
-    '''
-    provides a reader for local template definitions
-    '''
-    # TODO increase security should be/ensure to be under schema_path folder
-    return utils._json_load(constants.PATH_TEMPLATE, name)
+# def read_template(name):
+#     '''
+#     provides a reader for local template definitions
+#     '''
+#     # TODO increase security should be/ensure to be under schema_path folder
+#     return utils._json_load(constants.PATH_TEMPLATE, name)
 
-def read_schema(name):
-    '''
-    provides a reader for local schema definitions
-    '''
-    # TODO increase security should be/ensure to be under schema_path folder
-    return utils._json_load(constants.PATH_SCHEMA, name)
+def read_all_template():
+    return utils._read_all_json(constants.PATH_TEMPLATE)
+
+# def read_schema(name):
+#     '''
+#     provides a reader for local schema definitions
+#     '''
+#     # TODO increase security should be/ensure to be under schema_path folder
+    # return utils._json_load(constants.PATH_SCHEMA, name)
+
+def read_all_schema():
+
+    _dict = utils._read_all_json(constants.PATH_SCHEMA)
+    
+    # let's also resolve remote schemas
+    # TODO warning an appropriate template matching the schema should be provided
+    for type in constants.FORMATS:
+        if h.is_url(constants.TYPE_MAPPING[type]):
+            # TODO better manage error conditions with appropriate http code and message
+            _dict[type]=json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
+
+    return _dict
 
 
 # TODO DOCUMENT (Default mapping)
 
 def map_resource_to_terriajs_type(resource):
     '''
-    if not found fallbacks to DEFAULT_TYPE
+    returns a terriajs type based over resoure[format] 
     '''
+    if not resource:
+        raise Exception(_('The resource is None!'))
+
     resource_type = resource.get('format')
+    if not resource_type:
+        raise Exception(_('The resource has no format!'))
+
+    # TODO Document why lower()
+    resource_type = resource_type.lower()
+    
     return map_resource_format_to_terriajs_type(resource_type)
     
 def map_resource_format_to_terriajs_type(resource_type):
     '''
-    if not found fallbacks to DEFAULT_TYPE
+    if not found rise exception
     '''
-    if not resource_type:
-        # TODO log
-        return constants.DEFAULT_TYPE
-
-    # TODO Document why lower()
-    resource_type = resource_type.lower()
-
     # type has been properly configured only if it is matching the type-mapping
-    if resource_type not in constants.TYPE_MAPPING.keys():
-        resource_type = constants.DEFAULT_TYPE
+    if not resource_type or resource_type not in constants.TYPE_MAPPING.keys():
+        raise Exception(_('Not recognized type: {}. Please check your configuration.').format(resource_type))
+
     return resource_type
 
 def default_template(terriajs_type):
     
     # generate base configuration
     # TODO create and use template mapping
-    terriajs_config = read_template('{}.json'.format(terriajs_type))
+    terriajs_config = get_config(terriajs_type)
 
     if terriajs_config:
         return terriajs_config
@@ -80,28 +99,57 @@ def default_template(terriajs_type):
         #TODO LOG
         # return constants.TERRIAJS_CATALOG
         #FAIL FAST
-        raise Exception(_('No valid template found for type: {}'.format(terriajs_type)))
+        raise Exception(_('No valid template found for type: {}').format(terriajs_type))
 
 
 import requests
 InvalidURL = requests.models.InvalidURL
 
-def resolve_schema_mapping(type):
-    '''
-    provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
-    '''
-    # try:
-    if type in constants.TYPE_MAPPING:
-        if not h.is_url(constants.TYPE_MAPPING[type]):
-            return read_schema(constants.TYPE_MAPPING[type])
-        else:
-            # TODO better manage error conditions with appropriate http code and message
-            return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
-    else:
-        raise InvalidURL(_(("Type {} not found into available mappings, please check your configuration").format(type)))
-    # except Exception as ex:
-    #     logging.log(logging.ERROR,str(ex), exc_info=1)
-    #     return jsonify(error=str(ex)), 404
+
+def get_config(type):
+    if not type:
+        return None
+
+    return constants.JSON_CATALOG[constants.TERRIAJS_CONFIG_KEY].get('{}.json'.format(type))
+
+def get_schema(type):
+    if not type:
+        return None
+
+    filename = constants.TYPE_MAPPING.get(type)
+    if not filename:
+        # not present in type_mapping but can be present into the catalog as json file
+        filename = type
+    return constants.JSON_CATALOG[constants.TERRIAJS_SCHEMA_KEY].get(filename)
+
+# def _get_mapped(key, type):
+#     filename = constants.TYPE_MAPPING.get(type)
+#     if filename:
+#         return constants.JSON_CATALOG[key][filename]
+#     else:
+#         # not present in type_mapping but can be present into the catalog as json file
+#         filename = type
+#         if constants.JSON_CATALOG.get(filename):
+#             return constants.JSON_CATALOG[key][filename]
+#     return None
+    
+
+# def resolve_schema_mapping(type):
+#     '''
+#     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
+#     '''
+#     # try:
+#     if type in constants.TYPE_MAPPING:
+#         if not h.is_url(constants.TYPE_MAPPING[type]):
+#             return get_schema(type)
+#         else:
+#             # TODO better manage error conditions with appropriate http code and message
+#             return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
+#     else:
+#         raise InvalidURL(_('Type {} not found into available mappings, please check your configuration').format(type))
+#     # except Exception as ex:
+#     #     logging.log(logging.ERROR,str(ex), exc_info=1)
+#     #     return jsonify(error=str(ex)), 404
 
 
 import jinja2

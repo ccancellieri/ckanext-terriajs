@@ -67,6 +67,22 @@ class TerriajsPlugin(p.SingletonPlugin):
         with open(constants.SCHEMA_TYPE_MAPPING_FILE) as f:
             constants.TYPE_MAPPING = json.load(f)
         constants.FORMATS=constants.TYPE_MAPPING.keys()
+
+        # Append all the rest of the available schemas
+        constants.JSON_CATALOG.update({
+                constants.TERRIAJS_SCHEMA_KEY:tools.read_all_schema(),
+                constants.TERRIAJS_CONFIG_KEY:tools.read_all_template()
+            })
+
+        for format in constants.FORMATS:
+            if not tools.get_schema(format):
+                raise Exception(_('Unable to find schema for format {}'.format(format)))
+            if not tools.get_config(format):
+                raise Exception(_('Unable to find template for format {}'.format(format)))
+
+        # a remote schema may correspond to a remote template which is still not possible
+        # template mapping is missing we r using direct filame to terriajs_type mapping
+
     
     def info(self):
         return {
@@ -92,7 +108,11 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def can_view(self, data_dict):
         resource = data_dict.get('resource',None)
-        return tools.map_resource_to_terriajs_type(resource) in constants.DEFAULT_FORMATS
+        try:
+            return tools.map_resource_to_terriajs_type(resource) in constants.DEFAULT_FORMATS
+        except Exception as e:
+            return False
+        
 
     def setup_template_variables(self, context, data_dict):
 
@@ -102,13 +122,13 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         resource = _dict.get('resource',None)
 
-        resource_type = resource_view.get(constants.TERRIAJS_TYPE_KEY,tools.map_resource_to_terriajs_type(resource))
+        terriajs_type = resource_view.get(constants.TERRIAJS_TYPE_KEY,tools.map_resource_to_terriajs_type(resource))
 
-        terriajs_schema = resource_view.get(constants.TERRIAJS_SCHEMA_KEY, tools.resolve_schema_mapping(resource_type))
-        if not terriajs_schema:
-            raise Exception(resource_type+_(' not defined, check your config'))
+#TODO trap exception here and return error correctly
+
+        terriajs_schema = resource_view.get(constants.TERRIAJS_SCHEMA_KEY, tools.get_schema(terriajs_type))
         
-        terriajs_config=resource_view.get(constants.TERRIAJS_CONFIG_KEY, tools.default_template(resource_type))
+        terriajs_config=resource_view.get(constants.TERRIAJS_CONFIG_KEY, tools.get_config(terriajs_type))
         
         config_view = {}
         config_view['config_view'] = {
@@ -116,7 +136,7 @@ class TerriajsPlugin(p.SingletonPlugin):
             constants.TERRIAJS_URL_KEY: constants.TERRIAJS_URL,
             constants.TERRIAJS_SCHEMA_KEY: terriajs_schema,
             constants.TERRIAJS_CONFIG_KEY: terriajs_config,
-            constants.TERRIAJS_TYPE_KEY: resource_type,
+            constants.TERRIAJS_TYPE_KEY: terriajs_type,
             # 'terriajs_synch': _get_synch(resource_view),
             'west': -180,
             'east': 180,

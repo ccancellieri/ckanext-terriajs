@@ -63,7 +63,7 @@ LAZY_ITEM_TYPE = 'terriajs-view'
 # (Internal)
 # type to use as ckan resource when you would like to be free to write the 'full view' not only an item
 # it may match one of the items into 
-DEFAULT_TYPE = 'terriajs-catalog'
+CATALOG_TYPE = 'terriajs-catalog'
 
 # REST paths
 REST_MAPPING_PATH='/{}/mapping'.format(TYPE)
@@ -90,10 +90,8 @@ TERRIAJS_URL_KEY='terriajs_url'
 TYPE_MAPPING = {}
 # (Internal)
 #  Will contain the types defined into the file type-mapping
-FORMATS = TYPE_MAPPING.keys()
+FORMATS = {}
+# (Internal)
+#  Will contain the schema and template defined with the type-mapping
+JSON_CATALOG = {}
 
-import json
-import ckanext.terriajs.utils as utils
-TERRIAJS_CATALOG = utils._json_load(PATH_TEMPLATE,'{}.json'.format(DEFAULT_TYPE))
-if not TERRIAJS_CATALOG:
-   raise Exception('Unable to locate {} template into the template folder ({})'.format(DEFAULT_TYPE,PATH_TEMPLATE))

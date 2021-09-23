@@ -94,7 +94,7 @@ def _base(resource_view_id, force=False, force_to=False, itemOnly=False):
         _config = _resolve(view_config['config'], force, force_to)
     else:
         # terria_config is an item we've to wrap to obtain a valid catalog
-        _config = copy.deepcopy(constants.TERRIAJS_CATALOG)
+        _config = copy.deepcopy(tools.get_config(constants.CATALOG_TYPE))
         _config['catalog'].append(_resolve(view_config['config'], force, force_to))
         _config.update({'homeCamera':view_config['camera']})
 
@@ -201,11 +201,9 @@ def read_schema(name):
     Dumps the content of a local schema file.
     The file resolution is based on the configured schema folder and the (argument) json file name
     '''
-    return json.dumps(tools.read_schema(name))
+    return json.dumps(tools.get_schema(name))
 
 terriajs.add_url_rule('{}/<name>'.format(constants.REST_SCHEMA_PATH), view_func=read_schema, endpoint='schema', methods=[u'GET'])
-
-# terriajs.add_url_rule('{}/<type>'.format(constants.REST_MAPPING_PATH), view_func=tools.resolve_schema_mapping, endpoint='mapping', methods=[u'GET'])
 
 ########################################
 

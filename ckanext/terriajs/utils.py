@@ -19,3 +19,14 @@ def _json_load(folder, name):
             return None
     except Exception as ex:
         raise Exception(_("Schema named: {} not found, please check your schema path folder: {}".format(name,str(ex))))
+
+
+def _read_all_json(root):
+    import os
+    _dict={}
+    for subdir, dirs, files in os.walk(root):
+        for filename in files:
+            if filename.endswith('.json'):
+                # filename=os.path.realpath(os.path.join(subdir,filename))
+                _dict[filename]=_json_load(root,filename)
+    return _dict

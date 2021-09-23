@@ -1,6 +1,5 @@
 {
     "terriajs-group":"terriajs-group.json",
-    "terriajs-view":"terriajs-view.json",
     "terriajs-catalog":"Catalog.json",
     "csv":"CsvCatalogItem_type.json",
     "wms":"wms.json",
