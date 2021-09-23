@@ -60,7 +60,6 @@ def map_resource_format_to_terriajs_type(resource_type):
 import requests
 InvalidURL = requests.models.InvalidURL
 
-
 def get_config(type):
     if not type:
         return None

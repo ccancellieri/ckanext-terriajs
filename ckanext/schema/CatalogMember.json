@@ -115,7 +115,8 @@
             "type":"string"
           },
           "showDimensionsOnPanel": {
-            "type":"boolean"
+            "type":"boolean",
+            "format": "checkbox"
           }
         },
 

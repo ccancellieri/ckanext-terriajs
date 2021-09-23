@@ -123,7 +123,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         resource = _dict.get('resource',None)
 
         terriajs_type = resource_view.get(constants.TERRIAJS_TYPE_KEY,tools.map_resource_to_terriajs_type(resource))
-
+        
 #TODO trap exception here and return error correctly
 
         terriajs_schema = resource_view.get(constants.TERRIAJS_SCHEMA_KEY, tools.get_schema(terriajs_type))

@@ -15,8 +15,9 @@ ckan.module('terriajs', function (jQuery, _) {
                     $.ajaxSetup({timeout: 30000});
                     $.get( uri, function(data) {
                       //alert( "success: ");
-                      resolve(data);
-                      return data;
+                      _data=JSON.parse(data)
+                      resolve(_data);
+                      return _data;
                     })
                   .fail(function() {
                     //alert( "error" );
@@ -28,10 +29,10 @@ ckan.module('terriajs', function (jQuery, _) {
                   });
               };
           if (uri.startsWith('http')) {
-            get(3,uri);
+            return get(3,uri);
           } else {
             //reject(new Error(`could not locate ${uri}`));
-            resolve(uri);
+            return get(3,new URL('terriajs/schema/'+uri, terriajs.ckan_url));
           }
         });
   }
@@ -184,9 +185,21 @@ ckan.module('terriajs', function (jQuery, _) {
               fontFamily: "tahoma",
               fontSize: "12pt"
             };*/
-            terriajs.ajv = new Ajv({
-                coerceTypes: true,
-                loadSchema:loadSchema });
+            // import Ajv from "ajv"
+            // const ajv = new Ajv.default()
+            // const Ajv = require("ajv").default
+            
+            terriajs.ajv = new window.ajv7({
+                // coerceTypes: true,
+                validateFormats: false,
+                // validateFormats: false,
+                formats: {'*': true, checkbox: true},
+                loadSchema:loadSchema,
+                // strict: false,
+                // // allErrors: true,
+                // validateSchema: false, 
+                strictSchema: false
+            });
 
             if (!terriajs.validate){
                 terriajs.ajv.compileAsync(terriajs.terriajs_schema).then(

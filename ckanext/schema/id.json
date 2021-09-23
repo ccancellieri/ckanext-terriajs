@@ -1,5 +1,4 @@
 {
-  "id":"id",
   "type":"string",
   "default":"{{resource.id}}",
   "description":"Note: this is very important to terriajs stories and may never change.\nDefault: resource id (dynamically assigned).",
