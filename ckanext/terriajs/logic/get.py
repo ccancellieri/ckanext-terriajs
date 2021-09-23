@@ -25,7 +25,9 @@ log = logging.getLogger(__name__)
 
 from jinja2 import Template,Markup
 from flask import Blueprint, abort, jsonify
+
 terriajs = Blueprint(constants.TYPE, __name__)
+#url_prefix=constants.TYPE)
 
 def item_disabled(resource_view_id):
     try:

@@ -11,38 +11,9 @@ import ckanext.terriajs.utils as utils
 import logging
 log = logging.getLogger(__name__)
 
-# def resolve_mapping(type):
-#     '''
-#     try to resolve the url from the schema-mapping configuration.
-#     return an url
-#     '''
-    
-#     if type in constants.TYPE_MAPPING:
-#         if not h.is_url(constants.TYPE_MAPPING[type]):
-#             return ''.join([h.url_for('/', _external=True),constants.REST_MAPPING_PATH,str(type)])
-#         else:
-#             return constants.TYPE_MAPPING[type]
-#     else:
-#         error = "Type "+type+" not found into available mappings, please check your configuration"
-#         logging.log(logging.ERROR,error)
-#         raise InvalidURL(_(error))
-
-# def read_template(name):
-#     '''
-#     provides a reader for local template definitions
-#     '''
-#     # TODO increase security should be/ensure to be under schema_path folder
-#     return utils._json_load(constants.PATH_TEMPLATE, name)
 
 def read_all_template():
     return utils._read_all_json(constants.PATH_TEMPLATE)
-
-# def read_schema(name):
-#     '''
-#     provides a reader for local schema definitions
-#     '''
-#     # TODO increase security should be/ensure to be under schema_path folder
-    # return utils._json_load(constants.PATH_SCHEMA, name)
 
 def read_all_schema():
 
@@ -86,22 +57,6 @@ def map_resource_format_to_terriajs_type(resource_type):
 
     return resource_type
 
-def default_template(terriajs_type):
-    
-    # generate base configuration
-    # TODO create and use template mapping
-    terriajs_config = get_config(terriajs_type)
-
-    if terriajs_config:
-        return terriajs_config
-    else:
-        # fallback, no template has been found
-        #TODO LOG
-        # return constants.TERRIAJS_CATALOG
-        #FAIL FAST
-        raise Exception(_('No valid template found for type: {}').format(terriajs_type))
-
-
 import requests
 InvalidURL = requests.models.InvalidURL
 
@@ -121,36 +76,6 @@ def get_schema(type):
         # not present in type_mapping but can be present into the catalog as json file
         filename = type
     return constants.JSON_CATALOG[constants.TERRIAJS_SCHEMA_KEY].get(filename)
-
-# def _get_mapped(key, type):
-#     filename = constants.TYPE_MAPPING.get(type)
-#     if filename:
-#         return constants.JSON_CATALOG[key][filename]
-#     else:
-#         # not present in type_mapping but can be present into the catalog as json file
-#         filename = type
-#         if constants.JSON_CATALOG.get(filename):
-#             return constants.JSON_CATALOG[key][filename]
-#     return None
-    
-
-# def resolve_schema_mapping(type):
-#     '''
-#     provides a proxy for local or remote url based on schema-mapping.json file and passed <type> param
-#     '''
-#     # try:
-#     if type in constants.TYPE_MAPPING:
-#         if not h.is_url(constants.TYPE_MAPPING[type]):
-#             return get_schema(type)
-#         else:
-#             # TODO better manage error conditions with appropriate http code and message
-#             return json.loads(requests.get(constants.TYPE_MAPPING[type]).content)
-#     else:
-#         raise InvalidURL(_('Type {} not found into available mappings, please check your configuration').format(type))
-#     # except Exception as ex:
-#     #     logging.log(logging.ERROR,str(ex), exc_info=1)
-#     #     return jsonify(error=str(ex)), 404
-
 
 import jinja2
 Environment = jinja2.environment.Environment

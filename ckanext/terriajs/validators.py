@@ -133,10 +133,10 @@ def config_schema_check(key, data, errors, context):
 
     terriajs_type = data.get((constants.TERRIAJS_TYPE_KEY,))
     if not terriajs_type or terriajs_type is missing:
-        _resource = instance_to_dict(data)
+        _resource = instance_to_dict(context['resource'])
 
         try:
-            type = tools.map_resource_to_terriajs_type(_resource)
+            terriajs_type = tools.map_resource_to_terriajs_type(_resource)
         except Exception as e:
             _stop_on_error(errors,key,_('Missing default type value, please check available json-mapping formats {}'.format(str(e))))
         # terriajs_type=data[(constants.TERRIAJS_TYPE_KEY,)]
