@@ -158,7 +158,7 @@ def _get_config(view_id):
         terriajs_config = json.loads(terriajs_config)
 
     # Interpolation
-    tools.interpolate_fields(model,terriajs_config)
+    _terriajs_config=tools.interpolate_fields(model,terriajs_config)
 
     camera={
         'east':view_config.get('east',180),
@@ -166,7 +166,7 @@ def _get_config(view_id):
         'north':view_config.get('north',90),
         'south':view_config.get('south',-90)
     }
-    return { 'config':terriajs_config, 'type':type, 'camera':camera }
+    return { 'config':_terriajs_config, 'type':type, 'camera':camera }
 
 def _get_model(dataset_id, resource_id):
     '''

@@ -101,8 +101,27 @@ def interpolate_fields(model, template):
     #     '\nException: '+str(ex)+
     #     '\nPlease check your template.'))
 
+
+
+    _temp = dict(template)
+
+    # for f in constants.FIELDS_TO_SKIP:
+    #     if f in _temp:
+    #         del _temp[f]
+    import ckan.lib.navl.dictization_functions as dict_func
+    
+    # try:
+    #     _template = env.get_template(_temp)
+    #     _template.render(model)
+    #     template = unflatten()
+    # except TemplateSyntaxError as e:
+    #     raise Exception(_('Unable to interpolate \'{}\' line \'{}\''.format(template,str(e.lineno))))
+    # except Exception as e:
+    #     raise Exception(_('Unable to interpolate \'{}\': {}'.format(template,str(e))))
+
     def functionLoader(name):
         return template[name]
+
     env = Environment(
                 loader=FunctionLoader(functionLoader),
                 # autoescape=select_autoescape(['html', 'xml']),
@@ -110,6 +129,28 @@ def interpolate_fields(model, template):
                 #newline_sequence='\r\n',
                 trim_blocks=False,
                 keep_trailing_newline=True)
+
+    # _temp=dict_func.flatten_dict(template)
+    # for f in _temp.keys():
+    #     tbs=False #to be skipped
+    #     for skip in constants.FIELDS_TO_SKIP:
+    #         if skip in f:
+    #             tbs=True
+    #             break
+    #     if tbs:
+    #         continue
+    # TODO check python3 compatibility 'unicode' may disappear?
+    #     if isinstance(_temp[f],(str,unicode)):
+    #         try:
+    #             _template = env.get_template(f)
+    #             _temp[f] = _template.render(model)
+    #         except TemplateSyntaxError as e:
+    #             raise Exception(_('Unable to interpolate field \'{}\' line \'{}\''.format(f,str(e.lineno))))
+    #         except Exception as e:
+    #             raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
+
+    # return dict_func.unflatten(_temp)
+
     for f in template.keys():
         if f in constants.FIELDS_TO_SKIP:
             continue
@@ -122,4 +163,7 @@ def interpolate_fields(model, template):
                 raise Exception(_('Unable to interpolate field \'{}\' line \'{}\''.format(f,str(e.lineno))))
             except Exception as e:
                 raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
+
+    return template
+
     ###########################################################################
