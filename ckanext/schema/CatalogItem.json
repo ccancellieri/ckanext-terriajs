@@ -90,13 +90,13 @@
       ],
       "oneOf":[
         {
-          "name": "Simple",
+          "title": "Simple",
           "type": "string",
           "format": "jodit",
           "description": "A template to display message in a info box."
         },
         {
-          "name": "Advanced",
+          "title": "Advanced",
           "type": "object",
           "properties": {
             "template":{
@@ -114,7 +114,7 @@
               }
             },
             "formats": {
-              "type": "array",
+              "type": "object",
               "additionalProperties": {
                 "type": "object",
                 "properties": {
