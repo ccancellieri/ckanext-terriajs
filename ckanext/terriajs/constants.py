@@ -12,7 +12,6 @@ TYPE='terriajs'
 # (Optional)
 DEFAULT_TITLE=config.get('ckanext.terriajs.default.title', 'Map')
 ICON=config.get('ckanext.terriajs.icon', 'globe')
-ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', True)
 
 # MANDATORY
 # TERRIAJS base url to reach terriajs
@@ -29,6 +28,10 @@ FIELDS_TO_SKIP = config.get('ckanext.terriajs.skip.fields', ['featureInfoTemplat
 # (Optional)
 # this flag will prevent resource_view_clear action if enabled. (True by Default)
 PREVENT_CLEAR_ALL=config.get('ckanext.terriajs.prevent_clear_all', True)
+
+# (Optional)
+# Can cause problems with missing mapped types.
+ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', False)
 
 # (Optional)
 # List of formats supported for view auto creation (create the view when create the resource)
