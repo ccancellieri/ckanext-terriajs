@@ -81,9 +81,70 @@
       "description": "A message to show when this item is enabled for the first time in order to call attention to the Now Viewing panel."
     },
     "featureInfoTemplate": {
-      "type": "string",
-      "format": "jodit",
-      "description": "A template to display message in a info box."
+      "links":[
+        {
+          "href": "https://docs.terria.io/guide/connecting-to-data/customizing-data-appearance/feature-info-template/",
+          "mediaType": "application/html",
+          "rel": "go to documentation"
+        }
+      ],
+      "oneOf":[
+        {
+          "name": "Simple",
+          "type": "string",
+          "format": "jodit",
+          "description": "A template to display message in a info box."
+        },
+        {
+          "name": "Advanced",
+          "type": "object",
+          "properties": {
+            "template":{
+              "type": "string",
+              "format": "jodit"
+            },
+            "name": {
+              "type": "string"
+            },
+            "partials": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "format": "jodit"
+              }
+            },
+            "formats": {
+              "type": "array",
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "type":{
+                    "type": "string",
+                    "description": "can be f.e.: dataTime, number, ..."
+                  },
+                  "maximumFractionDigits": {
+                    "type": "number"
+                  },
+                  "minimumFractionDigits": {
+                    "type": "number"
+                  },
+                  "useGrouping": {
+                    "type": "boolean",
+                    "format": "checkbox"
+                  },
+                  "style": {
+                    "type": "string"
+                  },
+                  "format": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": "A template to display message in a info box."
+        }
+      ]
     },
     "maximumShownFeatureInfos": {
       "type": "number",
