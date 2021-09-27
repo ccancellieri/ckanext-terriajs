@@ -109,8 +109,7 @@
             "partials": {
               "type": "object",
               "additionalProperties": {
-                "type": "string",
-                "format": "jodit"
+                "type": "string"
               }
             },
             "formats": {
