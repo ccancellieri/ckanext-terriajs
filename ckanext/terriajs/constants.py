@@ -7,6 +7,7 @@ path = os.path
 PATH_ROOT=path.realpath(path.join(path.dirname(__file__),'..'))
 
 # (Internal)
+# this indicate the type of the view stored into the DB
 TYPE='terriajs'
 
 # (Optional)
