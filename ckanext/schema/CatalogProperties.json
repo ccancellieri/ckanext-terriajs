@@ -217,6 +217,7 @@
               "type":"array",
               "items":{
                 "type":"object",
+                "defaultProperties": [],
                 "properties":{
                   "name": {
                     "type":"string"
@@ -238,6 +239,10 @@
                     "type": "boolean",
                     "format": "checkbox"
                   },
+                  "acceptsDates": {
+                    "type": "boolean",
+                    "format": "checkbox"
+                  },
                   "acceptsPoint": {
                     "type": "boolean",
                     "format": "checkbox"
@@ -247,6 +252,32 @@
                     "properties":{
                       "multiplier": {
                         "type":"number"
+                      },
+                      "tooltip": {
+                        "type":"object",
+                        "properties":{
+                          "valueSuffix": {
+                            "type":"string"
+                          }
+                        }
+                      },
+                      "series": {
+                        "type":"array",
+                        "items":{
+                          "type":"object",
+                          "properties":{
+                            "name": {
+                              "type":"string"
+                            },
+                            "color":{
+                              "type":"string"
+                            },
+                            "isActive":{
+                              "type":"boolean",
+                              "format":"checkbox"
+                            }
+                          }
+                        }
                       },
                       "yAxis": {
                         "type":"object",
@@ -260,20 +291,6 @@
                             }
                           }
                         }
-                      }
-                    },
-                    "tooltip": {
-                      "type":"object",
-                      "properties":{
-                        "valueSuffix": {
-                          "type":"string"
-                        }
-                      }
-                    },
-                    "series": {
-                      "type":"array",
-                      "items":{
-                        "type":"object"
                       }
                     }
                   }

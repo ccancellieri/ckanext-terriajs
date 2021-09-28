@@ -32,6 +32,24 @@
             {"$ref": "CatalogProperties.json"},
             {"$ref": "ImageryLayerCatalogItem.json"}
           ]
+        },
+        {
+          "type": "object",
+          "title": "wmts",
+          "allOf": [
+            {"$ref": "wmts_properties.json"},
+            {"$ref": "CatalogProperties.json"},
+            {"$ref": "ImageryLayerCatalogItem.json"}
+          ]
+        },
+        {
+          "type": "object",
+          "title": "mvt",
+          "allOf": [
+            {"$ref": "mvt_properties.json"},
+            {"$ref": "CatalogProperties.json"},
+            {"$ref": "ImageryLayerCatalogItem.json"}
+          ]
         }
       ],
       "ignoreUnknownTileErrors": {

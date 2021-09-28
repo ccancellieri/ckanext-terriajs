@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": [
+    "layer"
+  ],
+  "defaultProperties": [],
+  "properties":{
+    "layer": {
+      "type": "string"
+    },
+    "tileMatrixSetID": {
+      "type": "string"
+    },
+    "useResourceTemplate": {
+      "type": "boolean",
+      "format": "checkbox"
+    }
+  }
+}

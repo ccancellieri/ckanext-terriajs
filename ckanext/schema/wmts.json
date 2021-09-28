@@ -1,13 +1,15 @@
 {
   "type": "object",
   "required": [
-    "type",
-    "layer"
+    "type"
   ],
   "defaultProperties": [],
   "allOf":[
     {
       "$ref": "CatalogItem.json"
+    },
+    {
+      "$ref": "wmts_properties.json"
     },
     {
       "$ref": "ImageryLayerCatalogItem.json"
@@ -19,16 +21,6 @@
       "enum": [
         "wmts"
       ]
-    },
-    "layer": {
-      "type": "string"
-    },
-    "tileMatrixSetID": {
-      "type": "string"
-    },
-    "useResourceTemplate": {
-      "type": "boolean",
-      "format": "checkbox"
     }
   }
 }

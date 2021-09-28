@@ -9,6 +9,9 @@
       "$ref": "CatalogItem.json"
     },
     {
+      "$ref": "mvt_properties.json"
+    },
+    {
       "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
@@ -18,9 +21,6 @@
       "enum": [
         "mvt"
       ]
-    },
-    "layer": {
-      "type": "string"
     }
   }
 }
