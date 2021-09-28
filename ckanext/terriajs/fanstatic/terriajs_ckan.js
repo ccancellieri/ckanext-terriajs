@@ -245,7 +245,7 @@ ckan.module('terriajs', function (jQuery, _) {
                                 terriajs.validate.errors.map(
                                     e=>'<tr><td>'+
                                         e.message+'</td><td>'
-                                        +e.dataPath+'</td><td>'
+                                        +e.instancePath+'</td><td>'
                                         +Object.keys(e.params).map(m=>m+' : '+e.params[m]).reduce((a,c)=>a+c,'')+'</td></tr>'
                                 ).reduce((a,c,i)=>a+c,'')+
                             '</table></div>';
@@ -539,34 +539,27 @@ ckan.module('terriajs', function (jQuery, _) {
 
                 if (lock){
                     // prevent switch between editors (locks buttons)
-                    // if (this.isHowto){
-                    //     $('#editor-editor').prop('disabled',true);
-                    // } else {
-                    //     $('#editor-howto').prop('disabled',true);
-                    // }
+                    if (this.isHowto){
+                        $('#editor-editor').prop('disabled',true);
+                    } else {
+                        $('#editor-howto').prop('disabled',true);
+                    }
                     // lock the save button
                     $('.form-actions [name="save"]').prop('disabled',true);
                     indicator.css("color","red");
                 } else {
                     // lock inverted
-                    // if (this.isHowto){
-                    //     $('#editor-howto').prop('disabled',true);
-                    // } else {
-                    //     $('#editor-editor').prop('disabled',true);
-                    // }
+                    if (this.isHowto){
+                        $('#editor-howto').prop('disabled',true);
+                    } else {
+                        $('#editor-editor').prop('disabled',true);
+                    }
                     // lock the save button
                     $('.form-actions [name="save"]').prop('disabled',false);
                     indicator.css("color","black");
                 }
                 indicator.html(errors);
-                                        /*if (typeof o == 'object'){
-                                            return Object.keys(o).map(k=>this(i,a));
-                                        }else if (typeof o == 'Array'){
-                                            return o.map(i=>this(i,a));
-                                        }else {
-
-                                        }*/
-
+                                        
                 //indicator.textContent = "not valid";
             }
             // Valid
