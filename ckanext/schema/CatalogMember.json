@@ -108,6 +108,7 @@
     "customProperties": {
       "type": "object",
       "description": "The dictionary of custom item properties.",
+      "defaultProperties": [],
       "properties":{
 
         "hideRawDataButton": {
