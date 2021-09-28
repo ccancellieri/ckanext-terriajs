@@ -1,3 +1,4 @@
+
 '''Tests for plugin.py.'''
 import ckan.plugins
 from ckan.plugins import toolkit
@@ -7,13 +8,12 @@ import ckanext.terriajs.constants as constants
 import ckanext.terriajs.tools as tools
 import ckanext.terriajs.logic as getLogic
 from ckan.lib.helpers import get_site_protocol_and_host
+import ckanext.terriajs.logic.get as getLogic
 import json
-import requests
-
 ckan_29_or_higher = toolkit.check_ckan_version(u'2.9')
 
 
-class TestTerria(object):
+class TestTerriaLogic(object):
     admin = None
     package = None
     resource = None
@@ -70,15 +70,9 @@ class TestTerria(object):
             constants.TERRIAJS_TYPE_KEY: resource_type,
             constants.TERRIAJS_CONFIG_KEY: terriajs_config
         }
-    def test_unknown(self):
-        # You pass a resource to the builder
-        # You obtain the parameters
-        # Check into the parameters if the type of the view
-        # Check into the parameters the terriajs type
-        # Do the following tests for this format constants.formats
-        pass
 
-    def test_default_views_are_created_automatically(self):
+
+    def test_type_of_not_group_is_disabled_return_false(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
@@ -88,31 +82,74 @@ class TestTerria(object):
         }
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
-        formats = constants.DEFAULT_FORMATS
-
-        # Check if they are views
-        assert (_resource_view_list)
-        # Check if the created view has a format declared in the constants
-        for view in _resource_view_list:
-             if view[constants.TERRIAJS_TYPE_KEY] in formats:
-                 assert True
-                 assert (view['view_type'], constants.TYPE)
+        # Enable groups
+        isDisabled = getLogic.item_disabled(_resource_view_list[0]['id'])
+        data = json.loads(isDisabled)
+        assert (data['isEnabled'], False)
 
 
-    def test_can_create_a_terriajs_view(self):
+    def test_type_of_not_group_is_enabled_return_true(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
-        _resource = factories.Resource(package_id=_package['id'])
-        _resource_view = factories.ResourceView(**self.params)
-        assert constants.TYPE == _resource_view['view_type']
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        # Enable groups
+        isEnabled = getLogic.item_enabled(_resource_view_list[0]['id'])
+        data = json.loads(isEnabled)
+        assert (data['isEnabled'], True)
 
-
-    def test_can_show_resource_view(self):
+    def test_is_config_disabled(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
-        _resource = factories.Resource(package_id=_package['id'])
-        _resource_view = factories.ResourceView(**self.params)
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        # Check if disabled
+        isEnabled = getLogic.config_disabled(_resource_view_list[0]['id'])
+        data = json.loads(isEnabled)
+        assert (data['catalog'][0]['isEnabled'], False)
 
-        result = helpers.call_action('resource_view_show', id=_resource_view['id'])
-        result.pop('id')
-        result.pop('package_id')
-        assert (self.params, result)
+        # Enable groups
+        enabled = getLogic.item_enabled(_resource_view_list[0]['id'])
+
+        # Check if disabled
+        isDisabled = getLogic.config_disabled(_resource_view_list[0]['id'])
+        data = json.loads(isDisabled)
+        assert (data['catalog'][0]['isEnabled'], True)
+
+
+    def test_is_config_enabled(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        # Check if disabled
+        isEnabled = getLogic.config_enabled(_resource_view_list[0]['id'])
+        data = json.loads(isEnabled)
+        assert (data['catalog'][0]['isEnabled'], True)
+
+        # disable groups
+
+        disable = getLogic.item_disabled(_resource_view_list[0]['id'])
+
+        # Check if enabled
+        isEnabled = getLogic.config_enabled(_resource_view_list[0]['id'])
+        data = json.loads(isEnabled)
+        assert (data['catalog'][0]['isEnabled'], False)
+
+
 
