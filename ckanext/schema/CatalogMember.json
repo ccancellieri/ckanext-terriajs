@@ -9,6 +9,7 @@
     "type",
     "id"
   ],
+  "defaultProperties": [],
   "properties":{
     "type": {
       "type": "string"
@@ -109,14 +110,21 @@
       "description": "The dictionary of custom item properties.",
       "properties":{
 
+        "hideRawDataButton": {
+          "type": "boolean",
+          "format": "checkbox"
+        },
+
         "dimensionLabelsConfig": {
           "type":"object",
-          "dimensionsJsonStatUrl": {
-            "type":"string"
-          },
-          "showDimensionsOnPanel": {
-            "type":"boolean",
-            "format": "checkbox"
+          "properties":{
+            "dimensionsJsonStatUrl": {
+              "type":"string"
+            },
+            "showDimensionsOnPanel": {
+              "type":"boolean",
+              "format": "checkbox"
+            }
           }
         },
 

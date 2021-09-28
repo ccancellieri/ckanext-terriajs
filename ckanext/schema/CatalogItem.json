@@ -88,6 +88,7 @@
           "rel": "go to documentation"
         }
       ],
+  "defaultProperties": [],
       "oneOf":[
         {
           "title": "Simple",
@@ -98,7 +99,9 @@
         {
           "title": "Advanced",
           "type": "object",
-          "defaults":[],
+          "defaultProperties": [
+            "template"
+          ],
           "properties": {
             "template":{
               "type": "string",
