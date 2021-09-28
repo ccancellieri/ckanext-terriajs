@@ -1,24 +1,15 @@
 {
   "type": "object",
   "required": [
-    "type","layers"
+    "layers"
   ],
   "defaultProperties": [],
   "allOf":[
     {
-      "$ref": "CatalogItem.json"
-    },
-    {
-      "$ref": "wms_properties.json"
+      "$ref": "ImageryLayerCatalogItem.json"
     }
   ],
   "properties":{
-    "type": {
-      "type": "string",
-      "enum": [
-        "wms"
-      ]
-    },
     "layers": {
       "type": "string"
     },

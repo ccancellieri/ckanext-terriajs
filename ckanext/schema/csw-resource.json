@@ -25,16 +25,13 @@
       "type":"object",
       "oneOf":[
         {
+          "type": "object",
           "title": "wms",
-          "$ref": "wms.json"
-        },
-        {
-          "title": "wmts",
-          "$ref": "wmts.json"
-        },
-        {
-          "title": "csv",
-          "$ref": "CsvCatalogItem_type.json"
+          "allOf": [
+            {"$ref": "wms_properties.json"},
+            {"$ref": "CatalogProperties.json"},
+            {"$ref": "ImageryLayerCatalogItem.json"}
+          ]
         }
       ],
       "ignoreUnknownTileErrors": {

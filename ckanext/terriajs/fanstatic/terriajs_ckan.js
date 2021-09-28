@@ -238,7 +238,7 @@ ckan.module('terriajs', function (jQuery, _) {
                     if (!terriajs.validate(val))
                         errors='<div style="height:150px; overflow:auto;" id="outher-error">'+
                             '<table id="inner-error" style="width:100%;">'+
-                            '<tr">'+
+                            '<tr>'+
                                 '<th><h2>Message</h2></th>'+
                                 '<th><h2>Path</h2></th>'+
                                 '<th><h2>Error</h2></th></tr>'+
@@ -250,7 +250,7 @@ ckan.module('terriajs', function (jQuery, _) {
                                 ).reduce((a,c,i)=>a+c,'')+
                             '</table></div>';
                 }
-                return {'html':errors, 'lock':false};
+                return {'html':errors, 'lock':true};
             } catch (exc) {
                 errors='<p>'+exc+'</p>';
                 return {'html':errors, 'lock':true};
@@ -476,11 +476,22 @@ ckan.module('terriajs', function (jQuery, _) {
                 }
                 // TODO call when instantiate -> refactor to function and call onReady
                 var errors = terriajs.editor.validate();
-                if (errors && Object.keys(errors).length)
-                    this.editorOnChange({'html':'<div id="outher-error">'+
-                                errors.reduce(o=>'<p>'+o+'</p>','')+'</div>', 'lock':true});
+                
+
+                if (errors && Object.keys(errors).length){
+                    html_errors='<div style="height:150px; overflow:auto;" id="outher-error">'+
+                            '<table id="inner-error" style="width:100%;">'+
+                            '<tr>'+
+                                '<th><h2>Path</h2></th>'+
+                                '<th><h2>Message</h2></th></tr>'+
+                                errors.map(
+                                    e=>'<tr><td>'+e.path+'</td><td>'+e.message+'</td></tr>'
+                                ).reduce((a,c,i)=>a+c,'')+
+                            '</table></div>';   
+                    this.editorOnChange({'html':html_errors, 'lock':true});
+                }
                 else
-                    this.editorOnChange({'html':undefined, 'lock':true});
+                    this.editorOnChange({'html':undefined, 'lock':false});
 
             });
             // TODO call validation when instantiate -> refactor to function
@@ -528,21 +539,21 @@ ckan.module('terriajs', function (jQuery, _) {
 
                 if (lock){
                     // prevent switch between editors (locks buttons)
-                    if (this.isHowto){
-                        $('#editor-editor').prop('disabled',true);
-                    } else {
-                        $('#editor-howto').prop('disabled',true);
-                    }
+                    // if (this.isHowto){
+                    //     $('#editor-editor').prop('disabled',true);
+                    // } else {
+                    //     $('#editor-howto').prop('disabled',true);
+                    // }
                     // lock the save button
                     $('.form-actions [name="save"]').prop('disabled',true);
                     indicator.css("color","red");
                 } else {
                     // lock inverted
-                    if (this.isHowto){
-                        $('#editor-howto').prop('disabled',true);
-                    } else {
-                        $('#editor-editor').prop('disabled',true);
-                    }
+                    // if (this.isHowto){
+                    //     $('#editor-howto').prop('disabled',true);
+                    // } else {
+                    //     $('#editor-editor').prop('disabled',true);
+                    // }
                     // lock the save button
                     $('.form-actions [name="save"]').prop('disabled',false);
                     indicator.css("color","black");

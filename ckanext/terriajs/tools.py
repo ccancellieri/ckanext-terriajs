@@ -83,7 +83,6 @@ TemplateSyntaxError = jinja2.TemplateSyntaxError
 
 # from jinja2.utils import select_autoescape
 def interpolate_fields(model, template):
-
     ###########################################################################
     # Jinja2 template
     ###########################################################################
