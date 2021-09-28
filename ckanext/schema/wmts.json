@@ -4,6 +4,7 @@
     "type",
     "layer"
   ],
+  "defaultProperties": [],
   "allOf":[
     {
       "$ref": "CatalogItem.json"

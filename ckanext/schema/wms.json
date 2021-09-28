@@ -3,6 +3,7 @@
   "required": [
     "type","layers"
   ],
+  "defaultProperties": [],
   "allOf":[
     {
       "$ref": "CatalogItem.json"
