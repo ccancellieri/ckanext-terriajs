@@ -72,7 +72,7 @@ class TestTerriaLogic(object):
         }
 
 
-    def test_type_of_not_group_is_disabled_return_false(self):
+    def test_item_is_disabled_return_false(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
@@ -88,7 +88,7 @@ class TestTerriaLogic(object):
         assert (data['isEnabled'], False)
 
 
-    def test_type_of_not_group_is_enabled_return_true(self):
+    def test_item_is_enabled_return_true(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
