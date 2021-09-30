@@ -151,5 +151,26 @@ class TestTerriaLogic(object):
         data = json.loads(isEnabled)
         assert (data['catalog'][0]['isEnabled'], False)
 
+    def _test_url(self, app):
+
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        # Enable groups
+        # data = json.loads(isDisabled)
+        # assert (data['isEnabled'], False)
+        # $'''{host_url}{plugin_name}/terriajs_config/force_enabled/{resource_view_id}.json'''
+        url = self.url_group_force_is_enabled.format(host = self.host_url, plugin_name = constants.TYPE, resource_view_id = _resource_view_list['id'])
+
+        response = app.get(url)
+
+        assert 'https://example/document.pdf' in response.body
+
 
 

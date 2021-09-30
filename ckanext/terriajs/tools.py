@@ -76,6 +76,11 @@ def get_schema(type):
         filename = type
     return constants.JSON_CATALOG[constants.TERRIAJS_SCHEMA_KEY].get(filename)
 
+
+import sys
+_py3=False
+if (sys.version_info > (3, 0)):
+    _py3=True
 import jinja2
 Environment = jinja2.environment.Environment
 FunctionLoader = jinja2.loaders.FunctionLoader 
@@ -154,7 +159,10 @@ def interpolate_fields(model, template):
         if f in constants.FIELDS_TO_SKIP:
             continue
         # TODO check python3 compatibility 'unicode' may disappear?
-        if isinstance(template[f],(str,unicode)):
+        
+
+        if _py3 and isinstance(template[f],(str))\
+           or isinstance(template[f],(str,unicode)):
             try:
                 _template = env.get_template(f)
                 template[f] = _template.render(model)
@@ -164,5 +172,4 @@ def interpolate_fields(model, template):
                 raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
 
     return template
-
     ###########################################################################
