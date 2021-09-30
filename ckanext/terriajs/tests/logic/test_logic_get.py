@@ -149,6 +149,10 @@ class TestTerriaLogic(object):
         # Check if enabled
         isEnabled = getLogic.config_enabled(_resource_view_list[0]['id'])
         data = json.loads(isEnabled)
+
+        _config_id = getLogic._config(_resource_view_list[0]['id'])
+
+        assert (_resource_view_list[0]['id'], _config_id)
         assert (data['catalog'][0]['isEnabled'], False)
 
     def _test_config(self):
@@ -162,9 +166,8 @@ class TestTerriaLogic(object):
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
         # Check if disabled
-        isEnabled = getLogic._config(_resource_view_list[0]['id'])
-        data = json.loads(isEnabled)
-        assert (data['catalog'][0]['isEnabled'], True)
+        _config = getLogic._config(_resource_view_list[0]['id'])
+        assert (_resource_view_list, True)
 
         # disable groups
 
