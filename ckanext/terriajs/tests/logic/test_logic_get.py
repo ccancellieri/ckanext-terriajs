@@ -158,8 +158,10 @@ class TestTerriaLogic(object):
         }
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
-        _config_id = getLogic._config(_resource_view_list[0]['id'])
-        assert (_resource_view_list[0]['id'], _config_id)
+        _config = getLogic._config(_resource_view_list[0]['id'])
+        _config = json.loads(_config)
+        assert (_config)
+        assert _resource['id'] == _config['catalog'][0]['id']
 
     def test_base_return_item(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
@@ -172,7 +174,7 @@ class TestTerriaLogic(object):
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
         _base = getLogic._base(_resource_view_list[0]['id'])
-        assert(_params['url'], _base['catalog'][0]['url'])
+        assert _params['url'] == _base['catalog'][0]['url']
 
     def test_get_model(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
@@ -185,11 +187,11 @@ class TestTerriaLogic(object):
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
         _get_model = getLogic._get_model(_package['id'], _resource['id'])
-        assert (_package, _get_model['dataset'])
+        assert (_package, _get_model['resource'])
         assert (_resource, _get_model['resource'])
         assert (self.owner_org, _get_model['organization'])
-        assert ({'base_url':ckan.lib.helpers.url_for('/', _external=True)}, _get_model['ckan'])
-        assert ({'base_url':constants.TERRIAJS_URL}, _get_model['terriajs'])
+        assert {'base_url': ckan.lib.helpers.url_for('/', _external=True)} == _get_model['ckan']
+        assert {'base_url': constants.TERRIAJS_URL} == _get_model['terriajs']
 
     def test_model(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
@@ -203,8 +205,3 @@ class TestTerriaLogic(object):
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
         _model = getLogic._model(_package['id'], _resource['id'])
         assert (_model)
-
-
-
-
-
