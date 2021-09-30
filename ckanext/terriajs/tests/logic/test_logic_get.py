@@ -161,8 +161,7 @@ class TestTerriaLogic(object):
         _config_id = getLogic._config(_resource_view_list[0]['id'])
         assert (_resource_view_list[0]['id'], _config_id)
 
-    def _test_url(self, app):
-
+    def test_base_return_item(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
@@ -172,13 +171,40 @@ class TestTerriaLogic(object):
         }
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
-        # Enable groups
-        # data = json.loads(isDisabled)
-        # assert (data['isEnabled'], False)
-        # $'''{host_url}{plugin_name}/terriajs_config/force_enabled/{resource_view_id}.json'''
-        url = self.url_group_force_is_enabled.format(host=self.host_url, plugin_name=constants.TYPE,
-                                                     resource_view_id=_resource_view_list['id'])
+        _base = getLogic._base(_resource_view_list[0]['id'])
+        assert(_params['url'], _base['catalog'][0]['url'])
 
-        response = app.get(url)
+    def test_get_model(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        _get_model = getLogic._get_model(_package['id'], _resource['id'])
+        assert (_package, _get_model['dataset'])
+        assert (_resource, _get_model['resource'])
+        assert (self.owner_org, _get_model['organization'])
+        assert ({'base_url':ckan.lib.helpers.url_for('/', _external=True)}, _get_model['ckan'])
+        assert ({'base_url':constants.TERRIAJS_URL}, _get_model['terriajs'])
 
-        assert 'https://example/document.pdf' in response.body
+    def test_model(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        _model = getLogic._model(_package['id'], _resource['id'])
+        assert (_model)
+
+
+
+
+
