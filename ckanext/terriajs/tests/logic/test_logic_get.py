@@ -1,4 +1,3 @@
-
 '''Tests for plugin.py.'''
 import ckan.plugins
 from ckan.plugins import toolkit
@@ -10,6 +9,7 @@ import ckanext.terriajs.logic as getLogic
 from ckan.lib.helpers import get_site_protocol_and_host
 import ckanext.terriajs.logic.get as getLogic
 import json
+
 ckan_29_or_higher = toolkit.check_ckan_version(u'2.9')
 
 
@@ -71,7 +71,6 @@ class TestTerriaLogic(object):
             constants.TERRIAJS_CONFIG_KEY: terriajs_config
         }
 
-
     def test_item_is_disabled_return_false(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
@@ -86,7 +85,6 @@ class TestTerriaLogic(object):
         isDisabled = getLogic.item_disabled(_resource_view_list[0]['id'])
         data = json.loads(isDisabled)
         assert (data['isEnabled'], False)
-
 
     def test_item_is_enabled_return_true(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
@@ -126,7 +124,6 @@ class TestTerriaLogic(object):
         data = json.loads(isDisabled)
         assert (data['catalog'][0]['isEnabled'], True)
 
-
     def test_is_config_enabled(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
@@ -149,13 +146,9 @@ class TestTerriaLogic(object):
         # Check if enabled
         isEnabled = getLogic.config_enabled(_resource_view_list[0]['id'])
         data = json.loads(isEnabled)
-
-        _config_id = getLogic._config(_resource_view_list[0]['id'])
-
-        assert (_resource_view_list[0]['id'], _config_id)
         assert (data['catalog'][0]['isEnabled'], False)
 
-    def _test_config(self):
+    def test_config(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
@@ -165,18 +158,8 @@ class TestTerriaLogic(object):
         }
         _resource = helpers.call_action('resource_create', **_params)
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
-        # Check if disabled
-        _config = getLogic._config(_resource_view_list[0]['id'])
-        assert (_resource_view_list, True)
-
-        # disable groups
-
-        disable = getLogic.item_disabled(_resource_view_list[0]['id'])
-
-        # Check if enabled
-        isEnabled = getLogic.config_enabled(_resource_view_list[0]['id'])
-        data = json.loads(isEnabled)
-        assert (data['catalog'][0]['isEnabled'], False)
+        _config_id = getLogic._config(_resource_view_list[0]['id'])
+        assert (_resource_view_list[0]['id'], _config_id)
 
     def _test_url(self, app):
 
@@ -193,11 +176,9 @@ class TestTerriaLogic(object):
         # data = json.loads(isDisabled)
         # assert (data['isEnabled'], False)
         # $'''{host_url}{plugin_name}/terriajs_config/force_enabled/{resource_view_id}.json'''
-        url = self.url_group_force_is_enabled.format(host = self.host_url, plugin_name = constants.TYPE, resource_view_id = _resource_view_list['id'])
+        url = self.url_group_force_is_enabled.format(host=self.host_url, plugin_name=constants.TYPE,
+                                                     resource_view_id=_resource_view_list['id'])
 
         response = app.get(url)
 
         assert 'https://example/document.pdf' in response.body
-
-
-
