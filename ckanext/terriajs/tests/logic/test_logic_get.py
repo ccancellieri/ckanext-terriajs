@@ -1,4 +1,3 @@
-
 '''Tests for plugin.py.'''
 import ckan.plugins
 from ckan.plugins import toolkit
@@ -10,6 +9,7 @@ import ckanext.terriajs.logic as getLogic
 from ckan.lib.helpers import get_site_protocol_and_host
 import ckanext.terriajs.logic.get as getLogic
 import json
+
 ckan_29_or_higher = toolkit.check_ckan_version(u'2.9')
 
 
@@ -71,8 +71,7 @@ class TestTerriaLogic(object):
             constants.TERRIAJS_CONFIG_KEY: terriajs_config
         }
 
-
-    def test_type_of_not_group_is_disabled_return_false(self):
+    def test_item_is_disabled_return_false(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
@@ -87,8 +86,7 @@ class TestTerriaLogic(object):
         data = json.loads(isDisabled)
         assert (data['isEnabled'], False)
 
-
-    def test_type_of_not_group_is_enabled_return_true(self):
+    def test_item_is_enabled_return_true(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
             'package_id': _package['id'],
@@ -126,7 +124,6 @@ class TestTerriaLogic(object):
         data = json.loads(isDisabled)
         assert (data['catalog'][0]['isEnabled'], True)
 
-
     def test_is_config_enabled(self):
         _package = factories.Dataset(owner_org=self.owner_org['id'])
         _params = {
@@ -151,5 +148,60 @@ class TestTerriaLogic(object):
         data = json.loads(isEnabled)
         assert (data['catalog'][0]['isEnabled'], False)
 
+    def test_config(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        _config = getLogic._config(_resource_view_list[0]['id'])
+        _config = json.loads(_config)
+        assert (_config)
+        assert _resource['id'] == _config['catalog'][0]['id']
 
+    def test_base_return_item(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        _base = getLogic._base(_resource_view_list[0]['id'])
+        assert _params['url'] == _base['catalog'][0]['url']
 
+    def test_get_model(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        _get_model = getLogic._get_model(_package['id'], _resource['id'])
+        assert (_package, _get_model['resource'])
+        assert (_resource, _get_model['resource'])
+        assert (self.owner_org, _get_model['organization'])
+        assert {'base_url': ckan.lib.helpers.url_for('/', _external=True)} == _get_model['ckan']
+        assert {'base_url': constants.TERRIAJS_URL} == _get_model['terriajs']
+
+    def test_model(self):
+        _package = factories.Dataset(owner_org=self.owner_org['id'])
+        _params = {
+            'package_id': _package['id'],
+            'url': 'http://data',
+            'name': 'A nice resource',
+            'format': 'csv'
+        }
+        _resource = helpers.call_action('resource_create', **_params)
+        _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
+        _model = getLogic._model(_package['id'], _resource['id'])
+        assert (_model)
