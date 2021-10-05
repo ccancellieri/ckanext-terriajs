@@ -368,7 +368,7 @@ ckan.module('terriajs', function (jQuery, _) {
                                 '<div class="eiao-object-title">',
                                     '<div>',
                                         '<b>',
-                                            'Resource:',
+                                            '<a target=”_blank” href="'+new URL('/terriajs/config/'+result.id+'.json', terriajs.ckan_url)+'">Resource</a>',
                                         '</b>',
                                     '</div>',
                                     '<div>',

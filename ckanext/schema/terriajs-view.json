@@ -34,14 +34,7 @@
                     "autoSelect": true
                 },
                 "grid_columns": 6
-            },
-            "links": [
-                {
-                    "href": "/terriajs/config/{{self}}.json",
-                    "mediaType": "application/json",
-                    "rel": "go to..."
-                }
-            ]
+            }
         },
         "name": {
             "type": "string",
