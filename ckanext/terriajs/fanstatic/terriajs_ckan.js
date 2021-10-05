@@ -9,33 +9,37 @@ ckan.module('terriajs', function (jQuery, _) {
 
     loadSchema = function (uri) {
         return new Promise((resolve, reject) => {
-            retry=3;
             function get(retry, uri){
                 //resolve(require('./id.json')); // replace with http request for example
-                    $.ajaxSetup({timeout: 30000});
-                    $.get( uri, function(data) {
-                      //alert( "success: ");
-                      _data=JSON.parse(data)
-                      resolve(_data);
-                      return _data;
-                    })
-                  .fail(function() {
-                    //alert( "error" );
-                    if (retry>0){
-                        get(--retry, uri);
-                    } else {
-                        reject(new Error(`could not locate ${uri}`));
+                $.ajaxSetup({ timeout: 30000, cache: true });
+                $.get({
+                    cache: true,
+                    url: uri, 
+                    success: function(data) {
+                        //alert( "success: ");
+                        _data=JSON.parse(data)
+                        resolve(_data);
+                        return _data;
+                    },
+                    fail:function() {
+                        //alert( "error" );
+                        if (retry>0){
+                            get(--retry, uri);
+                        } else {
+                            reject(new Error(`could not locate ${uri}`));
+                        }
                     }
-                  });
-              };
-          if (uri.startsWith('http')) {
-            return get(3,uri);
-          } else {
-            //reject(new Error(`could not locate ${uri}`));
-            return get(3,new URL('terriajs/schema/'+uri, terriajs.ckan_url));
-          }
+                });
+            };
+            let retry=3;
+            if (uri.startsWith('http')) {
+                return get(retry,uri);
+            } else {
+                //reject(new Error(`could not locate ${uri}`));
+                return get(retry,new URL('terriajs/schema/'+uri, terriajs.ckan_url));
+            }
         });
-  }
+    };
     
     terriajs = {
         
@@ -177,7 +181,7 @@ ckan.module('terriajs', function (jQuery, _) {
 
                 // https://github.com/json-editor/json-editor#css-integration
                 // barebones, html (the default), bootstrap4, spectre, tailwind
-                theme: 'bootstrap4',
+                theme: 'bootstrap3',
                 iconlib: "fontawesome4"
                 });
             /*JSONEditor.plugins.ace = {
