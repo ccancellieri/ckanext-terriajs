@@ -17,9 +17,11 @@ ckan.module('terriajs', function (jQuery, _) {
                     url: uri, 
                     success: function(data) {
                         //alert( "success: ");
-                        _data=JSON.parse(data)
-                        resolve(_data);
-                        return _data;
+                        resolve(data);
+                        return data;
+                        // _data=JSON.parse(data)
+                        // resolve(_data);
+                        // return _data;
                     },
                     fail:function() {
                         //alert( "error" );

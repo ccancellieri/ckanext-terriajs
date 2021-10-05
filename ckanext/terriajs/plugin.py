@@ -62,7 +62,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         toolkit.add_template_directory(config_, 'templates')
         toolkit.add_public_directory(config_, 'public')
         toolkit.add_resource('fanstatic', 'ckanext-terriajs')
-        
+    
     def configure(self, config_):
         with open(constants.SCHEMA_TYPE_MAPPING_FILE) as f:
             constants.TYPE_MAPPING = json.load(f)

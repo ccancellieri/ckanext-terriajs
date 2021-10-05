@@ -1,5 +1,4 @@
 {
-    "id": "terriajs-view",
     "type": "object",
     "format": "grid-strict",
     "required": [
