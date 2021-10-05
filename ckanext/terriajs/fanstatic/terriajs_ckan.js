@@ -17,6 +17,9 @@ ckan.module('terriajs', function (jQuery, _) {
                     url: uri, 
                     success: function(data) {
                         //alert( "success: ");
+                        if (data !== null && typeof data !== "object") {
+                            data = JSON.parse(data)
+                        }
                         resolve(data);
                         return data;
                         // _data=JSON.parse(data)
