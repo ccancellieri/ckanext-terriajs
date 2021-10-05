@@ -202,7 +202,7 @@ ckan.module('terriajs', function (jQuery, _) {
                 // coerceTypes: true,
                 validateFormats: false,
                 // validateFormats: false,
-                formats: {'*': true, checkbox: true},
+                // formats: {'*': true, checkbox: true},
                 loadSchema:loadSchema,
                 // strict: false,
                 // // allErrors: true,

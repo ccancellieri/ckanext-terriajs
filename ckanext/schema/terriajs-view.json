@@ -37,7 +37,7 @@
             },
             "links": [
                 {
-                    "href": "terriajs/config/{{self}}.json",
+                    "href": "/terriajs/config/{{self}}.json",
                     "mediaType": "application/json",
                     "rel": "go to..."
                 }
