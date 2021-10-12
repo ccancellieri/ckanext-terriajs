@@ -243,7 +243,40 @@ API
 
 .. _api
 
-In addition to the cksn standard action (create_view, etc)
+## CKAN standard action
+
+This is an example on how to create a terriajs view via API with python
+
+    import requests
+    
+    def create_resource_view(payload, endpoint, headers):
+        req_v = requests.post(endpoint, json=payload, headers=headers)
+        if req_v.status_code != 200:
+            print('Error while creating the view : {0}'.format(req_v.content))
+        else:
+            print("Resource View has been created")
+            
+    payload = {
+        "resource_id": '{THE RESOURCE ID}',
+        "title": 'Map',
+        "description": 'description',
+        "view_type": 'terriajs',
+        'terriajs_type': 'csv',
+        'terriajs_config': '{"type":"csv", "id":"test", "name":"csv_name.csv", "url":"http://link_to_resource" }'
+    }
+
+    # Site url
+    endpoint = '{CKAN_URL}/api/3/action/resource_view_create'
+
+    headers = {'Authorization': {API_TOKEN}, 'Content-type': 'application/json'}
+
+    create_resource_view(payload, endpoint, headers=headers)
+
+|    
+
+## Terriajs additional endpoints
+
+In addition to the ckan standard action (create_view, etc)
 
 |
 
