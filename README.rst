@@ -248,6 +248,8 @@ CKAN standard action
 
 This is an example on how to create a terriajs view via API with python
 
+
+
     import requests
     
     def create_resource_view(payload, endpoint, headers):
