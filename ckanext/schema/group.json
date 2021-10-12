@@ -42,8 +42,7 @@
         "type":"object",
         "headerTemplate": "{{ i }} - {{self.name}}",
         "required": [
-          "type",
-          "id"
+          "type"
         ]
       }
     }
