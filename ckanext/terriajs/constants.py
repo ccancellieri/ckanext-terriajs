@@ -32,7 +32,7 @@ PREVENT_CLEAR_ALL=config.get('ckanext.terriajs.prevent_clear_all', True)
 
 # (Optional)
 # Can cause problems with missing mapped types.
-ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', False)
+ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', True)
 
 # (Optional)
 # List of formats supported for view auto creation (create the view when create the resource)
