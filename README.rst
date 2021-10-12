@@ -243,7 +243,8 @@ API
 
 .. _api
 
-## CKAN standard action
+CKAN standard action
+--------------------
 
 This is an example on how to create a terriajs view via API with python
 
@@ -274,13 +275,11 @@ This is an example on how to create a terriajs view via API with python
 
 |    
 
-## Terriajs additional endpoints
 
-In addition to the ckan standard action (create_view, etc)
+Terriajs additional endpoints
+-----------------------------
 
-|
-
-The plugin also provide a new set of blueprint endpoints:
+In addition to the ckan standard action (create_view, etc) the plugin is also providing a new set of blueprint endpoints (read only):
 
 |
 
