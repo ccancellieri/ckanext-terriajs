@@ -55,8 +55,21 @@
                 "description":"The legend label for null values."
               },
               "format": {
-                "format": "json",
-                "type": "string"
+                "oneOf":[
+                  {
+                    "format": "json",
+                    "type": "string"
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "useGrouping": {
+                        "type":"boolean",
+                        "format":"checkbox"
+                      }
+                    }
+                  }
+                ]
               },
               "units": {
                 "description": "The units of this column",
@@ -233,8 +246,14 @@
           "description": "imageUrl - A string representing an image to display at each point, for lat-long datasets."
         },
         "timeColumn": {
-          "description": "The column name or index to use as the time column. Defaults to the first one found. Pass null for none.",
-          "type": "string"
+          "oneOf":[
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     }
