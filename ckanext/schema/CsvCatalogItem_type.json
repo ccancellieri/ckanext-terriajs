@@ -13,7 +13,8 @@
       "type": "string",
       "enum": [
         "csv"
-      ]
+      ],
+      "options": { "hidden": true }
     }
   }
 }

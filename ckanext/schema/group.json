@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "format": "categories",
+  "basicCategoryTitle": "Main",
+  "options": {
+    "disable_collapse": false
+  },
+  "required": [
+    "id","type","name","description","items"
+  ],
+  "properties":{
+    "id":{
+      "$ref":"id.json"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "group"
+      ],
+      "options": {
+        "hidden": true
+      }
+    },
+    "name": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "description": {
+      "$ref":"description.json"
+    },
+    "preserveOrder": {
+      "type": "boolean",
+      "format": "checkbox",
+      "default": true
+    },
+    "items":{
+      "type":"array",
+      "options": {
+          "enable_array_copy": false
+      },
+      "items":{
+        "type":"object",
+        "headerTemplate": "{{ i }} - {{self.name}}",
+        "required": [
+          "type",
+          "id"
+        ]
+      }
+    }
+  }
+}

@@ -124,6 +124,8 @@ Description: .. contents:: Table of Contents
         
         f.e.: an CSV item has:
         
+        .. code-block:: json
+        
           {
             "id":...
             "name":...
@@ -251,42 +253,68 @@ Description: .. contents:: Table of Contents
         
         .. _api
         
-        In addition to the cksn standard action (create_view, etc)
+        CKAN standard action
+        --------------------
         
-        |
+        This is an example on how to create a terriajs view via API with python
         
-        The plugin also provide a new set of blueprint endpoints:
+        .. code-block:: python
+        
+        
+            import requests
+            
+            def create_resource_view(payload, endpoint, headers):
+                req_v = requests.post(endpoint, json=payload, headers=headers)
+                if req_v.status_code != 200:
+                    print('Error while creating the view : {0}'.format(req_v.content))
+                else:
+                    print("Resource View has been created")
+                    
+            payload = {
+                "resource_id": '{THE RESOURCE ID}',
+                "title": 'Map',
+                "description": 'description',
+                "view_type": 'terriajs',
+                'terriajs_type': 'csv',
+                'terriajs_config': '{"type":"csv", "id":"test", "name":"csv_name.csv", "url":"http://link_to_resource" }'
+            }
+        
+            # Site url
+            endpoint = '{CKAN_URL}/api/3/action/resource_view_create'
+        
+            headers = {'Authorization': {API_TOKEN}, 'Content-type': 'application/json'}
+        
+            create_resource_view(payload, endpoint, headers=headers)
+        
+        |    
+        
+        
+        Terriajs additional endpoints
+        -----------------------------
+        
+        In addition to the ckan standard action (create_view, etc) the plugin is also providing a new set of blueprint endpoints (read only):
         
         |
         
             /terriajs/describe
         
-        describe an existing view by id, used by terriajs-group
-        
-        |
+        describe an existing view by id, used by terriajs-group::
         
             /terriajs/search
         
-        search an existing view by resource or dataset title/description, used by terriajs-group)
-        
-        |
+        search an existing view by resource or dataset title/description, used by terriajs-group)::
         
             /terriajs/schema/<filename>
         
-         a proxy to resolve relative schema references (ckan can work also as source of schemas in case you don't have a static repository)
-        
-        |
+        a proxy to resolve relative schema references (ckan can work also as source of schemas in case you don't have a static repository)::
         
             /terriajs/config/[<enabled|disabled>/]<uuid>.json
         
         an endpoint to return a valid and dinamically resolved and interpolated full terriajs configuration (used by the **preview**).
         
-        You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling.
-        
-        |
+        You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling::
         
             /terriajs/item/[<enabled|disabled>/]<uuid>.json
-        
         
         While */config/* returns a fully functional configuration catalog, this endpoint to return the configured (unwrapped) **item** (dinamically resolved and interpolated)
         
@@ -303,6 +331,7 @@ Description: .. contents:: Table of Contents
         
         The configuration is shippend in a file called `type-mapping.json <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/type-mapping.json>`__ which is a serialized dict (a map):
         
+        .. code-block:: json
         
             {
                 'terria-js-type': 'URI'
@@ -347,6 +376,8 @@ Description: .. contents:: Table of Contents
         
         We are not providing pip package to install please use:
         
+        .. code-block:: bash
+        
             git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
             cd ckanext-terriajs
             pip install -r requirements.txt
@@ -360,13 +391,15 @@ Description: .. contents:: Table of Contents
         Configuration
         =============
         
-        Copy and edit the type-mapping.json to the config folder:
+        Copy and edit the type-mapping.json to the config folder::
         
-            cp ./type-mapping.json /etc/ckan/default/terriajs-type-mapping.json
+           cp ./type-mapping.json /etc/ckan/default/terriajs-type-mapping.json
         
         Enable the plugin into production.ini
         
         If you desire to make it enabled by default (recommended):
+        
+        .. code-block::
         
             my_default_view = ...  terriajs
         
@@ -379,11 +412,14 @@ Description: .. contents:: Table of Contents
         
         If you just want to have the plug loaded:
         
+        .. code-block::
         
             ckan.plugins = terriajs ...
         
         
         Please ref to constants.py for an updated list of available parameters:
+        
+        .. code-block::
         
             ckanext.terriajs.url = http://localhost:8080
             ckanext.terriajs.schema.type_mapping = /etc/ckan/default/terriajs-type-mapping.json

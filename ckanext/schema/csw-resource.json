@@ -15,7 +15,8 @@
       "type": "string",
       "enum": [
         "csw-resource"
-      ]
+      ],
+      "options": { "hidden": true }
     },
     "containerId": {
       "type": "string",

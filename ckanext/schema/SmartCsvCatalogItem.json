@@ -10,7 +10,8 @@
   "properties": {
     "type": {
       "type": "string",
-      "enum": ["smart-csv"]
+      "enum": ["smart-csv"],
+      "options": { "hidden": true }
     },
     
     "schemaUrl": {

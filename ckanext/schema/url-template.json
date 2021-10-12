@@ -15,7 +15,10 @@
       "type": "string",
       "enum": [
         "url-template"
-      ]
+      ],
+      "options": {
+        "hidden": true
+      }
     }
   }
 }

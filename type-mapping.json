@@ -4,9 +4,11 @@
     "csv":"CsvCatalogItem_type.json",
     "wms":"wms.json",
     "wmts":"wmts.json",
-    "mvt": "mvt.json",
-    "geojson": "geojson.json",
-    "url-template": "url-template.json",
+    "mvt":"mvt.json",
+    "geojson":"geojson.json",
+    "url-template":"url-template.json",
     "csw-resource":"csw-resource.json",
-    "smart-csv":"SmartCsvCatalogItem.json"
+    "csw":"csw.json",
+    "smart-csv":"SmartCsvCatalogItem.json",
+    "group":"group.json"
 }

@@ -17,7 +17,8 @@
       "type": "string",
       "enum": [
         "geojson"
-      ]
+      ],
+      "options": { "hidden": true }
     },
     "dataUrl": {
       "type": "string"

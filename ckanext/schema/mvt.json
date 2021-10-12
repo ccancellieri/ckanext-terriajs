@@ -20,7 +20,8 @@
       "type": "string",
       "enum": [
         "mvt"
-      ]
+      ],
+      "options": { "hidden": true }
     }
   }
 }

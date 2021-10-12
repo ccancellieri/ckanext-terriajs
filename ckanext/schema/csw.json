@@ -1,29 +1,25 @@
 {
   "type": "object",
   "required": [
-    "type"
   ],
   "defaultProperties": [],
-  "allOf":[
+  "oneOf":[
     {
-      "$ref": "CatalogItem.json"
-    },
-    {
-      "$ref": "wmts_properties.json"
-    },
-    {
-      "$ref": "ImageryLayerCatalogItem.json"
+      "$ref": "CatalogProxyGroup.json"
     }
   ],
   "properties":{
     "type": {
       "type": "string",
       "enum": [
-        "wmts"
+        "csw"
       ],
       "options": {
         "hidden": true
       }
+    },
+    "itemProperties":{
+      "type":"object"
     }
   }
 }
