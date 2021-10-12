@@ -116,6 +116,8 @@ In addition to that to create on the fly also the view that type needs an initia
 
 f.e.: an CSV item has:
 
+.. code-block:: json
+
   {
     "id":...
     "name":...
@@ -248,6 +250,7 @@ CKAN standard action
 
 This is an example on how to create a terriajs view via API with python
 
+.. code-block:: python
 
 
     import requests
@@ -287,32 +290,23 @@ In addition to the ckan standard action (create_view, etc) the plugin is also pr
 
     /terriajs/describe
 
-describe an existing view by id, used by terriajs-group
-
-|
+describe an existing view by id, used by terriajs-group::
 
     /terriajs/search
 
-search an existing view by resource or dataset title/description, used by terriajs-group)
-
-|
+search an existing view by resource or dataset title/description, used by terriajs-group)::
 
     /terriajs/schema/<filename>
 
- a proxy to resolve relative schema references (ckan can work also as source of schemas in case you don't have a static repository)
-
-|
+a proxy to resolve relative schema references (ckan can work also as source of schemas in case you don't have a static repository)::
 
     /terriajs/config/[<enabled|disabled>/]<uuid>.json
 
 an endpoint to return a valid and dinamically resolved and interpolated full terriajs configuration (used by the **preview**).
 
-You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling.
-
-|
+You can set **enabled** to have all the items (recursively) enabled and displayed over the map or **disabled** to force disabling::
 
     /terriajs/item/[<enabled|disabled>/]<uuid>.json
-
 
 While */config/* returns a fully functional configuration catalog, this endpoint to return the configured (unwrapped) **item** (dinamically resolved and interpolated)
 
@@ -329,6 +323,7 @@ The terriajs configuration item type is defined into the configuration with a ta
 
 The configuration is shippend in a file called `type-mapping.json <https://bitbucket.org/cioapps/ckanext-terriajs/src/master/type-mapping.json>`__ which is a serialized dict (a map):
 
+.. code-block:: json
 
     {
         'terria-js-type': 'URI'
@@ -373,6 +368,8 @@ Installation
 
 We are not providing pip package to install please use:
 
+.. code-block:: bash
+
     git clone https://bitbucket.org/cioapps/ckanext-terriajs.git
     cd ckanext-terriajs
     pip install -r requirements.txt
@@ -386,13 +383,15 @@ Be sure to configure at least the mandatory settings into your production.ini fi
 Configuration
 =============
 
-Copy and edit the type-mapping.json to the config folder:
+Copy and edit the type-mapping.json to the config folder::
 
-    cp ./type-mapping.json /etc/ckan/default/terriajs-type-mapping.json
+   cp ./type-mapping.json /etc/ckan/default/terriajs-type-mapping.json
 
 Enable the plugin into production.ini
 
 If you desire to make it enabled by default (recommended):
+
+.. code-block::
 
     my_default_view = ...  terriajs
 
@@ -405,11 +404,14 @@ If you desire to make it enabled by default (recommended):
 
 If you just want to have the plug loaded:
 
+.. code-block::
 
     ckan.plugins = terriajs ...
 
 
 Please ref to constants.py for an updated list of available parameters:
+
+.. code-block::
 
     ckanext.terriajs.url = http://localhost:8080
     ckanext.terriajs.schema.type_mapping = /etc/ckan/default/terriajs-type-mapping.json
