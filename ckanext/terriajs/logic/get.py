@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+from six import binary_type
 from ckan.common import json
 from ckan.plugins.toolkit import get_action, request, h, get_or_bust
 import json
@@ -181,19 +182,38 @@ def _get_model(dataset_id, resource_id):
     if not pkg:
         raise Exception('Unable to find dataset, check input params')
 
+
+    import ckan.lib.navl.dictization_functions as df
+    fd = df.flatten_dict(pkg)
+    for key in fd.keys():
+        value = fd[key]
+        if isinstance(fd[key], unicode):
+            value = value.encode('utf-8')
+
+        if isinstance(value, binary_type) or isinstance(value, str):
+            try: 
+                fd[key] = json.loads(value)
+            except:
+                fd[key] =  value
+
+    pkg = df.unflatten(fd)
+
+
     # res = filter(lambda r: r['id'] == view.resource_id,pkg['resources'])[0]
     res = next(r for r in pkg['resources'] if r['id'] == resource_id)
     if not res:
         raise Exception('Unable to find resource under this dataset, check input params')
 
     # return the model as dict
-    return {
+    _dict = {
         'dataset':pkg,
         'organization': get_or_bust(pkg,'organization'),
         'resource':res,
         'ckan':{'base_url':h.url_for('/', _external=True)},
         'terriajs':{'base_url':constants.TERRIAJS_URL}
         }
+
+    return _dict 
     
 ########################################
 ## Schema proxy

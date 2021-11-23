@@ -167,7 +167,7 @@ def interpolate_fields(model, template):
                 _template = env.get_template(f)
                 template[f] = _template.render(model)
             except TemplateSyntaxError as e:
-                raise Exception(_('Unable to interpolate field \'{}\' line \'{}\''.format(f,str(e.lineno))))
+                raise Exception(_('Unable to interpolate field \'{}\' line \'{}\'\nError:{}'.format(f,str(e.lineno),str(e))))
             except Exception as e:
                 raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
 
