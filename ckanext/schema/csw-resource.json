@@ -18,6 +18,9 @@
       ],
       "options": { "hidden": true }
     },
+    "baseLink": {
+      "type": "string"
+    },
     "containerId": {
       "type": "string",
       "description": "metadata target UUID"

@@ -3,7 +3,9 @@
   "required": [
     "layer"
   ],
-  "defaultProperties": [],
+  "defaultProperties": [
+    "layer"
+  ],
   "properties":{
     "layer": {
       "type": "string"

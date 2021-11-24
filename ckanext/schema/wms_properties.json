@@ -3,7 +3,9 @@
   "required": [
     "layers"
   ],
-  "defaultProperties": [],
+  "defaultProperties": [
+    "layers"
+  ],
   "allOf":[
     {
       "$ref": "ImageryLayerCatalogItem.json"
