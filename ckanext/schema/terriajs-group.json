@@ -64,7 +64,12 @@
           },
           {
             "title": "CSW resource",
-            "$ref": "csw-resource.json"
+            "$ref": "csw-resource.json",
+            "default": [
+              "type",
+              "containerId",
+              "itemProperties"
+            ]
           }
         ]
       }
