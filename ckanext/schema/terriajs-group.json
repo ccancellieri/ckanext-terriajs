@@ -61,6 +61,10 @@
           {
             "title": "Terriajs Catalog Member",
             "$ref": "CatalogItem.json"
+          },
+          {
+            "title": "CSW resource",
+            "$ref": "csw-resource.json"
           }
         ]
       }
