@@ -68,7 +68,10 @@
             "defaultProperties": [
               "type",
               "containerId",
-              "itemProperties"
+              "itemProperties",
+              "url",
+              "id",
+              "baseLink"
             ]
           }
         ]
