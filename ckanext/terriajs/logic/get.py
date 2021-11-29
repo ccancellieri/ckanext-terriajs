@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from six import binary_type
+from six import binary_type, text_type, PY3 as is_python3
 from ckan.common import json
 from ckan.plugins.toolkit import get_action, request, h, get_or_bust
 import json
@@ -187,8 +187,11 @@ def _get_model(dataset_id, resource_id):
     fd = df.flatten_dict(pkg)
     for key in fd.keys():
         value = fd[key]
-        if isinstance(fd[key], unicode):
-            value = value.encode('utf-8')
+
+        if is_python3 and isinstance(value, text_type):
+            value = str(value)
+        elif (not is_python3) and isinstance(value, unicode):
+            value = value.encode("utf-8")
 
         if isinstance(value, binary_type) or isinstance(value, str):
             try: 
