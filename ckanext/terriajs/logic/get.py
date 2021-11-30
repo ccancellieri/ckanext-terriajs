@@ -194,17 +194,12 @@ def _get_model(dataset_id, resource_id):
         #     logging.log(logging.WARN, str(ex))
 
         value = fd[key]
-
-        if PY3 and isinstance(value, text_type):
-            value = str(value)
-        elif (not PY3) and isinstance(value, unicode):
-            value = value.encode("utf-8")
         
-        if isinstance(value, binary_type) or isinstance(value, str):
-            try:
-                fd[key] = json.loads(value)
-            except:
-                fd[key] =  value
+        try:
+            # tries to loads a json from the value
+            fd[key] = json.loads(_encode_str(value))
+        except:
+            pass
 
     pkg = df.unflatten(fd)
 
@@ -225,6 +220,14 @@ def _get_model(dataset_id, resource_id):
 
     return _dict 
     
+def _encode_str(value):
+    if PY3 and isinstance(value, text_type):
+        value = str(value)
+    elif (not PY3) and isinstance(value, unicode):
+        value = value.encode("utf-8")
+    
+    return value
+
 ########################################
 ## Schema proxy
 
