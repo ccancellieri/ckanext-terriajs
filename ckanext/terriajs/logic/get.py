@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-from six import binary_type
+from six import binary_type, text_type, PY3
 from ckan.common import json
 from ckan.plugins.toolkit import get_action, request, h, get_or_bust
 import json
@@ -186,15 +186,20 @@ def _get_model(dataset_id, resource_id):
     import ckan.lib.navl.dictization_functions as df
     fd = df.flatten_dict(pkg)
     for key in fd.keys():
-        value = fd[key]
-        if isinstance(fd[key], unicode):
-            value = value.encode('utf-8')
 
-        if isinstance(value, binary_type) or isinstance(value, str):
-            try: 
-                fd[key] = json.loads(value)
-            except:
-                fd[key] =  value
+        # try:
+        #     value = ensure_str(fd[key])
+        #     fd[key] = json.loads(value)
+        # except Exception as ex:
+        #     logging.log(logging.WARN, str(ex))
+
+        value = fd[key]
+        
+        try:
+            # tries to loads a json from the value
+            fd[key] = json.loads(_encode_str(value))
+        except:
+            pass
 
     pkg = df.unflatten(fd)
 
@@ -215,6 +220,14 @@ def _get_model(dataset_id, resource_id):
 
     return _dict 
     
+def _encode_str(value):
+    if PY3 and isinstance(value, text_type):
+        value = str(value)
+    elif (not PY3) and isinstance(value, unicode):
+        value = value.encode("utf-8")
+    
+    return value
+
 ########################################
 ## Schema proxy
 
