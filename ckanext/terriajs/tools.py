@@ -158,11 +158,18 @@ def interpolate_fields(model, template):
     for f in template.keys():
         if f in constants.FIELDS_TO_SKIP:
             continue
-        # TODO check python3 compatibility 'unicode' may disappear?
         
 
-        if _py3 and isinstance(template[f],(str))\
-           or isinstance(template[f],(str,unicode)):
+        interpolate = False
+
+        if _py3:
+            # TODO check python3 compatibility 'unicode' may disappear?
+            if isinstance(template[f],(str)):
+                interpolate = True
+        elif isinstance(template[f],(str,unicode)):
+                interpolate = True
+        
+        if interpolate:
             try:
                 _template = env.get_template(f)
                 template[f] = _template.render(model)
