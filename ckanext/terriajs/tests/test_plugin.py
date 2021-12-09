@@ -1,8 +1,10 @@
 '''Tests for plugin.py.'''
 import ckan.plugins
+import ckan.tests.factories as factories
 import ckan.tests.helpers as helpers
 import ckanext.terriajs.constants as constants
 from ckan.plugins import toolkit
+from ckanext.terriajs.tests.conftest import _get_terriajs_view_params, _get_resource_type, _get_terriajs_config
 
 ckan_29_or_higher = toolkit.check_ckan_version(u'2.9')
 
@@ -41,9 +43,17 @@ class TestTerria(object):
         if resource['format'].lower() in constants.DEFAULT_FORMATS:
             assert resource['format'].lower() in _resource_view_list_formats
 
-    def test_can_create_a_terriajs_view(self, terriajs_view):
-        # TODO
-        # remove fixture 
+    def test_can_create_a_terriajs_view(self, resource, resource_type, terriajs_config):
+
+        resource_type = _get_resource_type(resource)
+        terriajs_config = _get_terriajs_config(resource_type)
+        view_body = _get_terriajs_view_params(
+            resource,
+            resource_type,
+            terriajs_config
+        )
+
+        terriajs_view = factories.ResourceView(**view_body)
 
         assert constants.TYPE == terriajs_view['view_type']
 
@@ -69,7 +79,6 @@ class TestTerria(object):
         }
 
         # We need to pass the whole view dict, not only the values that change
-        # Is this correct?
         _view.update(params)
 
         # We update the view

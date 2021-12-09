@@ -5,7 +5,6 @@ import ckan.plugins
 import ckan.tests.factories as factories
 import ckan.tests.helpers as helpers
 import ckanext.terriajs.constants as constants
-import ckanext.terriajs.logic as getLogic
 import ckanext.terriajs.logic.get as getLogic
 import pytest
 import six
@@ -69,40 +68,46 @@ class TestTerriaLogic(object):
         
         # Get the view just created using the list API and filtering on type
         _resource_view_list = helpers.call_action('resource_view_list', id=_resource['id'])
-        _group_resource_views = filter(lambda view: view[constants.TERRIAJS_TYPE_KEY] == constants.LAZY_GROUP_TYPE, _resource_view_list)
+        _group_resource_views = [view for view in _resource_view_list if view[constants.TERRIAJS_TYPE_KEY] == constants.LAZY_GROUP_TYPE]
 
         # Check at least a view of type constants.LAZY_GROUP_TYPE (ideally the one we just created) exist
         assert len(_group_resource_views) > 0
+
+
+        # Create another resource and two views to link in the group
+        _other_resource =  factories.Resource(package_id=dataset['id'], format='csv')
+        _other_views = [
+            factories.ResourceView(**_get_terriajs_view_params(_other_resource)),
+            factories.ResourceView(**_get_terriajs_view_params(_other_resource))
+        ]
 
         # Get the view and set 2 items
         _group_view = _group_resource_views[0]
         _group_view[constants.TERRIAJS_CONFIG_KEY]['items'] = [
             {
-                'id': _group_view['id'],
+                'id': _other_views[0]['id'],
                 'type': constants.LAZY_ITEM_TYPE
             },
             {
-                'id': _group_view['id'],
+                'id': _other_views[1]['id'],
                 'type': constants.LAZY_ITEM_TYPE
             }
         ]
 
         # Update the view
         _group_view = helpers.call_action('resource_view_update', **_group_view)
-        
-        
-        # The config_disabled goes in infite loop
-        # get.py .resolve calls itself recursively (line 136)
+
 
         # Check if all items disabled
-        # config = json.loads(getLogic.config_disabled(_group_view['id']))
-        # assert len(filter(lambda catalog: catalog['isEnabled'] == True), config['catalog']) == 0
+        config = json.loads(getLogic.config_disabled(_group_view['id']))
+        items = config['catalog'][0]['items']
+        assert len([item for item in items if item['isEnabled']]) == 0
 
         # Check if all items enabled
-        # config = json.loads(getLogic.config_enabled(_resource_view_list[0]['id']))
-        # assert len(filter(lambda catalog: catalog['isEnabled'] == False), config['catalog']) == 0
+        config = json.loads(getLogic.config_enabled(_resource_view_list[0]['id']))
+        items = config['catalog'][0]['items']
+        assert len([item for item in items if not item['isEnabled']]) == 0
 
-        assert False
 
 
     def test_jinja_interpolation_works_over_mandatory_fields(self, dataset):
@@ -111,7 +116,7 @@ class TestTerriaLogic(object):
             We use a simpler template than the actual one
         """
 
-        resource = factories.Resource(package_id=dataset['id'], format="csv")
+        resource = factories.Resource(package_id=dataset['id'], format='csv')
         
         view_body = _get_terriajs_view_params(resource)
         view_body[constants.TERRIAJS_CONFIG_KEY] = {
@@ -166,18 +171,18 @@ class TestTerriaLogic(object):
         _extras = _model['dataset']['extras']
         
         # We expect that extra with key 'json_extra' is parsed into a json (dict)
-        _json_extra = filter(lambda extra: extra['key'] == "json_extra", _extras)[0]
+        _json_extra = [extra for extra in _extras if extra['key'] == 'json_extra'][0]
         assert type(_json_extra['value']) is dict
         
         # We expect that extra with key 'string_extra' is parsed into a json (dict)
-        _string_extra = filter(lambda extra: extra['key'] == "string_extra", _extras)[0]
+        _string_extra = [extra for extra in _extras if extra['key'] == 'string_extra'][0]
         if six.PY3:
             assert type(_string_extra['value']) is str
         else:
             assert type(_string_extra['value']) is unicode
 
 
-        _empty_extra = filter(lambda extra: extra['key'] == "empty_extra", _extras)[0]
+        _empty_extra = [extra for extra in _extras if extra['key'] == 'empty_extra'][0]
         assert len(_empty_extra['value']) == 0
 
 
