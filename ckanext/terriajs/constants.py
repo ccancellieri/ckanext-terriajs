@@ -20,7 +20,7 @@ TERRIAJS_URL=config.get('ckanext.terriajs.url', 'https://localhost/terriajs')
 
 # MANDATORY
 # (ref to type-mapping.json)
-SCHEMA_TYPE_MAPPING_FILE=config.get('ckanext.terriajs.schema.type_mapping','./type-mapping.json')
+SCHEMA_TYPE_MAPPING_FILE=config.get('ckanext.terriajs.schema.type_mapping','{}/../type-mapping.json'.format(PATH_ROOT))
 
 # (Optional)
 # fields to do not interpolate with jinja2 (f.e. they are a template of other type)

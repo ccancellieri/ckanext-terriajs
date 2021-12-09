@@ -21,6 +21,7 @@ ckanext/terriajs/logic/query.py
 ckanext/terriajs/templates/terriajs.html
 ckanext/terriajs/templates/terriajs_form.html
 ckanext/terriajs/tests/__init__.py
+ckanext/terriajs/tests/conftest.py
 ckanext/terriajs/tests/test_plugin.py
 ckanext/terriajs/tests/logic/__init__.py
 ckanext/terriajs/tests/logic/test_logic_get.py
