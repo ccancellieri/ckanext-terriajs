@@ -209,10 +209,12 @@ def _get_model(dataset_id, resource_id):
     if not res:
         raise Exception('Unable to find resource under this dataset, check input params')
 
+    organization_id = pkg.get('owner_org')
+
     # return the model as dict
     _dict = {
         'dataset':pkg,
-        'organization': get_or_bust(pkg,'organization'),
+        'organization': toolkit.get_action('organization_show')(None, {'id': organization_id}),
         'resource':res,
         'ckan':{'base_url':h.url_for('/', _external=True)},
         'terriajs':{'base_url':constants.TERRIAJS_URL}
