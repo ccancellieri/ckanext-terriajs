@@ -192,54 +192,54 @@ def _lazy_group_check_references(terriajs_type, config):
                     raise Exception(_('Target view with ID: {} is not of type: {}'.format(terria_view_id,constants.TYPE)))
 
 
-def default_lon_e(key, data, errors, context):
-    '''
-    Validator providing default values 
-    '''
-    if not data[key]:
-        data[key]=180
-        return
-    try:
-        if float(data[key])>180:
-            data[key]=180
-    except ValueError:
-        data[key]=180
+# def default_lon_e(key, data, errors, context):
+#     '''
+#     Validator providing default values 
+#     '''
+#     if not data[key]:
+#         data[key]=180
+#         return
+#     try:
+#         if float(data[key])>180:
+#             data[key]=180
+#     except ValueError:
+#         data[key]=180
 
-def default_lon_w(key, data, errors, context):
-    '''
-    Validator providing default values 
-    '''
-    if not data[key]:
-        data[key]=-180
-        return
-    try:
-        if float(data[key])<-180:
-            data[key]=-180
-    except ValueError:
-        data[key]=-180
+# def default_lon_w(key, data, errors, context):
+#     '''
+#     Validator providing default values 
+#     '''
+#     if not data[key]:
+#         data[key]=-180
+#         return
+#     try:
+#         if float(data[key])<-180:
+#             data[key]=-180
+#     except ValueError:
+#         data[key]=-180
 
-def default_lat_n(key, data, errors, context):
-    '''
-    Validator providing default values 
-    '''
-    if not data[key]:
-        data[key]=90
-        return
-    try:
-        if float(data[key])>90:
-            data[key]=90
-    except ValueError:
-        data[key]=90
+# def default_lat_n(key, data, errors, context):
+#     '''
+#     Validator providing default values 
+#     '''
+#     if not data[key]:
+#         data[key]=90
+#         return
+#     try:
+#         if float(data[key])>90:
+#             data[key]=90
+#     except ValueError:
+#         data[key]=90
 
-def default_lat_s(key, data, errors, context):
-    '''
-    Validator providing default values 
-    '''
-    if not data[key]:
-        data[key]=-90
-        return
-    try:
-        if float(data[key])<-90:
-            data[key]=-90
-    except ValueError:
-        data[key]=-90
+# def default_lat_s(key, data, errors, context):
+#     '''
+#     Validator providing default values 
+#     '''
+#     if not data[key]:
+#         data[key]=-90
+#         return
+#     try:
+#         if float(data[key])<-90:
+#             data[key]=-90
+#     except ValueError:
+#         data[key]=-90

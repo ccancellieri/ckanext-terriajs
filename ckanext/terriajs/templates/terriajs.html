@@ -1,34 +1,48 @@
-{% extends 'package/snippets/resource_view.html' %}
 
-{% block scripts %}
-    {{ super() }}
-{% endblock %}
-
-
-{% block resource_view %}
-<div>
-    
-</div>
-
-    <div style="display: flex;justify-content: space-evenly;align-items: baseline;">
-        <h2>Dataset: {{ package.name }}</h2>
-        <a class="btn btn-info" data-toggle="tooltip" data-placement="top" title="Open configuration"
-            href="{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True) }}" target="_blank">
-            {{_('Open configuration')}}
-        </a>
-        <a class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Open item"
-            href="{{h.url_for('terriajs.item', resource_view_id=resource_view.id, _external=True) }}" target="_blank">
-            {{_('Open item')}}
-        </a>
-    </div>
-    <div style="display:block; width: auto; height: auto;">
-        {% if resource_view.terriajs_type == 'group' or resource_view.terriajs_type == 'terriajs-group' %}
-        <iframe style="display: block;width: 100%; height: 100%; min-height: 94vh;" src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True)}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
-        {% else %}
-        <iframe style="display: block;width: 100%; height: 100%; min-height: 94vh;" src="{{config_view.terriajs_url}}?clean&{{h.url_for('terriajs.config_enabled', resource_view_id=resource_view.id, _external=True)}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
-        {% endif %}
-    </div>
-{% endblock %}
 
 {# <iframe id="terriajs-iframe" src="{{config_view.terriajs_url}}?clean" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>#}
 
+{% block jsonchema_view_body %}
+    {% set OPT_KEY = h.jsonschema_get_opt_key() %}
+
+    {% set config_url = h.url_for('terriajs.config', resource_view_id=resource_view.id, _external=True) %}
+    {% set config_enabled_url = h.url_for('terriajs.config_enabled', resource_view_id=resource_view.id, _external=True) %}
+    {% set item_url = h.url_for('terriajs.item', resource_view_id=resource_view.id, _external=True) %}
+    
+    {% set iframe_url_config = resource_view[OPT_KEY]['base_url'] + '?clean=True&' + h.jsonschema_url_quote(config_url) %}
+    {% set iframe_url_config_enabled = resource_view[OPT_KEY]['base_url'] + '?clean=True&' + h.jsonschema_url_quote(config_enabled_url) %}
+
+    {% if c.userobj and h.check_access('resource_show', {'resource_id': resource['id']})  %}
+        <a class="btn-view btn btn-info" data-toggle="tooltip" data-placement="top" title={{_("Open configuration")}}
+            href="{{config_url}}" target="_blank">
+            {{_('Open configuration')}}
+        </a>
+        <a class="btn-view btn btn-primary" data-toggle="tooltip" data-placement="top" title={{_("Open item")}}
+            href="{{item_url}}" target="_blank">
+            {{_('Open item')}}
+        </a>
+        <a class="btn-view btn btn-default"
+            target="_blank"
+            href="{{ h.url_for('resource_view', id=package['name'], resource_id=resource['id'], view_id=resource_view['id'], qualified=True) }}">
+            <i class="fa fa-arrows-alt"></i>
+            {{ _("Fullscreen") }}
+        </a>
+        <a class="btn-view btn btn-default"
+            href="#embed-{{ resource_view['id'] }}"
+            data-module="resource-view-embed"
+            data-module-id="{{ resource_view['id'] }}"
+            data-module-url="{{ h.url_for('resource_view', id=package['name'], resource_id=resource['id'], view_id=resource_view['id'], qualified=True) }}">
+            <i class="fa fa-code"></i>
+            {{ _("Embed") }}
+        </a>
+    {% endif %}
+    
+    <div style="display:block; width: auto; height: auto;">
+        {% if resource_view.terriajs_type == 'group' or resource_view.terriajs_type == 'terriajs-group' %}
+        <iframe style="display: block;width: 100%; height: 100%; min-height: 94vh;" src="{{iframe_url_config}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
+        {% else %}
+        <iframe style="display: block;width: 100%; height: 100%; min-height: 94vh;" src="{{iframe_url_config_enabled}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
+        {% endif %}
+    </div>
+
+{% endblock %}

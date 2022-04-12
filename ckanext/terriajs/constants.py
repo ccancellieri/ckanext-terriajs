@@ -10,9 +10,14 @@ PATH_ROOT=path.realpath(path.join(path.dirname(__file__),'..'))
 # this indicate the type of the view stored into the DB
 TYPE='terriajs'
 
+############################# TODO IN CONFIG, REMOVE?
 # (Optional)
 DEFAULT_TITLE=config.get('ckanext.terriajs.default.title', 'Map')
 ICON=config.get('ckanext.terriajs.icon', 'globe')
+# (Optional)
+# Can cause problems with missing mapped types.
+ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', True)
+#######################################################################################
 
 # MANDATORY
 # TERRIAJS base url to reach terriajs
@@ -30,9 +35,6 @@ FIELDS_TO_SKIP = config.get('ckanext.terriajs.skip.fields', ['featureInfoTemplat
 # this flag will prevent resource_view_clear action if enabled. (True by Default)
 PREVENT_CLEAR_ALL=config.get('ckanext.terriajs.prevent_clear_all', True)
 
-# (Optional)
-# Can cause problems with missing mapped types.
-ALWAYS_AVAILABLE = config.get('ckanext.terriajs.always_available', True)
 
 # (Optional)
 # List of formats supported for view auto creation (create the view when create the resource)
@@ -46,14 +48,18 @@ if isinstance(DEFAULT_FORMATS,str):
 if not isinstance(DEFAULT_FORMATS,list):
    raise Exception('DEFAULT_FORMATS should be an array of valid format strings')
 
-# (Optional)
-# SERVER LOCAL PATH FOLDER WHERE JSON-SCHEMA are located.
-PATH_SCHEMA=path.realpath(config.get('ckanext.terriajs.path.schema', path.join(PATH_ROOT,'schema')))
 
-# (Optional)
-# Used as jinja template to initialize the items values, it's name is by convention the type
-# same type may also be located under mapping
-PATH_TEMPLATE=path.realpath(config.get('ckanext.terriajs.path.template', path.join(PATH_ROOT,'template')))
+FILENAME_CONFIG = 'config.json'
+FILENAME_REGISTRY = 'registry.json'
+
+PATH_SETUP = path.realpath(config.get('ckanext.terriajs.path.setup', path.join(PATH_ROOT, 'terriajs', 'setup')))
+PATH_CONFIG = path.realpath(config.get('ckanext.terriajs.path.config', path.join(PATH_ROOT,'terriajs', 'public')))
+PATH_REGISTRY = path.realpath(config.get('ckanext.terriajs.path.config', path.join(PATH_ROOT,'terriajs', 'public')))
+
+PATH_TEMPLATE = path.realpath(path.join(PATH_SETUP,'template'))
+PATH_SCHEMA = path.realpath(path.join(PATH_SETUP,'schema'))
+PATH_MODULE = path.realpath(path.join(PATH_SETUP,'module'))
+
 
 # (Internal)
 # use this type to define a group into terria hierarchy
@@ -98,4 +104,3 @@ FORMATS = {}
 # (Internal)
 #  Will contain the schema and template defined with the type-mapping
 JSON_CATALOG = {}
-

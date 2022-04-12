@@ -4,9 +4,7 @@ from ckan.model.resource_view import ResourceView
 from ckan.model.resource import Resource
 from ckan.model.package import Package
 from ckan.model.group import Group
-from ckan.model.package_extra import PackageExtra
 from ckan.model.core import State
-from ckan.model import types as _types
 
 # from sqlalchemy.dialects import postgresql
 

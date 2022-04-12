@@ -1,0 +1,99 @@
+{
+    "terriajs-group":{
+        "label":"terriajs-group",
+        "schema":"terriajs/terriajs-group.json",
+        "template":"terriajs/terriajs-group.json",
+        "module": "terriajs/terriajs.js",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "terriajs-catalog":{
+        "label":"Catalog",
+        "schema":"terriajs/Catalog.json",
+        "template":"terriajs/terriajs-catalog.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "csv":{
+        "label":"csv",
+        "schema":"terriajs/CsvCatalogItem_type.json",
+        "template":"terriajs/csv.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "wms":{
+        "label":"wms",
+        "schema":"terriajs/wms.json",
+        "template":"terriajs/wms.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "wmts":{
+        "label":"wmts",
+        "schema":"terriajs/wmts.json",
+        "template":"terriajs/wmts.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "mvt":{
+        "label":"mvt",
+        "schema":"terriajs/mvt.json",
+        "template":"terriajs/mvt.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "terriajs-geojson":{
+        "label":"terriajs-geojson",
+        "schema":"terriajs/geojson.json",
+        "template":"terriajs/geojson.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "url-template":{
+        "label":"url-template",
+        "schema":"terriajs/url-template.json",
+        "template":"terriajs/url-template.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "csw-resource":{
+        "label":"csw-resource",
+        "schema":"terriajs/csw-resource.json",
+        "template":"terriajs/csw-resource.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "csw":{
+        "label":"csw",
+        "schema":"terriajs/csw.json",
+        "template":"terriajs/csw.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "smart-csv":{
+        "label":"smart-csv",
+        "schema":"terriajs/SmartCsvCatalogItem.json",
+        "template":"terriajs/smart-csv.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    },
+    "group":{
+        "label":"group",
+        "schema":"terriajs/group.json",
+        "template":"terriajs/group.json",
+        "plugin_name":"terriajs",
+        "supported_all_jsonschema_fields":true,
+        "supported_all_ckan_fields": true
+    }
+}

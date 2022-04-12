@@ -1,0 +1,79 @@
+{
+    "views": [
+            {
+                "view_jsonschema_type": ["terriajs-group"],
+                "resource_format": "terriajs-group",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["terriajs-catalog"],
+                "resource_format": "terriajs-catalog",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["csv"],
+                "resource_format": "csv",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["wms"],
+                "resource_format": "wms",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["terriajs-wmts"],
+                "resource_format": "terriajs-wmts",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["mvt"],
+                "resource_format": "mvt",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["terriajs-geojson"],
+                "resource_format": "terriajs-geojson",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["url-template"],
+                "resource_format": "url-template",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["csw-resource"],
+                "resource_format": "csw-resource",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["csw"],
+                "resource_format": "csw",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["smart-csv"],
+                "resource_format": "smart-csv",
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
+                "view_jsonschema_type": ["group"],
+                "resource_format": "group",
+                "available_for_all_resource_jsonschema_types": true
+            }
+    ],
+    "info": {
+        "icon": "globe", 
+        "title": "Map",
+        "default_title":"Map",
+        "always_available": false,
+        "preview_enabled": false,
+        "full_page_edit": true
+    },
+    "opt": {
+        "base_url": "https://localhost/terriajs",
+        "west": -180,
+        "east": 180,
+        "north": 90,
+        "south": -90
+    }
+}
