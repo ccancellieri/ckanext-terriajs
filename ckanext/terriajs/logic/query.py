@@ -56,9 +56,9 @@ def view_by_id(view_id):
 
 def views_list_query(_dataset_title, _dataset_description, _resource_name):
     existing_views=view_by_type()\
-        .filter(or_(_resource_name and Resource.name.like(_resource_name),
-                    _dataset_title and Package.title.like(_dataset_title),
-                    _dataset_description and Package.notes.like(_dataset_description)))
+        .filter(or_(_resource_name and Resource.name.ilike(_resource_name),
+                    _dataset_title and Package.title.ilike(_dataset_title),
+                    _dataset_description and Package.notes.ilike(_dataset_description)))
                 # Skip DEFAULT_TYPE (full config)
                 #.and_(not_(ResourceView.config.like('%\'terriajs_type\': \'{}\'%'.format(constants.DEFAULT_TYPE)))))
     return existing_views.order_by(Resource.name)
