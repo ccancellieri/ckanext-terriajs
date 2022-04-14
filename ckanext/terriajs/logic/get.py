@@ -1,18 +1,14 @@
 # encoding: utf-8
 
 import json
-import os
 
 import ckan.lib.helpers as h
 import ckan.logic as logic
-import ckan.plugins.toolkit as toolkit
-import ckanext.jsonschema.constants as _c
 import ckanext.jsonschema.logic.get as _g
-import ckanext.jsonschema.tools as _t
 import ckanext.jsonschema.view_tools as _vt
-from ckan.common import _, json, request
-from ckan.plugins.toolkit import get_or_bust, h, request
-from flask import redirect, url_for
+from ckan.common import _, json
+from ckan.plugins.toolkit import request
+from flask import redirect
 from six import PY3, text_type
 
 # Define some shortcuts
@@ -37,7 +33,7 @@ def item_disabled(resource_view_id):
     package_id = view.get('package_id')
     resource_id = view.get('resource_id')
 
-    return redirect(url_for(    
+    return redirect(h.url_for(    
         'jsonschema.get_view_body', 
         package_id=package_id,
         resource_id=resource_id,
@@ -45,7 +41,8 @@ def item_disabled(resource_view_id):
         resolve=True,
         wrap=False,
         force=True,
-        force_to=False
+        force_to=False,
+        _external=True
     ))
 
 def item_enabled(resource_view_id):
@@ -56,7 +53,7 @@ def item_enabled(resource_view_id):
     resource_id = view.get('resource_id')
 
 
-    return redirect(url_for(    
+    return redirect(h.url_for(    
         'jsonschema.get_view_body', 
         package_id=package_id,
         resource_id=resource_id,
@@ -64,7 +61,8 @@ def item_enabled(resource_view_id):
         resolve=True,
         wrap=False,
         force=True,
-        force_to=True
+        force_to=True,
+        _external=True
     ))
 
 def item(resource_view_id):
@@ -75,14 +73,15 @@ def item(resource_view_id):
     resource_id = view.get('resource_id')
 
 
-    return redirect(url_for(    
+    return redirect(h.url_for(    
         'jsonschema.get_view_body', 
         package_id=package_id,
         resource_id=resource_id,
         view_id=resource_view_id,
         resolve=True,
         wrap=False,
-        force=False
+        force=False,
+        _external=True
     ))
 
 terriajs.add_url_rule('/{}/item/<resource_view_id>.json'.format(constants.TYPE), view_func=item, methods=[u'GET'])
@@ -99,7 +98,7 @@ def config_disabled(resource_view_id):
     resource_id = view.get('resource_id')
 
 
-    return redirect(url_for(    
+    return redirect(h.url_for(    
         'jsonschema.get_view_body', 
         package_id=package_id,
         resource_id=resource_id,
@@ -107,7 +106,8 @@ def config_disabled(resource_view_id):
         resolve=True,
         wrap=True,
         force=True,
-        force_to=False
+        force_to=False,
+        _external=True
     ))
 
 def config_enabled(resource_view_id):
@@ -118,7 +118,7 @@ def config_enabled(resource_view_id):
     resource_id = view.get('resource_id')
 
 
-    return redirect(url_for(    
+    return redirect(h.url_for(    
         'jsonschema.get_view_body', 
         package_id=package_id,
         resource_id=resource_id,
@@ -126,7 +126,8 @@ def config_enabled(resource_view_id):
         resolve=True,
         wrap=True,
         force=True,
-        force_to=True
+        force_to=True,
+        _external=True
     ))
 
 
@@ -137,14 +138,15 @@ def _config(resource_view_id):
     package_id = view.get('package_id')
     resource_id = view.get('resource_id')
 
-    return redirect(url_for(    
+    return redirect(h.url_for(    
         'jsonschema.get_view_body', 
         package_id=package_id,
         resource_id=resource_id,
         view_id=resource_view_id,
         resolve=True,
         wrap=True,
-        force=False
+        force=False,
+        _external=True
     ))
 
 # TODO unify/parametrize
@@ -180,6 +182,15 @@ terriajs.add_url_rule('/{}/config/<resource_view_id>.json'.format(constants.TYPE
 
 #     return _config
 
+def resolve(catalog_item, force, force_to):
+
+    try:
+        return _resolve(catalog_item, force, force_to)
+    except:
+        log.error("Error during resolve of catalog_item:")
+        log.error(catalog_item)
+        log.error("force: {}, force_to:{}".format(force, force_to))
+        return {}
 
 def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -188,7 +199,7 @@ def _resolve(item, force=False, force_to=False):
     catalog = item.get('catalog')
     if catalog and isinstance(catalog, list):
         for catalog_item in catalog:
-            catalog_item = _resolve(catalog_item, force, force_to)
+            catalog_item = resolve(catalog_item, force, force_to)
         return item
 
     type = item and item.get('type')
@@ -207,7 +218,7 @@ def _resolve(item, force=False, force_to=False):
             raise Exception(_('Unable to resolve view id: {}'.format(item.get('id'))))
 
         # is it a nested lazy load item, let's try to resolve again
-        item.update(_resolve(_terriajs_config, force, force_to))
+        item.update(resolve(_terriajs_config, force, force_to))
 
     elif type == constants.LAZY_GROUP_TYPE:
         item.update({u'type':u'group'})
@@ -219,7 +230,7 @@ def _resolve(item, force=False, force_to=False):
         items = item.get('items')
         if items:
             for _item in items:
-                _resolve(_item, force, force_to)
+                resolve(_item, force, force_to)
     
     return item
 

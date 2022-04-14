@@ -89,7 +89,7 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         _terriajs_config = _vt.interpolate_fields(model, view_body)     
 
-        _config = get._resolve(_terriajs_config, force, force_to)
+        _config = get.resolve(_terriajs_config, force, force_to)
         return _config
 
 
