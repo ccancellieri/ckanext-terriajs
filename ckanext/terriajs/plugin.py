@@ -19,6 +19,7 @@ import ckanext.jsonschema.view_tools as _vt
 import ckanext.terriajs.constants as _tc
 import ckanext.terriajs.logic.get as get
 from ckan.common import request
+from ckan.logic.converters import convert_to_json_if_string
 from flask import abort
 
 get_validator = toolkit.get_validator
@@ -145,8 +146,8 @@ class TerriajsPlugin(p.SingletonPlugin):
             u'name': _tc.TYPE,
             u'schema': {
                 _c.SCHEMA_TYPE_KEY: [not_empty], # import
-                _c.SCHEMA_BODY_KEY: [not_empty, _v.view_schema_check],
-                _c.SCHEMA_OPT_KEY: [default_config],
+                _c.SCHEMA_BODY_KEY: [not_empty, _v.view_schema_check, convert_to_json_if_string],
+                _c.SCHEMA_OPT_KEY: [default_config, convert_to_json_if_string],
                 "selected_jsonschema_type": [ignore_empty]
             },
             u'requires_datastore': False
