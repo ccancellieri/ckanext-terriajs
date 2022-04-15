@@ -78,8 +78,12 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def resolve(self, view_body, view):
 
-        force = request.args.get('force', 'false').lower() == 'true' # cast to boolean
-        force_to = request.args.get('force_to', 'false').lower() == 'true'
+        force = False
+        force_to = False
+
+        if request.args:
+            force = request.args.get('force', 'false').lower() == 'true' # cast to boolean
+            force_to = request.args.get('force_to', 'false').lower() == 'true'
 
         
         model = _vt._get_model(view.get('package_id'), view.get('resource_id'))
@@ -136,18 +140,15 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     # IResourceView
     def info(self):
-    
-        # TODO DO WE NEED THIS?
-        def default_config(plugin_name):
-            return _vt.get_opt(self.config)
-    
+
+        
         info = {
             u'iframed': False,
             u'name': _tc.TYPE,
             u'schema': {
                 _c.SCHEMA_TYPE_KEY: [not_empty], # import
                 _c.SCHEMA_BODY_KEY: [not_empty, _v.view_schema_check, convert_to_json_if_string],
-                _c.SCHEMA_OPT_KEY: [default_config, convert_to_json_if_string],
+                _c.SCHEMA_OPT_KEY: [convert_to_json_if_string],
                 "selected_jsonschema_type": [ignore_empty]
             },
             u'requires_datastore': False
@@ -196,8 +197,9 @@ class TerriajsPlugin(p.SingletonPlugin):
             # we force the first jsonschema type, even if there are more matches
             view_jsonschema_type = view_configuration.get(_c.VIEW_JSONSCHEMA_TYPE)[0]
             view_body = _t.as_dict(_t.get_template_of(view_jsonschema_type))
-            view_opt = _t.as_dict(_vt.get_opt(self.config))
 
+            default_opts = _t.get_opt_template_of(view_jsonschema_type) or _vt.get_opt(self.config)
+            view_opt = _t.as_dict(default_opts)
 
         try:
             resource_view = data_dict.get('resource_view')
