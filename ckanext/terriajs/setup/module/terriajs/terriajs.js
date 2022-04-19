@@ -62,7 +62,7 @@ export const initialize = () => {
                     });
             },
             "view_renderer": function(jseditor_editor, result, props) {
-                return terriajs.resource_view.id == result.id ? '':
+                return jsonschema.dataDict.id == result.id ? '':
                     ['<li ' + props + ' data-toggle="tooltip" data-placement="bottom" title="'+ result.id +'" >',
                         '<div class="eiao-object-title">',
                             '<div>',

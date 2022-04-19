@@ -182,15 +182,21 @@ terriajs.add_url_rule('/{}/config/<resource_view_id>.json'.format(constants.TYPE
 
 #     return _config
 
-def resolve(catalog_item, force, force_to):
+def resolve(item, force, force_to):
 
     try:
-        return _resolve(catalog_item, force, force_to)
+        return _resolve(item, force, force_to)
     except:
-        log.error("Error during resolve of catalog_item:")
-        log.error(catalog_item)
+        error_message = "Error during resolving: {}".format(item)
+        log.error(error_message)
         log.error("force: {}, force_to:{}".format(force, force_to))
-        return {}
+        
+        return {
+            "id": "",
+            "description": error_message,
+            "type": "group"
+        }
+
 
 def _resolve(item, force=False, force_to=False):
     '''resolve from LAZY_GROUP_TYPE to terriajs native format\
@@ -230,7 +236,7 @@ def _resolve(item, force=False, force_to=False):
         items = item.get('items')
         if items:
             for _item in items:
-                resolve(_item, force, force_to)
+                _item.update(resolve(_item, force, force_to))
     
     return item
 
