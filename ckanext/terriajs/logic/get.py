@@ -216,7 +216,7 @@ def _resolve(item, force=False, force_to=False):
     elif type == constants.LAZY_ITEM_TYPE:
         # let's resolve the view by id
         view = _g.get_view(item.get('id'))
-        model = _vt._get_model(view.get('package_id'), view.get('resource_id'))
+        model = _vt.get_model(view.get('package_id'), view.get('resource_id'))
         view_body = _vt.get_view_body(view)
         _terriajs_config = _vt.interpolate_fields(model, view_body)     
         
@@ -330,7 +330,7 @@ def _model(dataset_id, resource_id):
         # args = request.args
         # dataset_id = args.get('dataset_id', None, type=str)
         # resource_id = args.get('resource_id', None, type=str)
-        return json.dumps(_vt._get_model(dataset_id,resource_id))
+        return json.dumps(_vt.get_model(dataset_id,resource_id))
     except Exception as ex:
         error=_("Unable to get model: {}".format(str(ex)))
         logging.log(logging.ERROR,error)

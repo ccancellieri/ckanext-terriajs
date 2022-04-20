@@ -8,8 +8,8 @@ _ = toolkit._
 g = toolkit.g
 config = toolkit.config
 import logging
-import os
 
+import ckanext.jsonschema.logic.get as _g
 import ckanext.jsonschema.constants as _c
 import ckanext.jsonschema.interfaces as _i
 import ckanext.jsonschema.tools as _t
@@ -85,17 +85,22 @@ class TerriajsPlugin(p.SingletonPlugin):
             force = request.args.get('force', 'false').lower() == 'true' # cast to boolean
             force_to = request.args.get('force_to', 'false').lower() == 'true'
 
-        
-        model = _vt._get_model(view.get('package_id'), view.get('resource_id'))
-        view_opt = _vt.get_view_opt(view)
-        model.update({
-            _tc.TYPE :{'base_url': view_opt.get('base_url') } # TODO replace with opt.base_url?? 
-        })
+        model = self.get_model(view)
 
         _terriajs_config = _vt.interpolate_fields(model, view_body)     
 
         _config = get.resolve(_terriajs_config, force, force_to)
         return _config
+
+
+    def get_model(view):
+        model = _vt.get_model(view.get('package_id'), view.get('resource_id'))
+        view_opt = _vt.get_view_opt(view)
+        model.update({
+            _tc.TYPE :{'base_url': view_opt.get('base_url') } # TODO replace with opt.base_url?? 
+        })
+
+        return model
 
 
     def wrap_view(self, view_body, view):

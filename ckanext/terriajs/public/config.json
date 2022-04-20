@@ -2,62 +2,62 @@
     "views": [
             {
                 "view_jsonschema_type": ["terriajs-group"],
-                "resource_format": "terriajs-group",
+                "resource_formats": ["terriajs-group"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["terriajs-catalog"],
-                "resource_format": "terriajs-catalog",
+                "resource_formats": ["terriajs-catalog"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["csv"],
-                "resource_format": "csv",
+                "resource_formats": ["csv"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["wms"],
-                "resource_format": "wms",
+                "resource_formats": ["wms"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["terriajs-wmts"],
-                "resource_format": "terriajs-wmts",
+                "resource_formats": ["terriajs-wmts"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["mvt"],
-                "resource_format": "mvt",
+                "resource_formats": ["mvt"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["terriajs-geojson"],
-                "resource_format": "terriajs-geojson",
+                "resource_formats": ["terriajs-geojson"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["url-template"],
-                "resource_format": "url-template",
+                "resource_formats": ["url-template"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["csw-resource"],
-                "resource_format": "csw-resource",
+                "resource_formats": ["csw-resource"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["csw"],
-                "resource_format": "csw",
+                "resource_formats": ["csw"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["smart-csv"],
-                "resource_format": "smart-csv",
+                "resource_formats": ["smart-csv"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
                 "view_jsonschema_type": ["group"],
-                "resource_format": "group",
+                "resource_formats": ["group"],
                 "available_for_all_resource_jsonschema_types": true
             }
     ],

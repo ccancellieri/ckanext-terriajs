@@ -166,6 +166,8 @@ class TestTerriaLogic(object):
 
         dataset = factories.Dataset(**params)
         resource = factories.Resource(package_id=dataset['id'], format='csv')
+
+        # TODO: getLofic._get_model should be replaced by view_tools.get_model
         _model = getLogic._get_model(dataset_id=dataset['id'], resource_id=resource['id'])
 
         _extras = _model['dataset']['extras']
