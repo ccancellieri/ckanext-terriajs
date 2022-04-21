@@ -1,5 +1,5 @@
 {
-    "type": "csw-resource",
+    "type": "csw",
     "id": "{{resource.id}}",
     "name": "{{package.title or package.name}}",
     "url": "",
