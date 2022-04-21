@@ -9,9 +9,10 @@ g = toolkit.g
 config = toolkit.config
 import logging
 
-import ckanext.jsonschema.logic.get as _g
+import ckan.lib.navl.dictization_functions as df
 import ckanext.jsonschema.constants as _c
 import ckanext.jsonschema.interfaces as _i
+import ckanext.jsonschema.logic.get as _g
 import ckanext.jsonschema.tools as _t
 import ckanext.jsonschema.utils as _u
 import ckanext.jsonschema.validators as _v
@@ -146,13 +147,35 @@ class TerriajsPlugin(p.SingletonPlugin):
     # IResourceView
     def info(self):
 
-        
+        def default_jsonschema_fields(key, data, errors, context):
+
+            _data = df.unflatten(data)
+
+            resource = context['resource'].as_dict()
+
+            plugin = _vt.get_jsonschema_view_plugin(_data.get('view_type'))
+            data_dict = plugin.setup_template_variables(context, {'resource_view': _data, 'resource': resource})
+            
+            # resource_view = data_dict.get('resource_view') 
+            
+            # if not _c.SCHEMA_TYPE_KEY in _data:
+            #     _data[_c.SCHEMA_TYPE_KEY] = _vt.get_view_type(resource_view) 
+
+            # if not _c.SCHEMA_BODY_KEY in _data:
+            #     _data[_c.SCHEMA_BODY_KEY] = _vt.get_view_body(resource_view) 
+                
+            # if not _c.SCHEMA_OPT_KEY in _data:    
+            #     _data[_c.SCHEMA_OPT_KEY] = _vt.get_view_opt(resource_view) 
+            
+            data.update(df.flatten_dict(_data))
+
+
         info = {
             u'iframed': False,
             u'name': _tc.TYPE,
             u'schema': {
-                _c.SCHEMA_TYPE_KEY: [not_empty], # import
-                _c.SCHEMA_BODY_KEY: [not_empty, _v.view_schema_check, convert_to_json_if_string],
+                _c.SCHEMA_TYPE_KEY: [ignore_empty], # import
+                _c.SCHEMA_BODY_KEY: [default_jsonschema_fields, not_empty, _v.view_schema_check, convert_to_json_if_string],
                 _c.SCHEMA_OPT_KEY: [convert_to_json_if_string],
                 "selected_jsonschema_type": [ignore_empty]
             },
