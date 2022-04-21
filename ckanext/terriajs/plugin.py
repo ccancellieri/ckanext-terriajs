@@ -93,7 +93,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         return _config
 
 
-    def get_model(view):
+    def get_model(self, view):
         model = _vt.get_model(view.get('package_id'), view.get('resource_id'))
         view_opt = _vt.get_view_opt(view)
         model.update({
