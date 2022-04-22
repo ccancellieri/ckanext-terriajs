@@ -151,10 +151,16 @@ class TerriajsPlugin(p.SingletonPlugin):
 
             # Probably when updating a view we don't have the resrouce in context,
             # but we can return because we don't need to set defaults if the view already exists
-            if 'resource' not in context:
+            # TODO: it could be possible to check just if an id is in data; check
+            _data = df.unflatten(data)
+
+            # if 'resource' not in context or 'view_type' in _data:
+            #     return
+
+            # If we have the id, the view exists so we don't need to set defaults
+            if 'id' in _data:
                 return
 
-            _data = df.unflatten(data)
             resource = context['resource'].as_dict()
 
             plugin = _vt.get_jsonschema_view_plugin(_data.get('view_type'))
