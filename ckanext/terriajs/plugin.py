@@ -271,7 +271,7 @@ def interpolate_fields(model, template):
     
 
     def functionLoader(name):
-        return template[name]
+        return item[name]
 
     env = Environment(
                 loader=FunctionLoader(functionLoader),
@@ -281,28 +281,43 @@ def interpolate_fields(model, template):
 
     FIELDS_TO_SKIP = config.get('ckanext.terriajs.skip.fields', ['featureInfoTemplate'])
 
-    for f in template.keys():
-        if f in FIELDS_TO_SKIP:
-            continue
-        
+    
+    if 'catalog' in template:
+        wrapped = True
+        items = template['catalog']
+    else:
+        wrapped = False
+        items = [template]
 
-        interpolate = False
+    for item in items:
+        for f in item.keys():
+            if f in FIELDS_TO_SKIP:
+                continue
+            
 
-        if _py3:
-            # TODO check python3 compatibility 'unicode' may disappear?
-            if isinstance(template[f],(str)):
-                interpolate = True
-        elif isinstance(template[f],(str,unicode)):
-                interpolate = True
-        
-        if interpolate:
-            try:
-                _template = env.get_template(f)
-                template[f] = _template.render(model)
-            except TemplateSyntaxError as e:
-                raise Exception(_('Unable to interpolate field \'{}\' line \'{}\'\nError:{}'.format(f,str(e.lineno),str(e))))
-            except Exception as e:
-                raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
+            interpolate = False
+
+            if _py3:
+                # TODO check python3 compatibility 'unicode' may disappear?
+                if isinstance(item[f],(str)):
+                    interpolate = True
+            elif isinstance(item[f],(str,unicode)):
+                    interpolate = True
+            
+            
+            if interpolate:
+                try:
+                    _template = env.get_template(f)
+                    item[f] = _template.render(model)
+                except TemplateSyntaxError as e:
+                    raise Exception(_('Unable to interpolate field \'{}\' line \'{}\'\nError:{}'.format(f,str(e.lineno),str(e))))
+                except Exception as e:
+                    raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
+
+    if wrapped:
+        template['catalog'] = items
+    else:
+        template = items[0]
 
     return template
     ###########################################################################
