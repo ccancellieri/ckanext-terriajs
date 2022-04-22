@@ -149,8 +149,12 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         def default_jsonschema_fields(key, data, errors, context):
 
-            _data = df.unflatten(data)
+            # Probably when updating a view we don't have the resrouce in context,
+            # but we can return b
+            if 'resource' not in context:
+                return
 
+            _data = df.unflatten(data)
             resource = context['resource'].as_dict()
 
             plugin = _vt.get_jsonschema_view_plugin(_data.get('view_type'))
