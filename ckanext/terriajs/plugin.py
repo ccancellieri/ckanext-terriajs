@@ -88,7 +88,7 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         model = self.get_model(view)
 
-        _terriajs_config = _vt.interpolate_fields(model, view_body)     
+        _terriajs_config = interpolate_fields(model, view_body)     
 
         _config = get.resolve(_terriajs_config, force, force_to)
         return _config
@@ -150,7 +150,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         def default_jsonschema_fields(key, data, errors, context):
 
             # Probably when updating a view we don't have the resrouce in context,
-            # but we can return b
+            # but we can return because we don't need to set defaults if the view already exists
             if 'resource' not in context:
                 return
 
@@ -251,3 +251,58 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def form_template(self, context, data_dict):
         return 'terriajs_form.html'
+
+
+
+
+def interpolate_fields(model, template):
+        
+    import sys
+    _py3=False
+    if (sys.version_info > (3, 0)):
+        _py3=True
+    import jinja2
+    Environment = jinja2.environment.Environment
+    FunctionLoader = jinja2.loaders.FunctionLoader 
+    TemplateSyntaxError = jinja2.TemplateSyntaxError
+    ###########################################################################
+    # Jinja2 template
+    ###########################################################################
+    
+
+    def functionLoader(name):
+        return template[name]
+
+    env = Environment(
+                loader=FunctionLoader(functionLoader),
+                autoescape=True,
+                trim_blocks=False,
+                keep_trailing_newline=True)
+
+
+    for f in template.keys():
+        FIELDS_TO_SKIP = ['featureInfoTemplate']
+        if f in FIELDS_TO_SKIP:
+            continue
+        
+
+        interpolate = False
+
+        if _py3:
+            # TODO check python3 compatibility 'unicode' may disappear?
+            if isinstance(template[f],(str)):
+                interpolate = True
+        elif isinstance(template[f],(str,unicode)):
+                interpolate = True
+        
+        if interpolate:
+            try:
+                _template = env.get_template(f)
+                template[f] = _template.render(model)
+            except TemplateSyntaxError as e:
+                raise Exception(_('Unable to interpolate field \'{}\' line \'{}\'\nError:{}'.format(f,str(e.lineno),str(e))))
+            except Exception as e:
+                raise Exception(_('Unable to interpolate field \'{}\': {}'.format(f,str(e))))
+
+    return template
+    ###########################################################################

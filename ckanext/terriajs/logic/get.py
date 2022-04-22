@@ -214,11 +214,13 @@ def _resolve(item, force=False, force_to=False):
         return item
     
     elif type == constants.LAZY_ITEM_TYPE:
+        from ckanext.terriajs.plugin import interpolate_fields
+
         # let's resolve the view by id
         view = _g.get_view(item.get('id'))
         model = _vt.get_model(view.get('package_id'), view.get('resource_id'))
         view_body = _vt.get_view_body(view)
-        _terriajs_config = _vt.interpolate_fields(model, view_body)     
+        _terriajs_config = interpolate_fields(model, view_body)     
         
         if not _terriajs_config:
             raise Exception(_('Unable to resolve view id: {}'.format(item.get('id'))))
