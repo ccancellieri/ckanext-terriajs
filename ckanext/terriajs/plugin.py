@@ -279,9 +279,9 @@ def interpolate_fields(model, template):
                 trim_blocks=False,
                 keep_trailing_newline=True)
 
+    FIELDS_TO_SKIP = config.get('ckanext.terriajs.skip.fields', ['featureInfoTemplate'])
 
     for f in template.keys():
-        FIELDS_TO_SKIP = ['featureInfoTemplate']
         if f in FIELDS_TO_SKIP:
             continue
         
