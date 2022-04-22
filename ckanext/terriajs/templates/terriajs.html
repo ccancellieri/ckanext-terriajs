@@ -12,7 +12,7 @@
     {% set iframe_url_config = resource_view[OPT_KEY]['base_url'] + '?clean=True&' + h.jsonschema_url_quote(config_url) %}
     {% set iframe_url_config_enabled = resource_view[OPT_KEY]['base_url'] + '?clean=True&' + h.jsonschema_url_quote(config_enabled_url) %}
 
-    {% if c.userobj and h.check_access('resource_show', {'resource_id': resource['id']})  %}
+    {% if c.userobj and h.check_access('resource_show', {'id': resource['id']})  %}
         <a class="btn-view btn btn-info" data-toggle="tooltip" data-placement="top" title={{_("Open configuration")}}
             href="{{config_url}}" target="_blank">
             {{_('Open configuration')}}
