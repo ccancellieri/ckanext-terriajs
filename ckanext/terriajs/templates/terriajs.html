@@ -60,7 +60,7 @@
     {% endif %}
     
     <div style="display:block; width: auto; height: auto;">
-        {% if resource_view.terriajs_type == 'group' or resource_view.terriajs_type == 'terriajs-group' %}
+        {% if resource_view.jsonschema_type == 'group' or resource_view.jsonschema_type == 'terriajs-group' %}
         <iframe style="display: block;width: 100%; height: 100%; min-height: 94vh;" src="{{iframe_url_config}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
         {% else %}
         <iframe style="display: block;width: 100%; height: 100%; min-height: 94vh;" src="{{iframe_url_config_enabled}}" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>
