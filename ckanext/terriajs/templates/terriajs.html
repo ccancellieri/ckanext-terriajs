@@ -2,6 +2,23 @@
 
 {# <iframe id="terriajs-iframe" src="{{config_view.terriajs_url}}?clean" style="height: 600px; width: 100%; border: none;" allowFullScreen mozAllowFullScreen webkitAllowFullScreen/>#}
 
+<script type="text/javascript">
+    function copy(self, event, text) {
+        event.preventDefault();
+        var tmp = document.createElement("textarea");
+        tmp.value = text;
+        tmp.style.height = "0";
+        tmp.style.overflow = "hidden";
+        tmp.style.position = "fixed";
+        document.body.appendChild(tmp);
+        tmp.focus();
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+    }
+ </script>
+
+
 {% block jsonchema_view_body %}
     {% set OPT_KEY = h.jsonschema_get_opt_key() %}
 
@@ -12,15 +29,20 @@
     {% set iframe_url_config = resource_view[OPT_KEY]['base_url'] + '?clean=True&' + h.jsonschema_url_quote(config_url) %}
     {% set iframe_url_config_enabled = resource_view[OPT_KEY]['base_url'] + '?clean=True&' + h.jsonschema_url_quote(config_enabled_url) %}
 
+
+
     {% if c.userobj and h.check_access('resource_show', {'id': resource['id']})  %}
-        <a class="btn-view btn btn-info" data-toggle="tooltip" data-placement="top" title={{_("Open configuration")}}
-            href="{{config_url}}" target="_blank">
-            {{_('Open configuration')}}
-        </a>
-        <a class="btn-view btn btn-primary" data-toggle="tooltip" data-placement="top" title={{_("Open item")}}
-            href="{{item_url}}" target="_blank">
-            {{_('Open item')}}
-        </a>
+        
+        <button class="btn-view btn btn-info" onclick="copy(this, event, '{{config_url}}')" data-toggle="tooltip" data-placement="top" title={{_("Copy configuration URL")}}>
+            <i class="fa fa-clipboard" aria-hidden="true"></i>
+            {{_("Copy configuration URL")}}
+        </button>
+        
+        <button class="btn-view btn btn-primary" onclick="copy(this, event, '{{item_url}}')" data-toggle="tooltip" data-placement="top" title={{_("Copy item URL")}}>
+            <i class="fa fa-clipboard" aria-hidden="true"></i>
+            {{_("Copy item URL")}}
+        </button>
+        
         <a class="btn-view btn btn-default"
             target="_blank"
             href="{{ h.url_for('resource_view', id=package['name'], resource_id=resource['id'], view_id=resource_view['id'], qualified=True) }}">
