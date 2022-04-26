@@ -61,6 +61,48 @@ export const initialize = () => {
                         return "";
                     });
             },
+            "view_remoteItem_search": function search(jseditor_editor, input) {
+                var url = new URL('terriajs/search?'+
+                        'resource_name='+ encodeURI(input)+
+                        '&dataset_title='+ encodeURI(input)+
+                        '&dataset_description='+ encodeURI(input),jsonschema.ckanUrl);
+                if (input.length < 2) {
+                    return [];
+                }
+                return fetch(url).then(function (request) {
+                        if (request.status === 200) {
+                            return request
+                            .json()
+                            .then(results => results.filter(el => el.config[jsonschema.typeKey] != "terriajs-group" && el.config[jsonschema.typeKey] != "group"))
+                        } else {
+                            return [""];
+                        }
+                    }).catch(function (err) {
+                        console.error(err);
+                        return "";
+                    });
+            },
+            "view_remoteGroup_search": function search(jseditor_editor, input) {
+                var url = new URL('terriajs/search?'+
+                        'resource_name='+ encodeURI(input)+
+                        '&dataset_title='+ encodeURI(input)+
+                        '&dataset_description='+ encodeURI(input),jsonschema.ckanUrl);
+                if (input.length < 2) {
+                    return [];
+                }
+                return fetch(url).then(function (request) {
+                        if (request.status === 200) {
+                            return request
+                            .json()
+                            .then(results => results.filter(el => el.config[jsonschema.typeKey] == "terriajs-group" || el.config[jsonschema.typeKey] == "group"))
+                        } else {
+                            return [""];
+                        }
+                    }).catch(function (err) {
+                        console.error(err);
+                        return "";
+                    });
+            },
             "view_renderer": function(jseditor_editor, result, props) {
                 return jsonschema.dataDict.id == result.id ? '':
                     ['<li ' + props + ' data-toggle="tooltip" data-placement="bottom" title="'+ result.id +'" >',
@@ -109,8 +151,23 @@ export const initialize = () => {
                     '</li>'].join('');
             },
             "view_getValue": function getResultValue(jseditor_editor, result) {
+
+
                 return result.id
-            }
+            },
+            "view_remoteItem_getValue": function getResultValue(jseditor_editor, result) {
+                return new URL('/terriajs/item/' + result.id + '.json', jsonschema.ckanUrl)
+            },
+            "view_remoteGroup_getValue": function getResultValue(jseditor_editor, result) {
+                
+                // set also the name
+                var name_path = jseditor_editor.path.split('.').slice(0, -1)
+                name_path.push('name')
+                var name_value = result.resource_name + " - " + result.dataset_title
+                jsonschema.setValue(name_path, name_value)
+
+                return new URL('/terriajs/config/' + result.id +'.json', jsonschema.ckanUrl)
+            },
         }
     };
 }

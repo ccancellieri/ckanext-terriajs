@@ -1,4 +1,5 @@
 {
+  "id": "remote-config-group",
   "type": "object",
   "format": "grid-strict",
   "required": [
@@ -21,17 +22,28 @@
     "name":{
       "type": "string",
       "minLength": 1,
+      "description": "Auto generated descriptive name",
+      "watch": {
+        "id": "remote-config-group.url"
+      },
       "options": {
         "grid_columns": 4
       }
     },
     "url":{
       "type": "string",
-      "format": "url",
       "description": "The URL from where the system fetches the configuration from. The url should return a valid terriajs configuration that contains either items or catalog in the JSON structure returned at the top level. Camera definition is not required (and has no effect) by this implementation.",
+      "format": "autocomplete",
       "options": {
+        "autocomplete": {
+            "search": "view_remoteGroup_search",
+            "getResultValue": "view_remoteGroup_getValue",
+            "renderResult": "view_renderer",
+            "autoSelect": true,
+            "debounceTime": 1000
+        },
         "grid_columns": 8
-      }
+    }
     }
   }
 }
