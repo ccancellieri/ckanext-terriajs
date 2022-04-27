@@ -147,16 +147,14 @@ class TerriajsPlugin(p.SingletonPlugin):
 
         def default_jsonschema_fields(key, data, errors, context):
 
-            # Probably when updating a view we don't have the resrouce in context,
-            # but we can return because we don't need to set defaults if the view already exists
-            # TODO: it could be possible to check just if an id is in data; check
+            # When creating a view by hand, we don't have the resource in the context
             _data = df.unflatten(data)
 
             # if 'resource' not in context or 'view_type' in _data:
             #     return
 
             # If we have the id, the view exists so we don't need to set defaults
-            if 'id' in _data:
+            if 'id' in _data or 'resource' not in context:
                 return
 
             resource = context['resource'].as_dict()
