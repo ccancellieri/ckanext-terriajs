@@ -1,49 +1,49 @@
 {
-  "id": "remote-config-group",
-  "type": "object",
-  "format": "grid-strict",
-  "required": [
-    "type","url","name"
+  "type":"object",
+  "format":"grid-strict",
+  "required":[
+      "type",
+      "url",
+      "name"
   ],
-  "options": {
-    "disable_collapse": true,
-    "disable_edit_json": true,
-    "disable_properties": true
+  "options":{
+      "disable_collapse":true,
+      "disable_edit_json":true,
+      "disable_properties":true
   },
   "properties":{
-    "type":{ 
-      "type":"string",
-      "enum":["remote-config-group"],
-      "options": {
-        "hidden": true,
-        "grid_columns": 0
-      }
-    },
-    "name":{
-      "type": "string",
-      "minLength": 1,
-      "description": "Auto generated descriptive name",
-      "watch": {
-        "id": "remote-config-group.url"
+      "type":{
+          "type":"string",
+          "enum":[
+              "remote-config-group"
+          ],
+          "options":{
+              "hidden":true,
+              "grid_columns":0
+          }
       },
-      "options": {
-        "grid_columns": 4
+      "name":{
+          "type":"string",
+          "minLength":1,
+          "description":"Auto generated descriptive name",
+          "options":{
+              "grid_columns":4
+          }
+      },
+      "url":{
+          "type":"string",
+          "description":"The URL from where the system fetches the configuration from. The url should return a valid terriajs configuration that contains either items or catalog in the JSON structure returned at the top level. Camera definition is not required (and has no effect) by this implementation.",
+          "format":"autocomplete",
+          "options":{
+              "autocomplete":{
+                  "search":"view_remoteGroup_search",
+                  "getResultValue":"view_remote_getValue",
+                  "renderResult":"view_renderer",
+                  "autoSelect":true,
+                  "debounceTime":500
+              },
+              "grid_columns":8
+          }
       }
-    },
-    "url":{
-      "type": "string",
-      "description": "The URL from where the system fetches the configuration from. The url should return a valid terriajs configuration that contains either items or catalog in the JSON structure returned at the top level. Camera definition is not required (and has no effect) by this implementation.",
-      "format": "autocomplete",
-      "options": {
-        "autocomplete": {
-            "search": "view_remoteGroup_search",
-            "getResultValue": "view_remoteGroup_getValue",
-            "renderResult": "view_renderer",
-            "autoSelect": true,
-            "debounceTime": 1000
-        },
-        "grid_columns": 8
-    }
-    }
   }
 }

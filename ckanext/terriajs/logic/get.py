@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 import json
+import traceback
 
 import ckan.lib.helpers as h
 import ckan.logic as logic
@@ -8,7 +9,8 @@ import ckanext.jsonschema.logic.get as _g
 import ckanext.jsonschema.view_tools as _vt
 from ckan.common import _, json
 from ckan.plugins.toolkit import request
-from flask import redirect
+from flask import (Blueprint, Response, abort, jsonify, redirect,
+                   stream_with_context)
 from six import PY3, text_type
 
 # Define some shortcuts
@@ -22,67 +24,110 @@ import ckanext.terriajs.logic.query as query
 
 log = logging.getLogger(__name__)
 
-from flask import Blueprint, jsonify
-
 terriajs = Blueprint(constants.TYPE, __name__)
 
 def item_disabled(resource_view_id):
     # Shortcut for retrocompatibility
     # TODO: remove all of these endpoints and use those of the framework
-    view = _g.get_view(resource_view_id)
-    package_id = view.get('package_id')
-    resource_id = view.get('resource_id')
+    #view = _g.get_view(resource_view_id)
 
-    return redirect(h.url_for(    
-        'jsonschema.get_view_body', 
-        package_id=package_id,
-        resource_id=resource_id,
-        view_id=resource_view_id,
-        resolve=True,
-        wrap=False,
-        force=True,
-        force_to=False,
-        _external=True
-    ))
+    args = request.args.copy()
+    args.update({
+        'resolve': 'true',
+        'wrap': 'false',
+        'force': 'true',
+        'force_to': 'false'
+    })
+
+    try:
+        content = _vt.resolve_view_body(resource_view_id, args)
+        return Response(stream_with_context(json.dumps(content)), mimetype='application/json')
+    except ValidationError as e:
+        traceback.print_exc()
+        abort(400, e.error_dict.get('message'))
+    except Exception as e:
+        traceback.print_exc()
+        abort(400, str(e))
+
+    # return redirect(h.url_for(    
+    #     'jsonschema.get_view_body', 
+    #     package_id=package_id,
+    #     resource_id=resource_id,
+    #     view_id=resource_view_id,
+    #     resolve=True,
+    #     wrap=False,
+    #     force=True,
+    #     force_to=False,
+    #     _external=True
+    # ))
 
 def item_enabled(resource_view_id):
     # Shortcut for retrocompatibility
     # TODO: remove all of these endpoints and use those of the framework
-    view = _g.get_view(resource_view_id)
-    package_id = view.get('package_id')
-    resource_id = view.get('resource_id')
+    #view = _g.get_view(resource_view_id)
+    
+    args = request.args.copy()
+    args.update({
+        'resolve': 'true',
+        'wrap': 'false',
+        'force': 'true',
+        'force_to': 'true'
+    })
 
+    try:
+        content = _vt.resolve_view_body(resource_view_id, args)
+        return Response(stream_with_context(json.dumps(content)), mimetype='application/json')
+    except ValidationError as e:
+        traceback.print_exc()
+        abort(400, e.error_dict.get('message'))
+    except Exception as e:
+        traceback.print_exc()
+        abort(400, str(e))
 
-    return redirect(h.url_for(    
-        'jsonschema.get_view_body', 
-        package_id=package_id,
-        resource_id=resource_id,
-        view_id=resource_view_id,
-        resolve=True,
-        wrap=False,
-        force=True,
-        force_to=True,
-        _external=True
-    ))
+    # return redirect(h.url_for(    
+    #     'jsonschema.get_view_body', 
+    #     package_id=package_id,
+    #     resource_id=resource_id,
+    #     view_id=resource_view_id,
+    #     resolve=True,
+    #     wrap=False,
+    #     force=True,
+    #     force_to=True,
+    #     _external=True
+    # ))
 
 def item(resource_view_id):
     # Shortcut for retrocompatibility
     # TODO: remove all of these endpoints and use those of the framework
-    view = _g.get_view(resource_view_id)
-    package_id = view.get('package_id')
-    resource_id = view.get('resource_id')
+    #view = _g.get_view(resource_view_id)
 
+    args = request.args.copy()
+    args.update({
+        'resolve': 'true',
+        'wrap': 'false',
+        'force': 'false'
+    })
 
-    return redirect(h.url_for(    
-        'jsonschema.get_view_body', 
-        package_id=package_id,
-        resource_id=resource_id,
-        view_id=resource_view_id,
-        resolve=True,
-        wrap=False,
-        force=False,
-        _external=True
-    ))
+    try:
+        content = _vt.resolve_view_body(resource_view_id, args)
+        return Response(stream_with_context(json.dumps(content)), mimetype='application/json')
+    except ValidationError as e:
+        traceback.print_exc()
+        abort(400, e.error_dict.get('message'))
+    except Exception as e:
+        traceback.print_exc()
+        abort(400, str(e))
+
+    # return redirect(h.url_for(    
+    #     'jsonschema.get_view_body', 
+    #     package_id=package_id,
+    #     resource_id=resource_id,
+    #     view_id=resource_view_id,
+    #     resolve=True,
+    #     wrap=False,
+    #     force=False,
+    #     _external=True
+    # ))
 
 terriajs.add_url_rule('/{}/item/<resource_view_id>.json'.format(constants.TYPE), view_func=item, methods=[u'GET'])
 
@@ -93,61 +138,106 @@ terriajs.add_url_rule('/{}/item/enabled/<resource_view_id>.json'.format(constant
 def config_disabled(resource_view_id):
     # Shortcut for retrocompatibility
     # TODO: remove all of these endpoints and use those of the framework
-    view = _g.get_view(resource_view_id)
-    package_id = view.get('package_id')
-    resource_id = view.get('resource_id')
+    # view = _g.get_view(resource_view_id)
+   
+    args = request.args.copy()
+    args.update({
+        'resolve': 'true',
+        'wrap': 'true',
+        'force': 'true',
+        'force_to': 'false'
+    })
 
+    try:
+        content = _vt.resolve_view_body(resource_view_id, args)
+        return Response(stream_with_context(json.dumps(content)), mimetype='application/json')
+    except ValidationError as e:
+        traceback.print_exc()
+        abort(400, e.error_dict.get('message'))
+    except Exception as e:
+        traceback.print_exc()
+        abort(400, str(e))
 
-    return redirect(h.url_for(    
-        'jsonschema.get_view_body', 
-        package_id=package_id,
-        resource_id=resource_id,
-        view_id=resource_view_id,
-        resolve=True,
-        wrap=True,
-        force=True,
-        force_to=False,
-        _external=True
-    ))
+    # return redirect(h.url_for(    
+    #     'jsonschema.get_view_body', 
+    #     package_id=package_id,
+    #     resource_id=resource_id,
+    #     view_id=resource_view_id,
+    #     resolve=True,
+    #     wrap=True,
+    #     force=True,
+    #     force_to=False,
+    #     _external=True
+    # ))
 
 def config_enabled(resource_view_id):
     # Shortcut for retrocompatibility
     # TODO: remove all of these endpoints and use those of the framework
-    view = _g.get_view(resource_view_id)
-    package_id = view.get('package_id')
-    resource_id = view.get('resource_id')
+    #view = _g.get_view(resource_view_id)
+    
+    args = request.args.copy()
+    args.update({
+        'resolve': 'true',
+        'wrap': 'true',
+        'force': 'true',
+        'force_to': 'true'
+    })
 
+    try:
+        content = _vt.resolve_view_body(resource_view_id, args)
+        return Response(stream_with_context(json.dumps(content)), mimetype='application/json')
+    except ValidationError as e:
+        traceback.print_exc()
+        abort(400, e.error_dict.get('message'))
+    except Exception as e:
+        traceback.print_exc()
+        abort(400, str(e))
 
-    return redirect(h.url_for(    
-        'jsonschema.get_view_body', 
-        package_id=package_id,
-        resource_id=resource_id,
-        view_id=resource_view_id,
-        resolve=True,
-        wrap=True,
-        force=True,
-        force_to=True,
-        _external=True
-    ))
+    # return redirect(h.url_for(    
+    #     'jsonschema.get_view_body', 
+    #     package_id=package_id,
+    #     resource_id=resource_id,
+    #     view_id=resource_view_id,
+    #     resolve=True,
+    #     wrap=True,
+    #     force=True,
+    #     force_to=True,
+    #     _external=True
+    # ))
 
 
 def _config(resource_view_id):
     # Shortcut for retrocompatibility
     # TODO: remove all of these endpoints and use those of the framework
-    view = _g.get_view(resource_view_id)
-    package_id = view.get('package_id')
-    resource_id = view.get('resource_id')
+    #view = _g.get_view(resource_view_id)
+    
+    args = request.args.copy()
+    args.update({
+        'resolve': 'true',
+        'wrap': 'true',
+        'force': 'false'
+    })
 
-    return redirect(h.url_for(    
-        'jsonschema.get_view_body', 
-        package_id=package_id,
-        resource_id=resource_id,
-        view_id=resource_view_id,
-        resolve=True,
-        wrap=True,
-        force=False,
-        _external=True
-    ))
+    try:
+        content = _vt.resolve_view_body(resource_view_id, args)
+        return Response(stream_with_context(json.dumps(content)), mimetype='application/json')
+    except ValidationError as e:
+        traceback.print_exc()
+        abort(400, e.error_dict.get('message'))
+    except Exception as e:
+        traceback.print_exc()
+        abort(400, str(e))
+    
+    # return redirect(h.url_for(    
+    #     'jsonschema.get_view_body', 
+    #     package_id=package_id,
+    #     resource_id=resource_id,
+    #     view_id=resource_view_id,
+    #     resolve=True,
+    #     wrap=True,
+    #     force=False,
+    #     _external=True
+    # ))
 
 # TODO unify/parametrize
 terriajs.add_url_rule('/{}/config/enabled/<resource_view_id>.json'.format(constants.TYPE), view_func=config_enabled, methods=[u'GET'])

@@ -12,14 +12,12 @@ import logging
 import ckan.lib.navl.dictization_functions as df
 import ckanext.jsonschema.constants as _c
 import ckanext.jsonschema.interfaces as _i
-import ckanext.jsonschema.logic.get as _g
 import ckanext.jsonschema.tools as _t
 import ckanext.jsonschema.utils as _u
 import ckanext.jsonschema.validators as _v
 import ckanext.jsonschema.view_tools as _vt
 import ckanext.terriajs.constants as _tc
 import ckanext.terriajs.logic.get as get
-from ckan.common import request
 from ckan.logic.converters import convert_to_json_if_string
 from flask import abort
 
@@ -77,14 +75,14 @@ class TerriajsPlugin(p.SingletonPlugin):
         log.info('Added terriajs registry entries to into jsonschema\'s registry')
 
 
-    def resolve(self, view_body, view):
+    def resolve(self, view_body, view, args={}):
 
         force = False
         force_to = False
 
-        if request.args:
-            force = request.args.get('force', 'false').lower() == 'true' # cast to boolean
-            force_to = request.args.get('force_to', 'false').lower() == 'true'
+        if args:
+            force = args.get('force', 'false').lower() == 'true' # cast to boolean
+            force_to = args.get('force_to', 'false').lower() == 'true'
 
         model = self.get_model(view)
 
@@ -104,7 +102,7 @@ class TerriajsPlugin(p.SingletonPlugin):
         return model
 
 
-    def wrap_view(self, view_body, view):
+    def wrap_view(self, view_body, view, args):
                
         view_opts = _vt.get_view_opt(view)
 

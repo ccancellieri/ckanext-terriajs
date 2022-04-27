@@ -151,22 +151,20 @@ export const initialize = () => {
                     '</li>'].join('');
             },
             "view_getValue": function getResultValue(jseditor_editor, result) {
-
-
                 return result.id
             },
-            "view_remoteItem_getValue": function getResultValue(jseditor_editor, result) {
-                return new URL('/terriajs/item/' + result.id + '.json', jsonschema.ckanUrl)
-            },
-            "view_remoteGroup_getValue": function getResultValue(jseditor_editor, result) {
+            "view_remote_getValue": function getResultValue(jseditor_editor, result) {
                 
                 // set also the name
                 var name_path = jseditor_editor.path.split('.').slice(0, -1)
                 name_path.push('name')
+                name_path = name_path.join('.')
+                
                 var name_value = result.resource_name + " - " + result.dataset_title
+                
                 jsonschema.setValue(name_path, name_value)
 
-                return new URL('/terriajs/config/' + result.id +'.json', jsonschema.ckanUrl)
+                return new URL('/terriajs/item/' + result.id +'.json', jsonschema.ckanUrl)
             },
         }
     };
