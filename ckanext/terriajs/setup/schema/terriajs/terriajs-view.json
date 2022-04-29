@@ -30,7 +30,6 @@
             "type": "string",
             "format": "string",
             "description": "Auto generated descriptive name",
-            "template": "view_template",
             "options": {
                 "grid_columns": 6
             }
