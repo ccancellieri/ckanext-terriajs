@@ -21,7 +21,6 @@
             "type": "string",
             "readonly": true,
             "description": "Target Ckan terriajs view ID (autocomplete)",
-            "format": "autocomplete",
             "minLength": 36,
             "options": {
                 "grid_columns": 6
