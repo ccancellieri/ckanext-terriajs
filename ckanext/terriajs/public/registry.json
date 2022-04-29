@@ -30,7 +30,8 @@
         "template":"terriajs/wms.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_all_ckan_fields": true,
+        "skip_indexing": false
     },
     "wmts":{
         "label":"wmts",

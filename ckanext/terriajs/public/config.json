@@ -18,7 +18,8 @@
             {
                 "view_jsonschema_type": ["wms"],
                 "resource_formats": ["wms"],
-                "available_for_all_resource_jsonschema_types": true
+                "available_for_all_resource_jsonschema_types": true,
+                "skip_indexing": true
             },
             {
                 "view_jsonschema_type": ["terriajs-wmts"],
