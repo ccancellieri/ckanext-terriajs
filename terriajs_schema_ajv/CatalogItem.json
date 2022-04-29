@@ -93,10 +93,5 @@
       "title": "Data URL type",
       "description": "The type of the CatalogItem's dataUrl, or undefined if raw data for this data\nsource is not available.\nValid values are:\n * `direct` - A direct link to the data.\n * `wfs` - A Web Feature Service (WFS) base URL.  If CatalogItem's dataUrl is not\n           specified, the base URL will be this data item's URL.\n * `wfs-complete` - A complete, ready-to-use link to download features from a WFS server.\n * `none` - There is no data link."
     }
-  },
-  "allOf": [
-    {
-      "$ref": "https://content-storage.googleapis.com/download/storage/v1/b/fao-maps-terriajs-schema/o/CatalogMember.json?&alt=media"
-    }
-  ]
+  }
 }
