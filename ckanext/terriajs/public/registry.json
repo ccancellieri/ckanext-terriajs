@@ -6,7 +6,9 @@
         "module": "terriajs/terriajs.js",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]
     },
     "terriajs-catalog":{
         "label":"Catalog",
@@ -14,7 +16,9 @@
         "template":"terriajs/terriajs-catalog.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]    
     },
     "csv":{
         "label":"csv",
@@ -22,7 +26,9 @@
         "template":"terriajs/csv.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "wms":{
         "label":"wms",
@@ -30,7 +36,9 @@
         "template":"terriajs/wms.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true,
+        "supported_ckan_fields":[
+            "name"
+        ],
         "skip_indexing": false
     },
     "wmts":{
@@ -39,7 +47,9 @@
         "template":"terriajs/wmts.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ] 
     },
     "mvt":{
         "label":"mvt",
@@ -47,7 +57,9 @@
         "template":"terriajs/mvt.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "terriajs-geojson":{
         "label":"terriajs-geojson",
@@ -55,7 +67,9 @@
         "template":"terriajs/geojson.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "url-template":{
         "label":"url-template",
@@ -63,7 +77,9 @@
         "template":"terriajs/url-template.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "csw-resource":{
         "label":"csw-resource",
@@ -71,7 +87,9 @@
         "template":"terriajs/csw-resource.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "csw":{
         "label":"csw",
@@ -79,7 +97,9 @@
         "template":"terriajs/csw.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "smart-csv":{
         "label":"smart-csv",
@@ -87,7 +107,9 @@
         "template":"terriajs/smart-csv.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     },
     "group":{
         "label":"group",
@@ -95,6 +117,8 @@
         "template":"terriajs/group.json",
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
-        "supported_all_ckan_fields": true
+        "supported_ckan_fields":[
+            "name"
+        ]  
     }
 }
