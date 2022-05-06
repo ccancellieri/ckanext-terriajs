@@ -74,7 +74,7 @@ export const initialize = () => {
             },
             "view_renderer": function(jseditor_editor, result, props) {
 
-                const resource_url = new URL('/dataset/' + result.package_id + '/resource/' + result.resource_id, jsonschema.ckanUrl + '/');
+                const resource_url = new URL('dataset/' + result.package_id + '/resource/' + result.resource_id, jsonschema.ckanUrl);
 
                 return jsonschema.dataDict.id == result.id ? '':
                     ['<li ' + props + ' data-toggle="tooltip" data-placement="bottom" title="'+ result.id +'" >',
@@ -136,7 +136,7 @@ export const initialize = () => {
                 
                 jsonschema.setValue(name_path, name_value)
 
-                return new URL('/terriajs/item/' + result.id +'.json', jsonschema.ckanUrl)
+                return new URL('terriajs/item/' + result.id +'.json', jsonschema.ckanUrl)
             },
         }
     };
