@@ -35,10 +35,10 @@ def item_disabled(resource_view_id):
 
     args = request.args.copy()
     args.update({
-        'resolve': 'true',
-        'wrap': 'false',
-        'force': 'true',
-        'force_to': 'false'
+        'resolve': True,
+        'wrap': False,
+        'force': True,
+        'force_to': False
     })
 
     try:
@@ -70,10 +70,10 @@ def item_enabled(resource_view_id):
     
     args = request.args.copy()
     args.update({
-        'resolve': 'true',
-        'wrap': 'false',
-        'force': 'true',
-        'force_to': 'true'
+        'resolve': True,
+        'wrap': False,
+        'force': True,
+        'force_to': True
     })
 
     try:
@@ -105,9 +105,9 @@ def item(resource_view_id):
 
     args = request.args.copy()
     args.update({
-        'resolve': 'true',
-        'wrap': 'false',
-        'force': 'false'
+        'resolve': True,
+        'wrap': False,
+        'force': False
     })
 
     try:
@@ -144,10 +144,10 @@ def config_disabled(resource_view_id):
    
     args = request.args.copy()
     args.update({
-        'resolve': 'true',
-        'wrap': 'true',
-        'force': 'true',
-        'force_to': 'false'
+        'resolve': True,
+        'wrap': True,
+        'force': True,
+        'force_to': False
     })
 
     try:
@@ -179,10 +179,10 @@ def config_enabled(resource_view_id):
     
     args = request.args.copy()
     args.update({
-        'resolve': 'true',
-        'wrap': 'true',
-        'force': 'true',
-        'force_to': 'true'
+        'resolve': True,
+        'wrap': True,
+        'force': True,
+        'force_to': True
     })
 
     try:
@@ -215,9 +215,9 @@ def _config(resource_view_id):
     
     args = request.args.copy()
     args.update({
-        'resolve': 'true',
-        'wrap': 'true',
-        'force': 'false'
+        'resolve': True,
+        'wrap': True,
+        'force': False
     })
 
     try:
