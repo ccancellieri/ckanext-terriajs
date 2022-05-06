@@ -7,7 +7,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]
     },
     "terriajs-catalog":{
@@ -17,7 +17,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]    
     },
     "csv":{
@@ -27,7 +27,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "wms":{
@@ -37,7 +37,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ],
         "skip_indexing": false
     },
@@ -48,7 +48,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ] 
     },
     "mvt":{
@@ -58,7 +58,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "terriajs-geojson":{
@@ -68,7 +68,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "url-template":{
@@ -78,7 +78,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "csw-resource":{
@@ -88,7 +88,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "csw":{
@@ -98,7 +98,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "smart-csv":{
@@ -108,7 +108,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     },
     "group":{
@@ -118,7 +118,7 @@
         "plugin_name":"terriajs",
         "supported_all_jsonschema_fields":true,
         "supported_ckan_fields":[
-            "name"
+            "title"
         ]  
     }
 }
