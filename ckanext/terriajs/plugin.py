@@ -83,8 +83,8 @@ class TerriajsPlugin(p.SingletonPlugin):
         force_to = False
 
         if args:
-            force = args.get('force', 'false').lower() == 'true' # cast to boolean
-            force_to = args.get('force_to', 'false').lower() == 'true'
+            force = args.get('force', False)
+            force_to = args.get('force_to', False)
 
         model = self.get_model(view)
 
