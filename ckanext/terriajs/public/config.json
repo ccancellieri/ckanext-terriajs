@@ -13,13 +13,15 @@
             {
                 "view_jsonschema_type": ["csv"],
                 "resource_formats": ["csv"],
-                "available_for_all_resource_jsonschema_types": true
+                "available_for_all_resource_jsonschema_types": true,
+                "default_view": true
             },
             {
                 "view_jsonschema_type": ["wms"],
                 "resource_formats": ["wms"],
                 "available_for_all_resource_jsonschema_types": true,
-                "skip_indexing": true
+                "skip_indexing": true,
+                "default_view": true
             },
             {
                 "view_jsonschema_type": ["terriajs-wmts"],
