@@ -17,6 +17,7 @@ import ckanext.jsonschema.utils as _u
 import ckanext.jsonschema.validators as _v
 import ckanext.jsonschema.view_tools as _vt
 import ckanext.terriajs.constants as _tc
+import ckanext.terriajs.tools as _tt
 import ckanext.terriajs.logic.get as get
 from ckan.logic.converters import convert_to_json_if_string
 from flask import abort
@@ -41,6 +42,7 @@ class TerriajsPlugin(p.SingletonPlugin):
     #IActions
     def get_actions(self):
         actions = {
+            'jsonschema_spatial_search': get.spatial_search,
             #'resource_view_delete': delete.resource_view_delete, # TODO REMOVE
             #'resource_view_update': delete.resource_view_update
         }
@@ -81,8 +83,8 @@ class TerriajsPlugin(p.SingletonPlugin):
         force_to = False
 
         if args:
-            force = args.get('force', 'false').lower() == 'true' # cast to boolean
-            force_to = args.get('force_to', 'false').lower() == 'true'
+            force = args.get('force', False)
+            force_to = args.get('force_to', False)
 
         model = self.get_model(view)
 
@@ -121,6 +123,42 @@ class TerriajsPlugin(p.SingletonPlugin):
         _config.update({'homeCamera': camera})
 
         return _config
+
+
+    def before_index_view(self, pkg_dict, resource, view):
+
+        resource_format = resource.get('format')
+
+        process_bbox = resource_format.lower() == "wms"
+        if not process_bbox:
+            return pkg_dict
+
+        from shapely import geometry
+        from shapely.geometry import Polygon
+
+        # Start from already existing bbox
+        try:
+            bounds = (pkg_dict['maxy'], pkg_dict['miny'], pkg_dict['maxx'], pkg_dict['minx'])
+            bbox = geometry.box(*bounds, ccw=True)
+        except:
+            bbox = Polygon()
+        
+    
+        wms_base_url = resource.get('url')
+        resource_name = resource.get('name')
+        bounds = _tt.calculate_bbox(wms_base_url, resource_name)
+        bbox = bbox.union(geometry.box(*bounds, ccw=True))
+
+        minx, miny, maxx, maxy = bbox.bounds
+        pkg_dict['maxy'] = maxy
+        pkg_dict['miny'] = miny
+        pkg_dict['maxx'] = maxx
+        pkg_dict['minx'] = minx
+        # bbox has .area property
+        pkg_dict['bbox_area'] = (pkg_dict['maxx'] - pkg_dict['minx']) * \
+                    (pkg_dict['maxy'] - pkg_dict['miny'])
+
+        return pkg_dict
 
     # IDomainObjectModification
     # def notify(self, entity, operation):
@@ -196,18 +234,7 @@ class TerriajsPlugin(p.SingletonPlugin):
     
 
     def can_view(self, data_dict):
-
-        resource = data_dict.get('resource', None)
-        
-        resource_format = resource.get('format')
-        resource_jsonschema_type = _t.get_resource_type(resource)
-        
-        view_configuration = _vt.get_view_configuration(self.config, resource_format, resource_jsonschema_type)
-            
-        if view_configuration:
-            return True
-
-        return False
+        return _vt.can_view(self.config, data_dict)
         
 
     def setup_template_variables(self, context, data_dict):
@@ -253,7 +280,6 @@ class TerriajsPlugin(p.SingletonPlugin):
 
     def form_template(self, context, data_dict):
         return 'terriajs_form.html'
-
 
 
 
@@ -323,3 +349,5 @@ def interpolate_fields(model, template):
 
     return template
     ###########################################################################
+
+ 
