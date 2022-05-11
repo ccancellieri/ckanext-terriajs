@@ -132,7 +132,8 @@ export const initialize = () => {
                 name_path.push('name')
                 name_path = name_path.join('.')
                 
-                var name_value = result.resource_name + " - " + result.dataset_title
+                // var name_value = result.resource_name + " - " + result.dataset_title
+                var name_value = result.dataset_title
                 
                 jsonschema.setValue(name_path, name_value)
 
