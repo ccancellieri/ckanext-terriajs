@@ -62,7 +62,7 @@
         ]  
     },
     "terriajs-geojson":{
-        "label":"terriajs-geojson",
+        "label":"geojson",
         "schema":"terriajs/geojson.json",
         "template":"terriajs/geojson.json",
         "plugin_name":"terriajs",
