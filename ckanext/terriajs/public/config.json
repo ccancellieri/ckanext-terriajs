@@ -24,8 +24,8 @@
                 "default_view": true
             },
             {
-                "view_jsonschema_type": ["terriajs-wmts"],
-                "resource_formats": ["terriajs-wmts"],
+                "view_jsonschema_type": ["wmts"],
+                "resource_formats": ["wmts"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
@@ -34,8 +34,8 @@
                 "available_for_all_resource_jsonschema_types": true
             },
             {
-                "view_jsonschema_type": ["terriajs-geojson"],
-                "resource_formats": ["terriajs-geojson"],
+                "view_jsonschema_type": ["geojson"],
+                "resource_formats": ["geojson"],
                 "available_for_all_resource_jsonschema_types": true
             },
             {
