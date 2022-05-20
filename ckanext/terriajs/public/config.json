@@ -54,6 +54,11 @@
                 "available_for_all_resource_jsonschema_types": true
             },
             {
+                "view_jsonschema_type": ["csw-resource"],
+                "resource_formats": ["csw-resource"],
+                "available_for_all_resource_jsonschema_types": true
+            },
+            {
                 "view_jsonschema_type": ["smart-csv"],
                 "resource_formats": ["smart-csv"],
                 "available_for_all_resource_jsonschema_types": true
